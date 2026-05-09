@@ -3,6 +3,7 @@ import ChapterLayout from '../components/ChapterLayout'
 import Callout from '../components/Callout'
 import FunFact from '../components/FunFact'
 import GifCard from '../components/GifCard'
+import Quiz from '../components/Quiz'
 import { QUIZZES } from '../data/quizzes'
 import { ANALOGIES } from '../data/chapters'
 
@@ -141,6 +142,10 @@ export default function PIDAction() {
       <Callout type="pro" title="When to Use PI vs PID">
         For most flow loops and most liquid temperature loops: PI is sufficient. Flow measurement is inherently noisy — adding D turns every measurement fluctuation into a valve twitch. For slow, smooth processes with little noise (large vessel temperature, pH) where overshoot is costly: PID with careful D tuning helps. For integrating processes (pure level): P or PD, no I needed. If in doubt, start with PI. Adding D before you've mastered P and I tuning is how you create loops that oscillate for reasons you can't explain.
       </Callout>
+
+      {QUIZZES.pid && QUIZZES.pid.length > 0 && (
+        <Quiz chapterId="pid" questions={QUIZZES.pid} level={1} />
+      )}
     </ChapterLayout>
   )
 }

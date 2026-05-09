@@ -3,6 +3,7 @@ import ChapterLayout from '../components/ChapterLayout'
 import Callout from '../components/Callout'
 import FunFact from '../components/FunFact'
 import GifCard from '../components/GifCard'
+import Quiz from '../components/Quiz'
 import { QUIZZES } from '../data/quizzes'
 import { ANALOGIES } from '../data/chapters'
 
@@ -143,6 +144,10 @@ export default function DigitalPID() {
       </p>
 
       <FunFact index={10} />
+
+      {QUIZZES.digital && QUIZZES.digital.length > 0 && (
+        <Quiz chapterId="digital" questions={QUIZZES.digital} level={1} />
+      )}
     </ChapterLayout>
   )
 }

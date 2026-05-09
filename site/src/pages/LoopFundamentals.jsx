@@ -3,6 +3,7 @@ import ChapterLayout from '../components/ChapterLayout'
 import Callout from '../components/Callout'
 import FunFact from '../components/FunFact'
 import GifCard from '../components/GifCard'
+import Quiz from '../components/Quiz'
 import { QUIZZES } from '../data/quizzes'
 import { ANALOGIES } from '../data/chapters'
 
@@ -184,6 +185,10 @@ SP ──►[Σ]──► PID Controller ──► Valve ──► Process ─�
       <Callout type="pro" title="Pro Tip: Name Your Variables Correctly">
         In a conversation with another engineer, never say "the loop output" when you mean "the controller output" or "the valve position." Always use SP, PV, CO, and MV explicitly. Ambiguity in naming causes real errors — an operator who says "the output is at 85%" could mean the CO is 85% or the valve is 85% open, and those are different things if the valve is not linear.
       </Callout>
+
+      {QUIZZES.loop && QUIZZES.loop.length > 0 && (
+        <Quiz chapterId="loop" questions={QUIZZES.loop} level={1} />
+      )}
     </ChapterLayout>
   )
 }

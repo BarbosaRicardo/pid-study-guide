@@ -14,7 +14,7 @@ import Lab from './pages/Lab'
 
 export default function App() {
   return (
-    <div className="flex min-h-screen bg-slate-50 font-sans">
+    <div className="flex min-h-screen font-sans">
       <Sidebar />
       <main className="flex-1 min-w-0 overflow-y-auto">
         <Routes>

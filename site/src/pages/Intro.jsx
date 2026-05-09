@@ -3,6 +3,7 @@ import ChapterLayout from '../components/ChapterLayout'
 import Callout from '../components/Callout'
 import FunFact from '../components/FunFact'
 import GifCard from '../components/GifCard'
+import Quiz from '../components/Quiz'
 import { QUIZZES } from '../data/quizzes'
 import { ANALOGIES } from '../data/chapters'
 
@@ -130,6 +131,10 @@ export default function Intro() {
       <Callout type="pro" title="Pro Tip: Understand the Process First">
         Before tuning any loop, understand what you're controlling. Is it self-regulating (will it naturally find a new steady state if you hold the valve position constant) or integrating (will it ramp up or down forever)? The answer determines everything about how you tune the controller. A P-only controller will perform very differently on a self-regulating level loop versus an integrating level loop.
       </Callout>
+
+      {QUIZZES.intro && QUIZZES.intro.length > 0 && (
+        <Quiz chapterId="intro" questions={QUIZZES.intro} level={1} />
+      )}
     </ChapterLayout>
   )
 }

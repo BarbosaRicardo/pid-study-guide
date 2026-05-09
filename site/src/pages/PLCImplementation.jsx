@@ -3,6 +3,7 @@ import ChapterLayout from '../components/ChapterLayout'
 import Callout from '../components/Callout'
 import FunFact from '../components/FunFact'
 import GifCard from '../components/GifCard'
+import Quiz from '../components/Quiz'
 import { QUIZZES } from '../data/quizzes'
 import { ANALOGIES } from '../data/chapters'
 
@@ -173,6 +174,10 @@ export default function PLCImplementation() {
       </ul>
 
       <FunFact index={7} />
+
+      {QUIZZES.plc && QUIZZES.plc.length > 0 && (
+        <Quiz chapterId="plc" questions={QUIZZES.plc} level={1} />
+      )}
     </ChapterLayout>
   )
 }
