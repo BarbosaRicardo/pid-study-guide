@@ -16,14 +16,37 @@ function MCQQuestion({ q, onAnswer, answered }) {
   }
 
   return (
-    <div className="space-y-3 mt-4">
+    <div className="space-y-2.5 mt-4">
       {q.options.map((opt, idx) => {
-        let cls = 'border-2 border-slate-200 bg-white text-slate-700 hover:border-mblue-400 hover:bg-mblue-50'
-        if (selected === idx) {
-          if (idx === q.answer) cls = 'border-2 border-mgreen-500 bg-green-50 text-green-800'
-          else cls = 'border-2 border-mred-500 bg-red-50 text-red-800'
-        } else if (answered && idx === q.answer) {
-          cls = 'border-2 border-mgreen-500 bg-green-50 text-green-800'
+        const isCorrect = idx === q.answer
+        const isSelected = selected === idx
+
+        let style = {
+          background: 'rgba(255,255,255,0.03)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          color: '#94a3b8',
+        }
+        let badgeStyle = {
+          background: 'rgba(255,255,255,0.06)',
+          color: '#64748b',
+          border: '1px solid rgba(255,255,255,0.08)',
+        }
+
+        if (isSelected && isCorrect) {
+          style = { background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.5)', color: '#6ee7b7', boxShadow: '0 0 12px rgba(16,185,129,0.2)' }
+          badgeStyle = { background: 'rgba(16,185,129,0.2)', color: '#34d399', border: '1px solid rgba(16,185,129,0.4)' }
+        } else if (isSelected && !isCorrect) {
+          style = { background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.5)', color: '#fca5a5', boxShadow: '0 0 12px rgba(239,68,68,0.15)' }
+          badgeStyle = { background: 'rgba(239,68,68,0.2)', color: '#f87171', border: '1px solid rgba(239,68,68,0.4)' }
+        } else if (answered && isCorrect) {
+          style = { background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.35)', color: '#6ee7b7' }
+          badgeStyle = { background: 'rgba(16,185,129,0.15)', color: '#34d399', border: '1px solid rgba(16,185,129,0.3)' }
+        } else if (answered) {
+          style = { background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', color: '#475569' }
+        }
+
+        if (!answered) {
+          style = { ...style }
         }
 
         return (
@@ -31,10 +54,16 @@ function MCQQuestion({ q, onAnswer, answered }) {
             key={idx}
             onClick={() => handleSelect(idx)}
             disabled={answered}
-            className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-3 ${cls}`}
+            className="w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-3"
+            style={style}
+            onMouseEnter={e => { if (!answered) e.currentTarget.style.background = 'rgba(59,130,246,0.1)' }}
+            onMouseLeave={e => { if (!answered) e.currentTarget.style.background = style.background }}
           >
-            <span className="flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold border-current">
-              {answered && idx === q.answer ? '✓' : answered && selected === idx ? '✗' : String.fromCharCode(65 + idx)}
+            <span
+              className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
+              style={badgeStyle}
+            >
+              {answered && isCorrect ? '✓' : answered && isSelected ? '✗' : String.fromCharCode(65 + idx)}
             </span>
             {opt}
           </button>
@@ -60,7 +89,7 @@ function FillQuestion({ q, onAnswer, answered }) {
   return (
     <div className="mt-4 space-y-3">
       {q.hint && !submitted && (
-        <p className="text-xs text-slate-500 italic">Hint: {q.hint}</p>
+        <p className="text-xs italic" style={{ color: '#64748b' }}>Hint: {q.hint}</p>
       )}
       <div className="flex gap-3">
         <input
@@ -70,13 +99,13 @@ function FillQuestion({ q, onAnswer, answered }) {
           onKeyDown={(e) => e.key === 'Enter' && !submitted && check()}
           disabled={submitted}
           placeholder="Type your answer..."
-          className={`flex-1 px-4 py-3 rounded-xl border-2 font-mono text-sm transition-colors
-            ${submitted
-              ? correct
-                ? 'border-mgreen-500 bg-green-50 text-green-800'
-                : 'border-mred-500 bg-red-50 text-red-800'
-              : 'border-slate-200 focus:border-mblue-400 focus:outline-none'
-            }`}
+          className="flex-1 px-4 py-3 rounded-xl font-mono text-sm transition-all outline-none"
+          style={submitted
+            ? correct
+              ? { background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.5)', color: '#6ee7b7' }
+              : { background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.5)', color: '#fca5a5' }
+            : { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: '#e2e8f0' }
+          }
         />
         {!submitted && (
           <button onClick={check} className="btn-primary text-sm">
@@ -85,8 +114,8 @@ function FillQuestion({ q, onAnswer, answered }) {
         )}
       </div>
       {submitted && !correct && (
-        <p className="text-sm text-mred-500">
-          Correct answer: <span className="font-mono font-bold">{q.answer}</span>
+        <p className="text-sm" style={{ color: '#f87171' }}>
+          Correct answer: <span className="font-mono font-bold" style={{ color: '#fca5a5' }}>{q.answer}</span>
         </p>
       )}
     </div>
@@ -94,9 +123,30 @@ function FillQuestion({ q, onAnswer, answered }) {
 }
 
 const LEVEL_THEME = {
-  1: { header: 'bg-navy-700',    accent: 'text-mcyan-400',  label: 'Level 1 · Foundations' },
-  2: { header: 'bg-slate-800',   accent: 'text-amber-400',  label: 'Level 2 · Applied' },
-  3: { header: 'bg-[#0d0d14]',   accent: 'text-orange-400', label: 'Level 3 · Graduate' },
+  1: {
+    headerBg: 'linear-gradient(135deg, rgba(6,14,26,0.95), rgba(15,30,55,0.95))',
+    border: 'rgba(6,182,212,0.3)',
+    accent: '#22d3ee',
+    glow: 'rgba(6,182,212,0.2)',
+    label: 'Level 1 · Foundations',
+    badge: 'rgba(6,182,212,0.15)',
+  },
+  2: {
+    headerBg: 'linear-gradient(135deg, rgba(6,14,26,0.95), rgba(30,20,50,0.95))',
+    border: 'rgba(245,158,11,0.3)',
+    accent: '#fbbf24',
+    glow: 'rgba(245,158,11,0.2)',
+    label: 'Level 2 · Applied',
+    badge: 'rgba(245,158,11,0.15)',
+  },
+  3: {
+    headerBg: 'linear-gradient(135deg, rgba(6,14,26,0.95), rgba(40,10,10,0.95))',
+    border: 'rgba(239,68,68,0.3)',
+    accent: '#f87171',
+    glow: 'rgba(239,68,68,0.2)',
+    label: 'Level 3 · Graduate',
+    badge: 'rgba(239,68,68,0.15)',
+  },
 }
 
 const ATTEMPT_KEY = (chapterId, level) => `quiz_attempts_${chapterId}_l${level}`
@@ -108,7 +158,6 @@ function incAttempt(chapterId, level) {
   try { localStorage.setItem(ATTEMPT_KEY(chapterId, level), String(getAttempt(chapterId, level) + 1)) } catch {}
 }
 
-// Seeded PRNG (mulberry32) so shuffle is deterministic per attempt but different each time
 function seededRng(seed) {
   return function() {
     seed |= 0; seed = seed + 0x6D2B79F5 | 0
@@ -127,7 +176,6 @@ function shuffle(arr, rng) {
   return a
 }
 
-// Shuffle answer options and update correct answer index
 function shuffleOptions(q, rng) {
   if (q.type !== 'mcq') return q
   const indices = q.options.map((_, i) => i)
@@ -139,13 +187,10 @@ function shuffleOptions(q, rng) {
   }
 }
 
-// On attempt >= 2, flip ~30% of MCQ questions to "which is INCORRECT?"
-// On attempt >= 3, flip ~50%
 function maybeFlip(q, rng, attempt) {
   if (q.type !== 'mcq' || q.options.length < 3) return q
   const threshold = attempt >= 3 ? 0.5 : attempt >= 2 ? 0.3 : 0
   if (rng() > threshold) return q
-  // Pick a wrong option to be the new "correct" answer for the flipped question
   const wrongIndices = q.options.map((_, i) => i).filter(i => i !== q.answer)
   const newAnswer = wrongIndices[Math.floor(rng() * wrongIndices.length)]
   return {
@@ -225,14 +270,14 @@ export default function Quiz({ chapterId, questions, level = 1 }) {
           className="text-center py-8 px-4"
         >
           <div className="text-6xl mb-4">{passed ? '🎉' : '😅'}</div>
-          <h3 className="text-2xl font-bold mb-2">
+          <h3 className="text-2xl font-bold mb-2 text-white">
             {passed ? 'Nailed it!' : 'Not quite yet...'}
           </h3>
-          <p className="text-slate-500 mb-2">
-            You got <span className="font-bold text-mblue-600">{score}/{total}</span> correct ({pct}%)
+          <p className="text-slate-400 mb-2">
+            You got <span className="font-bold" style={{ color: theme.accent }}>{score}/{total}</span> correct ({pct}%)
           </p>
           {attempt > 0 && (
-            <p className="text-xs text-slate-400 mb-4">
+            <p className="text-xs text-slate-600 mb-4">
               Attempt {attempt + 1} — questions were {attempt >= 2 ? 'shuffled + ~50% adversarial (Which is INCORRECT?)' : 'shuffled in a new order'}
             </p>
           )}
@@ -255,27 +300,41 @@ export default function Quiz({ chapterId, questions, level = 1 }) {
   }
 
   return (
-    <div className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden my-8">
+    <div
+      className="rounded-2xl overflow-hidden my-8"
+      style={{
+        border: `1px solid ${theme.border}`,
+        boxShadow: `0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px ${theme.border}`,
+        background: 'rgba(6,14,26,0.7)',
+        backdropFilter: 'blur(12px)',
+      }}
+    >
       {/* Header */}
-      <div className={`${theme.header} px-6 py-4 flex items-center justify-between`}>
+      <div
+        className="px-6 py-4 flex items-center justify-between"
+        style={{ background: theme.headerBg, borderBottom: `1px solid ${theme.border}` }}
+      >
         <div className="flex items-center gap-2">
-          <HelpCircle size={20} className={theme.accent} />
+          <HelpCircle size={20} style={{ color: theme.accent }} />
           <div>
             <span className="text-white font-semibold text-sm">{theme.label}</span>
             {attempt > 0 && (
-              <span className={`ml-2 text-xs px-1.5 py-0.5 rounded font-bold ${theme.accent} bg-white/10`}>
+              <span
+                className="ml-2 text-xs px-1.5 py-0.5 rounded font-bold"
+                style={{ color: theme.accent, background: theme.badge }}
+              >
                 Attempt {attempt + 1}{attempt >= 2 ? ' · Adversarial' : attempt >= 1 ? ' · Shuffled' : ''}
               </span>
             )}
           </div>
         </div>
-        <span className="text-slate-400 text-sm">
+        <span className="text-slate-500 text-sm font-mono">
           {current + 1} / {activeQuestions.length}
         </span>
       </div>
 
       {/* Progress bar */}
-      <div className="h-1 bg-slate-100">
+      <div className="h-1" style={{ background: 'rgba(255,255,255,0.04)' }}>
         <div
           className="progress-bar"
           style={{ width: `${((current + (answered ? 1 : 0)) / activeQuestions.length) * 100}%` }}
@@ -293,23 +352,29 @@ export default function Quiz({ chapterId, questions, level = 1 }) {
             transition={{ duration: 0.25 }}
           >
             {q.reference && (
-              <div className="bg-slate-900 border border-orange-900/50 rounded-xl p-3 mb-3 flex gap-2 text-xs">
-                <span className="text-orange-400 font-bold flex-shrink-0">📖</span>
+              <div
+                className="rounded-xl p-3 mb-3 flex gap-2 text-xs"
+                style={{ background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.2)' }}
+              >
+                <span className="flex-shrink-0" style={{ color: '#fbbf24' }}>📖</span>
                 <div>
-                  <span className="text-orange-300 font-semibold">{q.reference.book}</span>
-                  <span className="text-slate-400 mx-1">·</span>
-                  <span className="text-slate-300">{q.reference.chapter}</span>
-                  {q.reference.page && <span className="text-slate-500">, p. {q.reference.page}</span>}
+                  <span className="font-semibold" style={{ color: '#fcd34d' }}>{q.reference.book}</span>
+                  <span className="text-slate-500 mx-1">·</span>
+                  <span className="text-slate-400">{q.reference.chapter}</span>
+                  {q.reference.page && <span className="text-slate-600">, p. {q.reference.page}</span>}
                 </div>
               </div>
             )}
             {q.ai_application && (
-              <div className="bg-purple-950/40 border border-purple-700/30 rounded-xl p-3 mb-3 flex gap-2 text-xs">
-                <span className="text-purple-400 flex-shrink-0">🤖</span>
-                <div className="text-purple-200">{q.ai_application}</div>
+              <div
+                className="rounded-xl p-3 mb-3 flex gap-2 text-xs"
+                style={{ background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.25)' }}
+              >
+                <span className="flex-shrink-0" style={{ color: '#a78bfa' }}>🤖</span>
+                <div style={{ color: '#c4b5fd' }}>{q.ai_application}</div>
               </div>
             )}
-            <p className="font-semibold text-slate-800 leading-relaxed whitespace-pre-line">
+            <p className="font-semibold text-white leading-relaxed whitespace-pre-line">
               {q.question}
             </p>
 
@@ -329,29 +394,30 @@ export default function Quiz({ chapterId, questions, level = 1 }) {
                   exit={{ opacity: 0, height: 0 }}
                   className="mt-5"
                 >
-                  <div className={`rounded-xl p-4 flex gap-3 ${
-                    answers[q.id]
-                      ? 'bg-green-50 border border-green-200'
-                      : 'bg-red-50 border border-red-200'
-                  }`}>
+                  <div
+                    className="rounded-xl p-4 flex gap-3"
+                    style={answers[q.id]
+                      ? { background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.3)', boxShadow: '0 0 16px rgba(16,185,129,0.1)' }
+                      : { background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.3)', boxShadow: '0 0 16px rgba(239,68,68,0.1)' }
+                    }
+                  >
                     {answers[q.id]
-                      ? <CheckCircle2 size={20} className="text-mgreen-500 flex-shrink-0 mt-0.5" />
-                      : <XCircle size={20} className="text-mred-500 flex-shrink-0 mt-0.5" />
+                      ? <CheckCircle2 size={20} className="flex-shrink-0 mt-0.5" style={{ color: '#34d399' }} />
+                      : <XCircle size={20} className="flex-shrink-0 mt-0.5" style={{ color: '#f87171' }} />
                     }
                     <div className="min-w-0">
-                      <p className={`font-semibold text-sm mb-1 ${answers[q.id] ? 'text-green-800' : 'text-red-800'}`}>
+                      <p className="font-semibold text-sm mb-1" style={{ color: answers[q.id] ? '#6ee7b7' : '#fca5a5' }}>
                         {answers[q.id] ? '✅ Correct!' : '❌ Not quite...'}
                       </p>
-                      <p className="text-sm text-slate-700 leading-relaxed">{q.explanation}</p>
+                      <p className="text-sm leading-relaxed text-slate-300">{q.explanation}</p>
 
-                      {/* Key points — shown for wrong answers */}
                       {!answers[q.id] && q.keyPoints && q.keyPoints.length > 0 && (
-                        <div className="mt-3 border-t border-red-200 pt-3">
-                          <p className="text-xs font-bold uppercase tracking-widest text-red-600 mb-2">Key Points to Remember</p>
+                        <div className="mt-3 pt-3" style={{ borderTop: '1px solid rgba(239,68,68,0.2)' }}>
+                          <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#f87171' }}>Key Points to Remember</p>
                           <ul className="space-y-1">
                             {q.keyPoints.map((pt, idx) => (
-                              <li key={idx} className="flex items-start gap-2 text-xs text-slate-700">
-                                <span className="text-red-400 font-bold flex-shrink-0 mt-0.5">→</span>
+                              <li key={idx} className="flex items-start gap-2 text-xs text-slate-400">
+                                <span className="font-bold flex-shrink-0 mt-0.5" style={{ color: '#f87171' }}>→</span>
                                 {pt}
                               </li>
                             ))}
@@ -361,7 +427,7 @@ export default function Quiz({ chapterId, questions, level = 1 }) {
                     </div>
                   </div>
 
-                  {/* Dig Deeper — always shown after answering */}
+                  {/* Dig Deeper */}
                   {(() => {
                     const chapterResources = (q.resources || DEEP_DIVE[chapterId]?.[`level${level}`] || []).slice(0, 3)
                     const refEntry = q.reference
@@ -371,25 +437,37 @@ export default function Quiz({ chapterId, questions, level = 1 }) {
                     if (drillResources.length === 0) return null
                     const correct = answers[q.id]
                     return (
-                      <div className={`mt-3 rounded-xl overflow-hidden border ${correct ? 'border-slate-200' : 'border-orange-200'}`}>
-                        <div className={`px-3 py-2 border-b ${correct ? 'bg-slate-50 border-slate-200' : 'bg-orange-50 border-orange-200'}`}>
-                          <span className={`text-xs font-bold uppercase tracking-widest ${correct ? 'text-slate-500' : 'text-orange-600'}`}>
+                      <div
+                        className="mt-3 rounded-xl overflow-hidden"
+                        style={{ border: `1px solid ${correct ? 'rgba(255,255,255,0.08)' : 'rgba(245,158,11,0.25)'}` }}
+                      >
+                        <div
+                          className="px-3 py-2"
+                          style={{
+                            background: correct ? 'rgba(255,255,255,0.03)' : 'rgba(245,158,11,0.07)',
+                            borderBottom: `1px solid ${correct ? 'rgba(255,255,255,0.06)' : 'rgba(245,158,11,0.2)'}`,
+                          }}
+                        >
+                          <span className="text-xs font-bold uppercase tracking-widest" style={{ color: correct ? '#64748b' : '#fbbf24' }}>
                             {correct ? '📚 Dig Deeper' : '🎯 Drill It — Review These'}
                           </span>
                         </div>
-                        <div className={`divide-y ${correct ? 'divide-slate-100' : 'divide-orange-100'}`}>
+                        <div>
                           {drillResources.map((r, ri) => (
-                            <div key={ri}>
+                            <div key={ri} style={{ borderTop: ri > 0 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}>
                               {r.type === 'youtube' && (
                                 <a
                                   href={r.searchUrl}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="flex items-center gap-3 px-3 py-2.5 hover:bg-red-50 transition-colors group"
+                                  className="flex items-center gap-3 px-3 py-2.5 transition-colors group"
+                                  style={{ background: 'transparent' }}
+                                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(239,68,68,0.08)'}
+                                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                 >
-                                  <Youtube size={15} className="text-red-500 flex-shrink-0" />
-                                  <span className="text-xs text-slate-700 flex-1 group-hover:text-red-700 leading-snug">{r.title}</span>
-                                  <ExternalLink size={11} className="text-slate-300 flex-shrink-0" />
+                                  <Youtube size={15} className="flex-shrink-0" style={{ color: '#ef4444' }} />
+                                  <span className="text-xs text-slate-400 flex-1 leading-snug group-hover:text-slate-200 transition-colors">{r.title}</span>
+                                  <ExternalLink size={11} className="flex-shrink-0 text-slate-600" />
                                 </a>
                               )}
                               {r.type === 'doc' && (
@@ -397,19 +475,25 @@ export default function Quiz({ chapterId, questions, level = 1 }) {
                                   href={r.url}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="flex items-center gap-3 px-3 py-2.5 hover:bg-blue-50 transition-colors group"
+                                  className="flex items-center gap-3 px-3 py-2.5 transition-colors group"
+                                  style={{ background: 'transparent' }}
+                                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(59,130,246,0.08)'}
+                                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                 >
-                                  <ExternalLink size={15} className="text-blue-500 flex-shrink-0" />
-                                  <span className="text-xs text-slate-700 flex-1 group-hover:text-blue-700 leading-snug">{r.title}</span>
-                                  <ExternalLink size={11} className="text-slate-300 flex-shrink-0" />
+                                  <ExternalLink size={15} className="flex-shrink-0" style={{ color: '#60a5fa' }} />
+                                  <span className="text-xs text-slate-400 flex-1 leading-snug group-hover:text-slate-200 transition-colors">{r.title}</span>
+                                  <ExternalLink size={11} className="flex-shrink-0 text-slate-600" />
                                 </a>
                               )}
                               {r.type === 'book' && (
-                                <div className="flex items-start gap-3 px-3 py-2.5 bg-amber-50/60">
-                                  <BookOpen size={15} className="text-amber-600 flex-shrink-0 mt-0.5" />
+                                <div
+                                  className="flex items-start gap-3 px-3 py-2.5"
+                                  style={{ background: 'rgba(245,158,11,0.05)' }}
+                                >
+                                  <BookOpen size={15} className="flex-shrink-0 mt-0.5" style={{ color: '#fbbf24' }} />
                                   <div className="text-xs leading-snug">
-                                    <span className="font-bold text-amber-800">{r.title}</span>
-                                    {r.author && <span className="text-amber-600"> — {r.author}</span>}
+                                    <span className="font-bold" style={{ color: '#fcd34d' }}>{r.title}</span>
+                                    {r.author && <span style={{ color: '#f59e0b' }}> — {r.author}</span>}
                                     <div className="text-slate-500 mt-0.5">{r.chapter}{r.page ? `, p. ${r.page}` : ''}</div>
                                   </div>
                                 </div>
@@ -419,11 +503,14 @@ export default function Quiz({ chapterId, questions, level = 1 }) {
                                   href={r.url}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="flex items-center gap-3 px-3 py-2.5 hover:bg-green-50 transition-colors group"
+                                  className="flex items-center gap-3 px-3 py-2.5 transition-colors group"
+                                  style={{ background: 'transparent' }}
+                                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(16,185,129,0.08)'}
+                                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                 >
-                                  <Cpu size={15} className="text-green-500 flex-shrink-0" />
-                                  <span className="text-xs text-slate-700 flex-1 group-hover:text-green-700 leading-snug">{r.title}</span>
-                                  <ExternalLink size={11} className="text-slate-300 flex-shrink-0" />
+                                  <Cpu size={15} className="flex-shrink-0" style={{ color: '#34d399' }} />
+                                  <span className="text-xs text-slate-400 flex-1 leading-snug group-hover:text-slate-200 transition-colors">{r.title}</span>
+                                  <ExternalLink size={11} className="flex-shrink-0 text-slate-600" />
                                 </a>
                               )}
                             </div>

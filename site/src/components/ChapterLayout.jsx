@@ -5,19 +5,6 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { CHAPTERS } from '../data/chapters'
 import { useProgress } from '../hooks/useProgress'
 
-const CHAPTER_PATHS = {
-  intro:       '/',
-  loop:        '/loop',
-  pid:         '/pid',
-  tuning:      '/tuning',
-  process:     '/process',
-  cascade:     '/cascade',
-  digital:     '/digital',
-  plc:         '/plc',
-  troubleshoot:'/troubleshoot',
-  lab:         '/lab',
-}
-
 export default function ChapterLayout({ chapterId, title, emoji, children, prev, next }) {
   const { markChapterVisited } = useProgress()
 
@@ -38,42 +25,48 @@ export default function ChapterLayout({ chapterId, title, emoji, children, prev,
     >
       {/* Chapter header */}
       <div className="mb-8">
-        <div className="flex items-center gap-2 text-mblue-400 text-sm font-medium mb-2">
+        <div className="flex items-center gap-2 text-sm font-medium mb-3" style={{ color: 'rgba(96,165,250,0.7)' }}>
           <span>SCADA Training</span>
-          <span>›</span>
-          <span className="text-slate-400">{title}</span>
+          <span className="text-slate-600">›</span>
+          <span className="text-slate-500">{title}</span>
         </div>
         <div className="flex items-center gap-4">
-          <span className="text-5xl">{emoji}</span>
-          <h1 className="text-3xl font-black text-navy-700 leading-tight">{title}</h1>
+          <span className="text-5xl drop-shadow-lg">{emoji}</span>
+          <h1 className="text-3xl font-black text-white leading-tight tracking-tight">{title}</h1>
         </div>
-        <div className="mt-4 h-1 bg-gradient-to-r from-mblue-600 via-mcyan-400 to-transparent rounded-full" />
+        <div className="mt-4 h-px" style={{ background: 'linear-gradient(90deg, rgba(59,130,246,0.6), rgba(139,92,246,0.4), transparent)' }} />
       </div>
 
       {/* Content */}
-      <div className="space-y-6 text-slate-700 leading-relaxed">
+      <div className="space-y-6 text-slate-300 leading-relaxed">
         {children}
       </div>
 
       {/* Chapter navigation */}
-      <div className="flex justify-between items-center mt-12 pt-6 border-t border-slate-100">
+      <div className="flex justify-between items-center mt-12 pt-6" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         {prevChapter ? (
-          <Link to={CHAPTER_PATHS[prevChapter.id]} className="flex items-center gap-2 text-sm text-slate-500 hover:text-mblue-600 transition-colors">
-            <ChevronLeft size={18} />
+          <Link
+            to={prevChapter.path}
+            className="flex items-center gap-2 text-sm text-slate-500 hover:text-blue-400 transition-colors group"
+          >
+            <ChevronLeft size={18} className="group-hover:-translate-x-0.5 transition-transform" />
             <div>
-              <div className="text-xs text-slate-400">Previous</div>
-              <div className="font-medium">{prevChapter.title}</div>
+              <div className="text-xs text-slate-600">Previous</div>
+              <div className="font-medium">{prevChapter.label}</div>
             </div>
           </Link>
         ) : <div />}
 
         {nextChapter ? (
-          <Link to={CHAPTER_PATHS[nextChapter.id]} className="flex items-center gap-2 text-sm text-slate-500 hover:text-mblue-600 transition-colors text-right">
+          <Link
+            to={nextChapter.path}
+            className="flex items-center gap-2 text-sm text-slate-500 hover:text-blue-400 transition-colors text-right group"
+          >
             <div>
-              <div className="text-xs text-slate-400">Next Up</div>
-              <div className="font-medium">{nextChapter.title}</div>
+              <div className="text-xs text-slate-600">Next Up</div>
+              <div className="font-medium">{nextChapter.label}</div>
             </div>
-            <ChevronRight size={18} />
+            <ChevronRight size={18} className="group-hover:translate-x-0.5 transition-transform" />
           </Link>
         ) : <div />}
       </div>

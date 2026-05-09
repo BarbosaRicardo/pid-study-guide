@@ -1,21 +1,8 @@
 import React, { useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import { CheckCircle2, Circle, Menu, X, Activity } from 'lucide-react'
+import { Menu, X, Activity, BookOpen } from 'lucide-react'
 import { CHAPTERS } from '../data/chapters'
 import { useProgress } from '../hooks/useProgress'
-
-const CHAPTER_PATHS = {
-  intro:       '/',
-  loop:        '/loop',
-  pid:         '/pid',
-  tuning:      '/tuning',
-  process:     '/process',
-  cascade:     '/cascade',
-  digital:     '/digital',
-  plc:         '/plc',
-  troubleshoot:'/troubleshoot',
-  lab:         '/lab',
-}
 
 export default function Sidebar() {
   const [open, setOpen] = useState(false)
@@ -25,22 +12,18 @@ export default function Sidebar() {
 
   const NavItem = ({ ch }) => {
     const status = getChapterStatus(ch.id)
-    const path = CHAPTER_PATHS[ch.id] || '/'
-
     return (
       <NavLink
-        to={path}
+        to={ch.path}
         onClick={() => setOpen(false)}
-        className={({ isActive }) =>
-          `chapter-nav-item ${isActive ? 'active' : ''}`
-        }
+        className={({ isActive }) => `chapter-nav-item ${isActive ? 'active' : ''}`}
       >
         <span className="text-lg leading-none">{ch.emoji}</span>
-        <span className="flex-1 truncate">{ch.title}</span>
+        <span className="flex-1 truncate">{ch.label}</span>
         <div className="flex gap-0.5 flex-shrink-0">
-          <div className={`w-2 h-2 rounded-full ${status.level1Passed ? 'bg-mgreen-400' : status.visited ? 'bg-amber-400' : 'bg-slate-200'}`} />
-          <div className={`w-2 h-2 rounded-full ${status.level2Passed ? 'bg-amber-500' : 'bg-slate-200'}`} />
-          <div className={`w-2 h-2 rounded-full ${status.level3Passed ? 'bg-orange-500' : 'bg-slate-200'}`} />
+          <div className={`w-1.5 h-1.5 rounded-full transition-all ${status.level1Passed ? 'bg-emerald-400 shadow-glow-green' : status.visited ? 'bg-amber-400' : 'bg-white/10'}`} />
+          <div className={`w-1.5 h-1.5 rounded-full transition-all ${status.level2Passed ? 'bg-amber-400' : 'bg-white/10'}`} />
+          <div className={`w-1.5 h-1.5 rounded-full transition-all ${status.level3Passed ? 'bg-rose-400' : 'bg-white/10'}`} />
         </div>
       </NavLink>
     )
@@ -48,60 +31,65 @@ export default function Sidebar() {
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
+
       {/* Logo */}
-      <div className="p-5 border-b border-slate-100">
+      <div className="p-5" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-mblue-600 rounded-xl flex items-center justify-center">
-            <Activity size={20} className="text-white" />
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+            style={{ background: 'linear-gradient(135deg, #f43f5e, #e11d48)', boxShadow: '0 0 20px rgba(244,63,94,0.5)' }}>
+            <Activity size={18} className="text-white" />
           </div>
           <div>
-            <div className="font-bold text-navy-700 leading-tight">PID Control</div>
-            <div className="text-xs text-slate-400 font-medium">Study Guide</div>
+            <div className="font-black text-white text-sm tracking-wide leading-tight">PID Control</div>
+            <div className="text-xs font-medium" style={{ color: '#60a5fa' }}>Study Guide</div>
           </div>
         </div>
 
         {/* Progress */}
         <div className="mt-4">
-          <div className="flex justify-between text-xs text-slate-500 mb-1">
-            <span>Overall Progress</span>
-            <span className="font-semibold text-mblue-600">{prog.pct}%</span>
+          <div className="flex justify-between text-xs mb-1.5">
+            <span className="text-slate-500">Overall Progress</span>
+            <span className="font-bold" style={{ color: '#60a5fa' }}>{prog.pct}%</span>
           </div>
-          <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-            <div
-              className="progress-bar"
-              style={{ width: `${prog.pct}%` }}
-            />
+          <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
+            <div className="progress-bar h-full" style={{ width: `${prog.pct}%` }} />
           </div>
-          <div className="mt-1 flex gap-2 text-xs">
-            <span className="text-mgreen-400">L1: {prog.l1 || 0}</span>
-            <span className="text-amber-400">L2: {prog.l2 || 0}</span>
-            <span className="text-orange-400">L3: {prog.l3 || 0}</span>
-            <span className="text-slate-400 ml-auto">{prog.visited} read</span>
+          <div className="mt-2 flex gap-3 text-xs">
+            <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />L1: {prog.l1 || 0}</span>
+            <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block" />L2: {prog.l2 || 0}</span>
+            <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-rose-400 inline-block" />L3: {prog.l3 || 0}</span>
+            <span className="ml-auto text-slate-600">{prog.visited} read</span>
           </div>
         </div>
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 overflow-y-auto p-3 space-y-1">
+      <nav className="flex-1 overflow-y-auto p-3 space-y-0.5">
         {CHAPTERS.map((ch) => (
           <NavItem key={ch.id} ch={ch} />
         ))}
+
       </nav>
 
       {/* Footer */}
-      <div className="p-4 border-t border-slate-100 space-y-3">
+      <div className="p-4 space-y-2" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
         <a
           href={`${import.meta.env.BASE_URL}study_guide.pdf`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-xl bg-mblue-600 hover:bg-mblue-700 text-white text-xs font-bold transition-colors"
+          className="flex items-center justify-center gap-2 w-full px-3 py-2.5 rounded-xl text-xs font-bold transition-all hover:scale-105"
+          style={{
+            background: 'linear-gradient(135deg, rgba(59,130,246,0.2), rgba(139,92,246,0.2))',
+            border: '1px solid rgba(59,130,246,0.35)',
+            color: '#93c5fd',
+            boxShadow: '0 0 12px rgba(59,130,246,0.15)',
+          }}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+          <BookOpen size={13} />
           Download Study Guide PDF
         </a>
-        <p className="text-xs text-slate-400 text-center leading-relaxed">
-          SCADA Automation Engineering<br />
-          <span className="text-mblue-400">PID Control · May 2026</span>
+        <p className="text-xs text-slate-600 text-center">
+          SCADA Automation Engineering · PID Control · May 2026
         </p>
       </div>
     </div>
@@ -109,33 +97,23 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Mobile toggle */}
       <button
         onClick={() => setOpen(!open)}
-        className="lg:hidden fixed top-4 left-4 z-50 w-10 h-10 bg-mblue-600 text-white rounded-xl flex items-center justify-center shadow-lg"
+        className="lg:hidden fixed top-4 left-4 z-50 w-10 h-10 text-white rounded-xl flex items-center justify-center shadow-lg"
+        style={{ background: 'linear-gradient(135deg, #f43f5e, #e11d48)' }}
       >
         {open ? <X size={20} /> : <Menu size={20} />}
       </button>
 
-      {/* Mobile overlay */}
       {open && (
-        <div
-          className="lg:hidden fixed inset-0 bg-black/40 z-40 backdrop-blur-sm"
-          onClick={() => setOpen(false)}
-        />
+        <div className="lg:hidden fixed inset-0 bg-black/60 z-40 backdrop-blur-sm" onClick={() => setOpen(false)} />
       )}
 
-      {/* Desktop sidebar */}
-      <aside className="hidden lg:flex flex-col w-64 flex-shrink-0 bg-white border-r border-slate-100 h-screen sticky top-0 overflow-hidden">
+      <aside className="hidden lg:flex flex-col w-64 flex-shrink-0 h-screen sticky top-0 overflow-hidden glass">
         <SidebarContent />
       </aside>
 
-      {/* Mobile sidebar */}
-      <aside className={`
-        lg:hidden fixed left-0 top-0 h-full w-72 bg-white z-50 shadow-2xl
-        transform transition-transform duration-300
-        ${open ? 'translate-x-0' : '-translate-x-full'}
-      `}>
+      <aside className={`lg:hidden fixed left-0 top-0 h-full w-72 z-50 shadow-2xl glass transform transition-transform duration-300 ${open ? 'translate-x-0' : '-translate-x-full'}`}>
         <SidebarContent />
       </aside>
     </>
