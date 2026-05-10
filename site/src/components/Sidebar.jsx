@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import { Menu, X, Zap, BookOpen, BarChart2 } from 'lucide-react'
+import { Menu, X, Zap, BookOpen, BarChart2, Home } from 'lucide-react'
 import { CHAPTERS } from '../data/chapters'
 import { useProgress } from '../hooks/useProgress'
 import QuizReport from './QuizReport'
@@ -75,6 +75,18 @@ export default function Sidebar() {
 
       {/* Footer */}
       <div className="p-4 space-y-2" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+        <a
+          href="https://barbosaricardo.github.io/scada-hub/"
+          className="flex items-center justify-center gap-2 w-full px-3 py-2.5 rounded-xl text-xs font-bold transition-all hover:scale-105"
+          style={{
+            background: 'rgba(139,92,246,0.1)',
+            border: '1px solid rgba(139,92,246,0.25)',
+            color: '#c4b5fd',
+          }}
+        >
+          <Home size={13} />
+          SCADA Hub
+        </a>
         <button
           onClick={() => { setOpen(false); setReportOpen(true) }}
           className="flex items-center justify-center gap-2 w-full px-3 py-2.5 rounded-xl text-xs font-bold transition-all hover:scale-105"
