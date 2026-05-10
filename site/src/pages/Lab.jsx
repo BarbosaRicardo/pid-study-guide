@@ -4,8 +4,10 @@ import Callout from '../components/Callout'
 import FunFact from '../components/FunFact'
 import GifCard from '../components/GifCard'
 import Quiz from '../components/Quiz'
+import CodeLab from '../components/CodeLab'
 import { QUIZZES } from '../data/quizzes'
 import { ANALOGIES } from '../data/chapters'
+import { PID_LAB } from '../data/labExercises'
 
 export default function Lab() {
   const analogy = ANALOGIES.lab
@@ -17,6 +19,17 @@ export default function Lab() {
       emoji="🧪"
       prev="troubleshoot"
     >
+      <section>
+        <h2 className="text-xl font-bold text-white mb-2">PID Code Lab</h2>
+        <p className="text-slate-400">
+          Six exercises across three levels: implement a discrete PID controller, apply Ziegler-Nichols
+          and Lambda tuning formulas, simulate FOPDT process response, detect loop oscillation,
+          and build a cascade control system. These are the exact algorithms inside DCS and SCADA controllers.
+        </p>
+      </section>
+
+      <CodeLab exercises={PID_LAB} />
+
       <p className="text-lg text-slate-600 leading-relaxed">
         The fastest way to internalize PID tuning is to do it — repeatedly, on different process types, until the patterns become intuitive. You can simulate real process dynamics on a laptop for free. No plant access required. No risk of upsetting a live process. The only cost is the hour it takes to set it up.
       </p>
