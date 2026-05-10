@@ -1,24 +1,37 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { GIFS } from '../data/gifs'
 
-// Supports Giphy IDs (default) or full URLs
-function buildUrl(id) {
-  if (!id) return null
+// Tenor demo API key (public / rate-limited for testing)
+const TENOR_KEY = 'LIVDSRZULELA'
+
+function buildGiphyUrl(id) {
   if (id.startsWith('http')) return id
-  // Use Tenor embed if id starts with 'tenor:'
-  if (id.startsWith('tenor:')) {
-    return `https://tenor.com/embed/${id.slice(6)}`
-  }
-  // Giphy direct media URL — no iframe, proper onError support
   return `https://media1.giphy.com/media/${id}/giphy.gif`
 }
 
 export default function GifCard({ gifKey, caption, side = 'right', className = '' }) {
+  const [url, setUrl] = useState(null)
   const [hidden, setHidden] = useState(false)
   const id = GIFS[gifKey]
-  const url = buildUrl(id)
 
-  if (!url || hidden) return null
+  useEffect(() => {
+    if (!id) { setHidden(true); return }
+    if (id.startsWith('tenor:')) {
+      const tenorId = id.slice(6)
+      fetch(`https://tenor.googleapis.com/v2/posts?ids=${tenorId}&key=${TENOR_KEY}&media_filter=gif`)
+        .then(r => r.json())
+        .then(data => {
+          const gifUrl = data.results?.[0]?.media_formats?.gif?.url
+          if (gifUrl) setUrl(gifUrl)
+          else setHidden(true)
+        })
+        .catch(() => setHidden(true))
+    } else {
+      setUrl(buildGiphyUrl(id))
+    }
+  }, [id])
+
+  if (!id || hidden || !url) return null
 
   return (
     <div className={`flex ${side === 'left' ? 'justify-start' : 'justify-end'} my-4 ${className}`}>
