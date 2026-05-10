@@ -1,11 +1,24 @@
 import React, { useState } from 'react'
 import { GIFS } from '../data/gifs'
 
-export default function GifCard({ gifKey, caption, side = 'right', className = '' }) {
-  const [error, setError] = useState(false)
-  const id = GIFS[gifKey]
+// Supports Giphy IDs (default) or full URLs
+function buildUrl(id) {
+  if (!id) return null
+  if (id.startsWith('http')) return id
+  // Use Tenor embed if id starts with 'tenor:'
+  if (id.startsWith('tenor:')) {
+    return `https://tenor.com/embed/${id.slice(6)}`
+  }
+  // Giphy direct media URL — no iframe, proper onError support
+  return `https://media1.giphy.com/media/${id}/giphy.gif`
+}
 
-  if (!id || error) return null
+export default function GifCard({ gifKey, caption, side = 'right', className = '' }) {
+  const [hidden, setHidden] = useState(false)
+  const id = GIFS[gifKey]
+  const url = buildUrl(id)
+
+  if (!url || hidden) return null
 
   return (
     <div className={`flex ${side === 'left' ? 'justify-start' : 'justify-end'} my-4 ${className}`}>
@@ -21,15 +34,13 @@ export default function GifCard({ gifKey, caption, side = 'right', className = '
             boxShadow: '0 8px 24px rgba(0,0,0,0.5), 0 0 0 1px rgba(59,130,246,0.1)',
           }}
         >
-          <iframe
-            src={`https://giphy.com/embed/${id}`}
+          <img
+            src={url}
+            alt={caption || gifKey}
             width="200"
             height="150"
-            style={{ position: 'absolute', top: 0, left: 0, border: 'none' }}
-            frameBorder="0"
-            allowFullScreen
-            title={caption || gifKey}
-            onError={() => setError(true)}
+            style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+            onError={() => setHidden(true)}
           />
         </div>
         {caption && (

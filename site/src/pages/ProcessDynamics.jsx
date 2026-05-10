@@ -3,7 +3,7 @@ import ChapterLayout from '../components/ChapterLayout'
 import Callout from '../components/Callout'
 import FunFact from '../components/FunFact'
 import GifCard from '../components/GifCard'
-import Quiz from '../components/Quiz'
+import QuizLevels from '../components/QuizLevels'
 import ChapterExercise from '../components/ChapterExercise'
 import { QUIZZES } from '../data/quizzes'
 import { ANALOGIES } from '../data/chapters'
@@ -142,7 +142,7 @@ export default function ProcessDynamics() {
       </Callout>
 
       {QUIZZES.process && QUIZZES.process.length > 0 && (
-        <Quiz chapterId="process" questions={QUIZZES.process} level={1} />
+        <QuizLevels chapterId="process" />
       )}
       <ChapterExercise exercise={PID_CHAPTER_EXERCISES.process} />
     </ChapterLayout>

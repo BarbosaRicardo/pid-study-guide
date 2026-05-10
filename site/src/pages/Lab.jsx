@@ -3,7 +3,7 @@ import ChapterLayout from '../components/ChapterLayout'
 import Callout from '../components/Callout'
 import FunFact from '../components/FunFact'
 import GifCard from '../components/GifCard'
-import Quiz from '../components/Quiz'
+import QuizLevels from '../components/QuizLevels'
 import CodeLab from '../components/CodeLab'
 import { QUIZZES } from '../data/quizzes'
 import { ANALOGIES } from '../data/chapters'
@@ -228,7 +228,7 @@ plt.legend(); plt.grid(); plt.show()`}</pre>
       </section>
 
       {QUIZZES.lab && QUIZZES.lab.length > 0 && (
-        <Quiz chapterId="lab" questions={QUIZZES.lab} level={1} />
+        <QuizLevels chapterId="lab" />
       )}
     </ChapterLayout>
   )

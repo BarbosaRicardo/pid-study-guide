@@ -3,7 +3,7 @@ import ChapterLayout from '../components/ChapterLayout'
 import Callout from '../components/Callout'
 import FunFact from '../components/FunFact'
 import GifCard from '../components/GifCard'
-import Quiz from '../components/Quiz'
+import QuizLevels from '../components/QuizLevels'
 import ChapterExercise from '../components/ChapterExercise'
 import { QUIZZES } from '../data/quizzes'
 import { ANALOGIES } from '../data/chapters'
@@ -128,7 +128,7 @@ export default function CascadeControl() {
       </Callout>
 
       {QUIZZES.cascade && QUIZZES.cascade.length > 0 && (
-        <Quiz chapterId="cascade" questions={QUIZZES.cascade} level={1} />
+        <QuizLevels chapterId="cascade" />
       )}
       <ChapterExercise exercise={PID_CHAPTER_EXERCISES.cascade} />
     </ChapterLayout>

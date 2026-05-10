@@ -3,7 +3,7 @@ import ChapterLayout from '../components/ChapterLayout'
 import Callout from '../components/Callout'
 import FunFact from '../components/FunFact'
 import GifCard from '../components/GifCard'
-import Quiz from '../components/Quiz'
+import QuizLevels from '../components/QuizLevels'
 import ChapterExercise from '../components/ChapterExercise'
 import { QUIZZES } from '../data/quizzes'
 import { ANALOGIES } from '../data/chapters'
@@ -189,7 +189,7 @@ SP ──►[Σ]──► PID Controller ──► Valve ──► Process ─�
       </Callout>
 
       {QUIZZES.loop && QUIZZES.loop.length > 0 && (
-        <Quiz chapterId="loop" questions={QUIZZES.loop} level={1} />
+        <QuizLevels chapterId="loop" />
       )}
       <ChapterExercise exercise={PID_CHAPTER_EXERCISES.loop} />
     </ChapterLayout>

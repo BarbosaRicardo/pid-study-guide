@@ -3,7 +3,7 @@ import ChapterLayout from '../components/ChapterLayout'
 import Callout from '../components/Callout'
 import FunFact from '../components/FunFact'
 import GifCard from '../components/GifCard'
-import Quiz from '../components/Quiz'
+import QuizLevels from '../components/QuizLevels'
 import ChapterExercise from '../components/ChapterExercise'
 import { QUIZZES } from '../data/quizzes'
 import { ANALOGIES } from '../data/chapters'
@@ -195,7 +195,7 @@ export default function Tuning() {
       <FunFact index={1} />
 
       {QUIZZES.tuning && QUIZZES.tuning.length > 0 && (
-        <Quiz chapterId="tuning" questions={QUIZZES.tuning} level={1} />
+        <QuizLevels chapterId="tuning" />
       )}
       <ChapterExercise exercise={PID_CHAPTER_EXERCISES.tuning} />
     </ChapterLayout>

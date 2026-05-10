@@ -1,1326 +1,682 @@
 export const QUIZZES = {
-  intro: [
-    {
-      id: 'intro1',
-      type: 'mcq',
-      question: 'Which of the following is an example of an open-loop control system?',
-      options: ['Cruise control on a car', 'A household thermostat', 'A toaster with a timer', 'A level controller on a tank'],
-      answer: 2,
-      explanation: 'A toaster with a timer is open-loop — it runs for a fixed time regardless of whether your bread is incinerated or still cold. No feedback, no measurement, no mercy. Closed-loop systems like thermostats actually check the result and adjust accordingly.'
-    },
-    {
-      id: 'intro2',
-      type: 'mcq',
-      question: 'What is the primary advantage of a closed-loop control system over an open-loop system?',
-      options: [
-        'It is simpler to design',
-        'It uses less energy',
-        'It automatically compensates for disturbances using feedback',
-        'It never requires tuning'
-      ],
-      answer: 2,
-      explanation: 'Closed-loop control measures what actually happened and corrects for it. Disturbances — feed changes, ambient temperature swings, your operator bumping the valve — get corrected automatically. Open-loop just blindly executes and hopes for the best.'
-    },
-    {
-      id: 'intro3',
-      type: 'mcq',
-      question: 'In control terminology, the Setpoint (SP) refers to:',
-      options: [
-        'The current measured value of the process',
-        'The desired value the controller tries to maintain',
-        'The output signal sent to the valve',
-        'The error between measurement and output'
-      ],
-      answer: 1,
-      explanation: 'The Setpoint is the target — what you want. The Process Variable is what you have. The controller spends its entire existence trying to make those two numbers agree. It is the sisyphean task of automation.'
-    },
-    {
-      id: 'intro4',
-      type: 'fill',
-      question: 'The formula for control error is e = ___ − ___.',
-      answer: 'SP - PV',
-      hint: 'Desired value minus measured value',
-      explanation: 'Error = SP − PV. Positive error means the process is below setpoint; negative error means it is above. The controller acts to drive this error toward zero — which in practice means it oscillates around zero forever if you tune it poorly enough.'
-    },
-    {
-      id: 'intro5',
-      type: 'mcq',
-      question: 'Negative feedback in a control loop:',
-      options: [
-        'Amplifies deviations and causes instability',
-        'Reduces deviations and stabilizes the process',
-        'Has no effect on stability',
-        'Is used only in open-loop systems'
-      ],
-      answer: 1,
-      explanation: 'Negative feedback subtracts the measured value from the setpoint to get error, then drives the process back toward setpoint. It is the foundation of all stable control. Positive feedback does the opposite — it amplifies errors and produces the kind of runaway behavior that features in incident reports.'
-    },
-    {
-      id: 'intro6',
-      type: 'mcq',
-      question: 'The Controller Output (CO) is best described as:',
-      options: [
-        'The measured process variable',
-        'The desired setpoint value',
-        'The signal sent to the final control element (e.g., valve)',
-        'The difference between SP and PV'
-      ],
-      answer: 2,
-      explanation: 'The CO is what the controller tells the final control element to do — typically a 4–20 mA signal to a control valve or VFD. The PV tells you where the process is. The CO is what you do about it. Confusing these two is a rite of passage for new engineers.'
-    },
-    {
-      id: 'intro7',
-      type: 'mcq',
-      question: 'A cruise control system is a classic example of closed-loop control because:',
-      options: [
-        'It applies a fixed throttle regardless of road grade',
-        'It measures vehicle speed and adjusts throttle to maintain the set speed',
-        'It uses the driver\'s input directly to control speed',
-        'It only works on flat roads with no disturbances'
-      ],
-      answer: 1,
-      explanation: 'Cruise control measures actual speed (PV), compares it to the set speed (SP), and adjusts throttle (CO) continuously. Going uphill? It opens the throttle. Downhill? It backs off. No feedback = no hill compensation = you accelerating into a ditch.'
-    },
-    {
-      id: 'intro8',
-      type: 'mcq',
-      question: 'Which scenario demonstrates positive feedback — and why is it dangerous?',
-      options: [
-        'A thermostat that turns the heater off when temperature reaches setpoint',
-        'A level controller that opens the inlet valve when level rises — causing more rise',
-        'A flow controller that closes a valve when flow exceeds setpoint',
-        'A pressure controller that reduces compressor speed at high pressure'
-      ],
-      answer: 1,
-      explanation: 'Positive feedback amplifies the error instead of correcting it. A level controller that opens the inlet when level rises will fill the tank until it overflows. This is how minor deviations become catastrophic failures. Negative feedback is your friend. Positive feedback is the reason for process hazard analyses.'
-    },
-  ],
-
-  loop: [
-    {
-      id: 'loop1',
-      type: 'mcq',
-      question: 'In a feedback control loop, what is the correct order of signal flow?',
-      options: [
-        'CO → Process → PV → Controller → CO',
-        'PV → SP → Error → CO → Process',
-        'Measure PV → Compute error → Controller computes CO → CO drives MV → Affects process → New PV',
-        'SP → CO → Error → MV → PV'
-      ],
-      answer: 2,
-      explanation: 'The loop goes: measure PV, subtract from SP to get error, controller calculates CO, CO drives the final control element (MV), which changes the process, which produces a new PV. Round and round it goes. This is why it\'s called a loop.'
-    },
-    {
-      id: 'loop2',
-      type: 'fill',
-      question: 'The Manipulated Variable (MV) is the physical quantity the controller changes — for example, the ___ position on a control valve.',
-      answer: 'stem',
-      hint: 'The mechanical part that moves inside a valve',
-      explanation: 'The MV is what gets physically moved — valve stem position, pump speed, heater power. The Controller Output (CO) commands it. Don\'t confuse MV (the physical thing that moves) with CO (the signal that tells it to move). They are related but distinct, especially with positioners in the loop.'
-    },
-    {
-      id: 'loop3',
-      type: 'mcq',
-      question: 'A disturbance in a control loop is best defined as:',
-      options: [
-        'A change in the setpoint made by the operator',
-        'An uncontrolled input that affects the process variable',
-        'The derivative action of the PID controller',
-        'The steady-state offset caused by P-only control'
-      ],
-      answer: 1,
-      explanation: 'Disturbances are anything that upsets the process that the controller didn\'t cause and can\'t directly control. Feed temperature change, ambient conditions, upstream pressure variations — these are disturbances. The controller\'s job is to reject them. If it does it slowly, that\'s bad. If it overreacts, that\'s also bad.'
-    },
-    {
-      id: 'loop4',
-      type: 'mcq',
-      question: 'A setpoint change and a load disturbance are both upsets a controller must handle. What distinguishes them?',
-      options: [
-        'A setpoint change affects only the PV; a load disturbance affects only the CO',
-        'A setpoint change is operator-initiated at the SP; a load disturbance is an uncontrolled process input',
-        'Load disturbances always cause more oscillation than setpoint changes',
-        'They are functionally identical from the controller\'s perspective'
-      ],
-      answer: 1,
-      explanation: 'A setpoint change is intentional — the operator wants a new target. A load disturbance is uninvited — the process gets kicked by something external. Controllers often need different tuning philosophies depending on which type of upset dominates. Aggressive SP tracking can cause oscillation on load disturbances and vice versa.'
-    },
-    {
-      id: 'loop5',
-      type: 'mcq',
-      question: 'In a standard feedback loop, where is the error signal computed?',
-      options: [
-        'At the transmitter',
-        'At the final control element',
-        'At the summing junction (comparator) in the controller',
-        'In the process itself'
-      ],
-      answer: 2,
-      explanation: 'The error is computed at the summing junction — the point where SP and PV are compared (SP − PV = e). In a physical controller or PLC, this calculation happens inside the controller logic, not in the field. The transmitter just reports PV; the field device just executes CO.'
-    },
-    {
-      id: 'loop6',
-      type: 'mcq',
-      question: 'Which component in a control loop is typically the "final control element"?',
-      options: [
-        'The transmitter',
-        'The setpoint station',
-        'A control valve or variable-frequency drive (VFD)',
-        'The PLC CPU'
-      ],
-      answer: 2,
-      explanation: 'The final control element is the device that physically changes something in the process — most commonly a control valve (for flow, pressure, temperature) or a VFD (for pump/motor speed). The controller thinks; the valve acts. One bad actuator can defeat the most perfectly-tuned PID.'
-    },
-    {
-      id: 'loop7',
-      type: 'fill',
-      question: 'If the setpoint is 75°F and the process variable is 80°F, the error e = ___.',
-      answer: '-5',
-      hint: 'e = SP − PV',
-      explanation: 'e = 75 − 80 = −5. Negative error means the process is above setpoint. For a heating controller, this means reduce heat. For a cooling controller, this means increase cooling. The sign of the error determines the direction of the controller action — getting this backwards is a fast path to a runaway.'
-    },
-    {
-      id: 'loop8',
-      type: 'mcq',
-      question: 'Why is it important to understand feedback vs feedforward control?',
-      options: [
-        'Feedforward control measures the PV and reacts after the fact',
-        'Feedforward control anticipates disturbances using a model, while feedback reacts to error after it occurs',
-        'Feedforward eliminates the need for a setpoint',
-        'Feedback and feedforward are identical in industrial practice'
-      ],
-      answer: 1,
-      explanation: 'Feedforward is predictive — it measures a disturbance upstream and compensates before the PV is affected. Feedback is reactive — it waits for the error to show up and then corrects it. Combined feedforward-feedback is best. Pure feedforward with a bad model is worse than nothing.'
-    },
-    {
-      id: 'loop9',
-      type: 'mcq',
-      question: 'What is "direct acting" control action?',
-      options: [
-        'CO increases when PV increases (PV↑ → CO↑)',
-        'CO increases when error increases (e↑ → CO↑)',
-        'CO decreases when PV increases (PV↑ → CO↓)',
-        'CO is fixed regardless of PV'
-      ],
-      answer: 0,
-      explanation: 'Direct acting: as PV goes up, CO goes up. Example: a cooling valve controller — higher temperature means more cooling valve opening. Reverse acting: as PV goes up, CO goes down. Example: a heating controller — higher temperature means reduce heat. Configuring the wrong action causes positive feedback and an immediate bad day.'
-    },
-    {
-      id: 'loop10',
-      type: 'mcq',
-      question: 'In a closed-loop block diagram, the transmitter\'s function is to:',
-      options: [
-        'Compare SP and PV to generate the error signal',
-        'Convert the physical process variable into a standardized signal (e.g., 4–20 mA)',
-        'Amplify the controller output before it reaches the valve',
-        'Set the desired operating point for the process'
-      ],
-      answer: 1,
-      explanation: 'The transmitter measures a physical quantity (pressure, temperature, flow, level) and converts it to a standardized electrical signal — typically 4–20 mA or a digital value. Without an accurate transmitter, the controller is flying blind. Calibration drift in the transmitter shows up as a mysterious offset that drives operators insane.'
-    },
-  ],
-
-  pid: [
-    {
-      id: 'pid1',
-      type: 'mcq',
-      question: 'The Proportional term of a PID controller produces an output that is:',
-      options: [
-        'Proportional to the integral of the error over time',
-        'Proportional to the rate of change of the error',
-        'Proportional to the current error',
-        'Proportional to the setpoint value'
-      ],
-      answer: 2,
-      explanation: 'P = Kp × e(t). Simple, immediate, direct. Large error → large correction. The problem? Once the error shrinks, so does the correction — which means it never quite reaches zero. That\'s called offset, and it\'s Proportional control\'s original sin.'
-    },
-    {
-      id: 'pid2',
-      type: 'mcq',
-      question: 'Proportional Band (PB%) is related to proportional gain (Kp) by:',
-      options: [
-        'PB% = Kp × 100',
-        'PB% = 100 / Kp',
-        'PB% = Kp / 100',
-        'PB% = 100 − Kp'
-      ],
-      answer: 1,
-      explanation: 'PB% = 100 / Kp. A PB of 20% means a 20% change in error drives a 100% change in output — which is a high gain (Kp = 5). A PB of 200% is low gain (Kp = 0.5) — sluggish but stable. Old pneumatic controllers used PB. Modern digital controllers use Kp. Know both.'
-    },
-    {
-      id: 'pid3',
-      type: 'mcq',
-      question: 'P-only control always results in steady-state offset unless:',
-      options: [
-        'The setpoint is zero',
-        'The process has integrating (non-self-regulating) behavior',
-        'The proportional gain is set to exactly 1.0',
-        'The process has no dead time'
-      ],
-      answer: 1,
-      explanation: 'With P-only, the output is zero when error is zero — which means you need some steady-state error to maintain any finite controller output. The one exception is integrating processes (like liquid level), which will reach setpoint under P-only because they integrate the output themselves. For self-regulating processes, offset is inevitable. That\'s what I is for.'
-    },
-    {
-      id: 'pid4',
-      type: 'mcq',
-      question: 'The Integral term eliminates steady-state offset by:',
-      options: [
-        'Reacting proportionally to the current error magnitude',
-        'Anticipating future error based on its rate of change',
-        'Accumulating error over time and increasing output until error reaches zero',
-        'Filtering high-frequency noise from the PV signal'
-      ],
-      answer: 2,
-      explanation: 'Integral keeps adding to the output as long as any error exists. Even a tiny persistent error will eventually drive the integrator to the output needed to eliminate it. This is why I eliminates offset. It\'s also why it causes windup when the output saturates — it keeps integrating even though the valve is already wide open.'
-    },
-    {
-      id: 'pid5',
-      type: 'fill',
-      question: 'Integral windup occurs when the controller output saturates at its limit while the ___ continues to accumulate.',
-      answer: 'integrator',
-      hint: 'The I term keeps adding even when nothing is moving',
-      explanation: 'When the output hits 100% (or 0%), the valve can\'t open any further — but if there\'s still error, the integrator keeps accumulating. When the condition clears and the error reverses, the controller has a massive integrator value to unwind before it can respond normally. This causes a slow, sloppy recovery. Anti-windup logic prevents this.'
-    },
-    {
-      id: 'pid6',
-      type: 'mcq',
-      question: 'Integral time Ti (in minutes/repeat) — a larger Ti value means:',
-      options: [
-        'Faster integral action (more aggressive)',
-        'Slower integral action (less aggressive)',
-        'No integral action at all',
-        'Doubled proportional gain'
-      ],
-      answer: 1,
-      explanation: 'Ti is the inverse of integral rate. Larger Ti = fewer repeats per minute = slower integration = less aggressive integral action. If Ti is too small, the integrator winds up fast and causes oscillation. If Ti is too large, offset correction is glacially slow. Some vendors express this as Ki (repeats/minute = 1/Ti) which is backwards-confusing on purpose, apparently.'
-    },
-    {
-      id: 'pid7',
-      type: 'mcq',
-      question: 'The Derivative term acts on:',
-      options: [
-        'The accumulated sum of past errors',
-        'The current error magnitude',
-        'The rate of change of error (or PV)',
-        'The difference between CO and SP'
-      ],
-      answer: 2,
-      explanation: 'D = Kd × d(e)/dt — it acts on how fast the error is changing. If error is growing rapidly, D kicks in early to slow the response before the error gets large. It\'s predictive. It also amplifies every noise spike on your PV signal, which is why derivative filtering is not optional in noisy industrial environments.'
-    },
-    {
-      id: 'pid8',
-      type: 'mcq',
-      question: 'Why is "derivative on measurement" preferred over "derivative on error" in most industrial controllers?',
-      options: [
-        'It provides faster setpoint tracking',
-        'It avoids derivative kick when the operator makes a setpoint change',
-        'It eliminates the need for integral action',
-        'It reduces the effect of process dead time'
-      ],
-      answer: 1,
-      explanation: 'When you change the setpoint, the error jumps instantaneously. If D is applied to error, you get a massive derivative spike — a "kick" — that slams the valve. Applying D to the PV instead (which changes slowly) avoids this. The setpoint change still gets handled by P and I, just without the whiplash.'
-    },
-    {
-      id: 'pid9',
-      type: 'mcq',
-      question: 'The full parallel PID equation is:',
-      options: [
-        'u(t) = Kp × e(t) only',
-        'u(t) = Kp[e(t) + (1/Ti)∫e dt + Td·de/dt]',
-        'u(t) = Kp × e(t) + Ki × e(t) + Kd × e(t)',
-        'u(t) = (1/Ti) × ∫e dt'
-      ],
-      answer: 1,
-      explanation: 'u(t) = Kp[e(t) + (1/Ti)∫e dt + Td·de/dt]. This is the ideal PID form. The bracketed quantity sums proportional, integral, and derivative actions, all scaled by Kp. Some formulations use Kp, Ki, Kd independently (parallel form). They\'re equivalent with different parameter relationships — a fact that causes maximum confusion during commissioning.'
-    },
-    {
-      id: 'pid10',
-      type: 'mcq',
-      question: 'Which PID mode is most susceptible to amplifying sensor noise?',
-      options: [
-        'Proportional (P)',
-        'Integral (I)',
-        'Derivative (D)',
-        'All three equally'
-      ],
-      answer: 2,
-      explanation: 'Derivative amplifies the rate of change — which is exactly what noise looks like. A small high-frequency noise signal has a large derivative. High D gain on a noisy PV signal turns the controller output into a jackhammer. This is why derivative filters (low-pass) are standard practice, not optional.'
-    },
-    {
-      id: 'pid11',
-      type: 'fill',
-      question: 'In a P-only controller with Kp = 4 and error e = 3%, the controller output contribution from P is ___.',
-      answer: '12',
-      hint: 'CO_P = Kp × e',
-      explanation: 'CO_P = 4 × 3 = 12% (above the bias). The bias is typically 50% or whatever output is needed to maintain steady state. Proportional action adds/subtracts from this bias based on current error. Set Kp too high and a 3% error produces a 12% kick — which may be appropriate or catastrophic depending on your process.'
-    },
-    {
-      id: 'pid12',
-      type: 'mcq',
-      question: 'A controller with only Integral action (I-only) would:',
-      options: [
-        'Respond instantly and eliminate offset',
-        'Respond slowly and eventually eliminate offset, but with significant lag and potential instability',
-        'Be equivalent to P-only control',
-        'Never reach the setpoint'
-      ],
-      answer: 1,
-      explanation: 'I-only integrates error over time. At startup with no error, the output is zero — so it takes time to build up output. The response is slow and prone to oscillation because there\'s no proportional "backbone" to anchor it. I-only is almost never used alone in process control. It exists mainly as a cautionary tale.'
-    },
-    {
-      id: 'pid13',
-      type: 'mcq',
-      question: 'When would you typically use PD control (no integral) rather than full PID?',
-      options: [
-        'When you need to eliminate steady-state offset',
-        'When the process already has integrating behavior and offset is not a concern',
-        'When derivative action is causing instability',
-        'When the process has significant dead time'
-      ],
-      answer: 1,
-      explanation: 'Integrating processes (like liquid level) already have a natural integrator — adding an I term to the controller doubles up the integration and causes oscillation. PD control on an integrating process gives you stable, offset-free control without the instability risk. This is a nuance that bites people who apply the same template to every loop.'
-    },
-    {
-      id: 'pid14',
-      type: 'mcq',
-      question: 'The proportional term causes "proportional droop" (offset). This means:',
-      options: [
-        'The CO drifts to zero over time',
-        'At steady state with a load, the PV settles below (or above) SP by a finite amount',
-        'The PV oscillates continuously',
-        'The integral term takes over and eliminates offset'
-      ],
-      answer: 1,
-      explanation: 'With P-only, the controller needs nonzero error to maintain a nonzero output. At steady state under load, the PV is NOT at SP — it sits offset by whatever error is needed to hold the output. More load → more error needed → more droop. It\'s not a bug, it\'s a mathematical consequence of proportional-only control.'
-    },
-    {
-      id: 'pid15',
-      type: 'mcq',
-      question: 'Which combination of PID terms provides the best overall performance for most self-regulating industrial processes?',
-      options: [
-        'P-only',
-        'I-only',
-        'PI (Proportional + Integral)',
-        'PD (Proportional + Derivative)'
-      ],
-      answer: 2,
-      explanation: 'PI is the workhorse of process control. P gives fast initial response; I eliminates the inevitable offset. Derivative is often skipped because most process signals are too noisy to use D effectively without careful filtering. Full PID is reserved for processes with significant lag that benefit from predictive derivative action. When in doubt, start with PI.'
-    },
-  ],
-
-  tuning: [
-    {
-      id: 'tune1',
-      type: 'mcq',
-      question: 'In an open-loop step test, what three parameters are estimated from the PV response?',
-      options: [
-        'Kp, Ti, Td',
-        'K (process gain), τ (time constant), θ (dead time)',
-        'Ku (ultimate gain), Pu (ultimate period), PB%',
-        'SP, PV, CO'
-      ],
-      answer: 1,
-      explanation: 'The open-loop step test gives you the FOPDT model parameters: K = steady-state gain (ΔPVSS / ΔCO), τ = time constant (time to reach 63.2% of total change after dead time ends), θ = dead time (lag before anything happens). These three numbers are everything you need to calculate initial PID tuning. Mess up the test and your tuning is garbage from the start.'
-    },
-    {
-      id: 'tune2',
-      type: 'mcq',
-      question: 'Ziegler-Nichols closed-loop tuning requires finding:',
-      options: [
-        'The process gain K and time constant τ from a step test',
-        'The ultimate gain Ku and ultimate period Pu by increasing Kp until sustained oscillation',
-        'The lambda parameter λ and dead time θ',
-        'The integral time Ti and derivative time Td independently'
-      ],
-      answer: 1,
-      explanation: 'Z-N closed-loop: run the controller in P-only, increase Kp until the PV oscillates with constant amplitude (neither growing nor dying) — that\'s Ku. Measure the period of those oscillations — that\'s Pu. Then use the Z-N lookup table to get Kp = 0.6Ku, Ti = Pu/2, Td = Pu/8. This works, but the resulting tuning is famously aggressive. Have your hand on the manual override.'
-    },
-    {
-      id: 'tune3',
-      type: 'fill',
-      question: 'For Ziegler-Nichols PID tuning: Kp = 0.6 × Ku, Ti = Pu / ___, Td = Pu / ___.',
-      answer: '2, 8',
-      hint: 'Classic Z-N fractions',
-      explanation: 'Z-N PID: Kp = 0.6Ku, Ti = Pu/2, Td = Pu/8. These formulas are designed for good disturbance rejection but produce a response with roughly 25% overshoot. If that\'s too aggressive (and it usually is for process control), detune by reducing Kp by 20–30% and lengthening Ti.'
-    },
-    {
-      id: 'tune4',
-      type: 'mcq',
-      question: 'Lambda (λ) tuning sets the desired closed-loop response by specifying:',
-      options: [
-        'The ultimate gain of the process',
-        'The desired closed-loop time constant — how fast the closed-loop responds',
-        'The maximum allowable overshoot percentage',
-        'The proportional band in percent'
-      ],
-      answer: 1,
-      explanation: 'Lambda tuning (IMC-based) sets λ as the desired closed-loop time constant. Larger λ = slower, more robust response. Smaller λ = faster, more aggressive. The math maps λ directly to Kp and Ti based on the FOPDT model. It\'s more systematic than Z-N and gives you a tuning knob that actually makes physical sense.'
-    },
-    {
-      id: 'tune5',
-      type: 'mcq',
-      question: 'The "robustness vs. performance" tradeoff in PID tuning means:',
-      options: [
-        'Faster response always produces better control quality',
-        'Slower response is always safer and should always be chosen',
-        'More aggressive tuning improves speed but reduces stability margin; more conservative tuning is stable but slow',
-        'Robustness and performance can both be maximized simultaneously'
-      ],
-      answer: 2,
-      explanation: 'Every PID loop lives on this tradeoff. Crank up the gains: fast response, but one bad disturbance and you\'re oscillating. Back off the gains: rock-solid stable, but upsets take forever to recover from. The right answer is process-dependent and operator-tolerance-dependent. Neither extreme is universally correct.'
-    },
-    {
-      id: 'tune6',
-      type: 'mcq',
-      question: 'When conducting an open-loop step test, the step change in CO should be:',
-      options: [
-        'As large as possible to get a clear signal',
-        'Large enough to produce a measurable PV response above noise, typically 5–15% of CO range',
-        'Exactly 50% of the CO range for accurate results',
-        'Made while the process is starting up from zero'
-      ],
-      answer: 1,
-      explanation: 'Too small a step and the PV response drowns in noise; too large and you upset the process or drive it into nonlinear territory. 5–15% is the practical sweet spot. Also: perform the test at the expected operating point, not at startup. A process gain identified at startup may be completely wrong at operating conditions.'
-    },
-    {
-      id: 'tune7',
-      type: 'mcq',
-      question: 'What does the θ/τ ratio tell you about a process?',
-      options: [
-        'The steady-state gain of the process',
-        'The ratio of dead time to lag — higher ratios are harder to control',
-        'The optimal proportional gain for PID tuning',
-        'The number of oscillations before the loop stabilizes'
-      ],
-      answer: 1,
-      explanation: 'θ/τ is the controllability ratio. When θ/τ < 0.5, control is relatively easy — there\'s plenty of lag after dead time ends for the controller to react. When θ/τ > 1.0, you\'re in trouble — dead time dominates and the controller is mostly flying blind. Dead time is the enemy. You cannot control what hasn\'t happened yet.'
-    },
-    {
-      id: 'tune8',
-      type: 'mcq',
-      question: 'The correct order for adding PID terms during initial tuning is:',
-      options: [
-        'Add D first, then P, then I last',
-        'Add I first to eliminate offset, then P for response speed, then D',
-        'Start with Kp low, then add I slowly, then add D last if needed',
-        'Set all three simultaneously using the Z-N table'
-      ],
-      answer: 2,
-      explanation: 'Start with just P — get the speed approximately right. Then add I slowly (large Ti first, decrease gradually) to eliminate offset. Add D last, and only if needed — it amplifies noise and causes more problems than it solves on most process loops. Resist the urge to tune all three at once. That\'s how you end up with a loop that nobody can characterize.'
-    },
-    {
-      id: 'tune9',
-      type: 'fill',
-      question: 'In an open-loop step test, τ is defined as the time for the PV to reach ___% of its total change after the dead time ends.',
-      answer: '63.2',
-      hint: '1 - 1/e ≈ this percentage',
-      explanation: '63.2% — the first-order time constant. For a perfect FOPDT process, at t = θ + τ the PV has moved 63.2% of the way to its new steady state. Graphically, draw a tangent to the steepest part of the response — where it intersects the initial and final values gives you θ and τ. Most processes are not perfect FOPDT. This is an approximation. Use it anyway.'
-    },
-    {
-      id: 'tune10',
-      type: 'mcq',
-      question: 'Process gain K in an open-loop step test is calculated as:',
-      options: [
-        'K = ΔCO / ΔPV',
-        'K = ΔPVSS / ΔCO',
-        'K = τ / θ',
-        'K = Ku × 0.6'
-      ],
-      answer: 1,
-      explanation: 'K = ΔPVSS / ΔCO — the ratio of the steady-state PV change to the CO step size, both in engineering units or percent. If a 10% CO step causes a 30% PV change at steady state, K = 3. High gain = sensitive process. Low gain = sluggish process. Knowing K lets you avoid over- or under-sizing your proportional action.'
-    },
-    {
-      id: 'tune11',
-      type: 'mcq',
-      question: 'Which statement best describes Lambda/IMC tuning compared to Ziegler-Nichols?',
-      options: [
-        'Lambda tuning is always more aggressive than Z-N',
-        'Lambda tuning requires oscillating the process to find Ku',
-        'Lambda tuning is model-based and lets you explicitly trade off speed vs. robustness via the λ parameter',
-        'Lambda tuning only works for integrating processes'
-      ],
-      answer: 2,
-      explanation: 'Lambda tuning uses the FOPDT model (K, τ, θ) from a step test — no need to oscillate the loop. You pick λ to set the closed-loop speed, which translates directly to Kp and Ti. Conservative λ (large) gives robust, slow control. Aggressive λ (small, typically λ ≥ θ) gives fast control but less margin. It\'s the grown-up alternative to Z-N.'
-    },
-    {
-      id: 'tune12',
-      type: 'mcq',
-      question: 'After tuning, your loop has a 30% overshoot on setpoint changes. To reduce overshoot WITHOUT slowing load disturbance rejection, you should:',
-      options: [
-        'Reduce Kp significantly',
-        'Increase Ti to reduce integral action',
-        'Apply setpoint filtering or setpoint ramping',
-        'Increase Td to predict the overshoot'
-      ],
-      answer: 2,
-      explanation: 'Setpoint filtering (ramping or first-order filtering the SP signal) smooths the apparent setpoint change, reducing the P-kick on large SP steps. This reduces overshoot without weakening the feedback gains that handle load disturbances. It\'s a classic trick: tune for disturbances, filter for setpoint changes. Two different problems, two different solutions.'
-    },
-  ],
-
-  process: [
-    {
-      id: 'proc1',
-      type: 'mcq',
-      question: 'FOPDT stands for:',
-      options: [
-        'First-Order Proportional Dead Time',
-        'First-Order Plus Dead Time',
-        'Full-Output PID Derivative Term',
-        'Frequency-Offset Process Delay Transfer'
-      ],
-      answer: 1,
-      explanation: 'First-Order Plus Dead Time: the standard model for most single-loop process control applications. It captures the three key dynamics: steady-state gain (K), lag (τ), and pure delay (θ). Elegant and wrong in exactly the right way — it\'s simple enough to tune from and accurate enough to be useful.'
-    },
-    {
-      id: 'proc2',
-      type: 'mcq',
-      question: 'A self-regulating process is one that:',
-      options: [
-        'Continues changing indefinitely until the controller acts',
-        'Reaches a new steady state on its own after a disturbance, without controller action',
-        'Requires derivative action to remain stable',
-        'Has zero process gain'
-      ],
-      answer: 1,
-      explanation: 'Self-regulating processes have natural equilibrium — like a heat exchanger temperature. Apply more steam → temperature rises until heat loss to the cold side balances the heat input → new steady state. The process self-limits. These are easier to control than integrating processes, which have no natural equilibrium and will drift forever without a controller.'
-    },
-    {
-      id: 'proc3',
-      type: 'mcq',
-      question: 'An integrating (non-self-regulating) process is best exemplified by:',
-      options: [
-        'A heat exchanger controlling outlet temperature',
-        'A pressure controller on a gas vessel with a relief valve',
-        'A liquid level in a tank where inflow and outflow are both flow-controlled independently',
-        'A pH neutralization system'
-      ],
-      answer: 2,
-      explanation: 'When both inflow and outflow are set independently, the level has no natural equilibrium — any imbalance causes the tank to fill or drain indefinitely. The tank integrates the flow imbalance into level. Without the level controller actively balancing flows, the process runs away. This is the defining characteristic of an integrating process.'
-    },
-    {
-      id: 'proc4',
-      type: 'fill',
-      question: 'Dead time θ is the period of ___ delay at the start of a step response — during this time the PV does not respond at all.',
-      answer: 'pure',
-      hint: 'Nothing moves during this time, regardless of CO',
-      explanation: 'Dead time is a pure, irrecoverable delay — the transportation lag, the analyzer sample time, the physical delay of material moving through a pipe. During dead time, nothing the controller does has any effect on the PV yet. It is the fundamental limit on control performance. You cannot control what hasn\'t happened yet, and dead time is the universe\'s way of rubbing that in.'
-    },
-    {
-      id: 'proc5',
-      type: 'mcq',
-      question: 'In a FOPDT model, if τ = 0, the model becomes:',
-      options: [
-        'A pure integrator',
-        'A pure dead time element only',
-        'An ideal proportional controller',
-        'An unstable process'
-      ],
-      answer: 1,
-      explanation: 'No lag + pure delay = step in, wait θ, then instantaneous response. This is the "pure dead time" process. It\'s extremely difficult to control well — there\'s no gradual response for the controller to read; you just get a delayed cliff edge. Smith Predictor control structures were invented specifically to deal with this case.'
-    },
-    {
-      id: 'proc6',
-      type: 'mcq',
-      question: 'Why is a high θ/τ ratio considered difficult to control?',
-      options: [
-        'High dead time relative to lag means the controller spends most of the transient flying blind',
-        'High θ/τ means the process gain is very large',
-        'High θ/τ eliminates the need for integral action',
-        'High θ/τ causes the process to become integrating'
-      ],
-      answer: 0,
-      explanation: 'When θ ≈ τ or θ > τ, most of the dynamic response is dead time — and during dead time, the controller gets zero useful feedback. It fires a correction, waits, waits, waits, then sees the PV change — by which point it may have already over- or under-shot and the whole cycle starts over. Controllers on high dead-time processes must be detuned significantly, at the cost of slow recovery.'
-    },
-    {
-      id: 'proc7',
-      type: 'mcq',
-      question: 'Process gain K > 1 means:',
-      options: [
-        'The process is integrating',
-        'The PV change is larger than the CO change (amplifying process)',
-        'The PV change is smaller than the CO change (attenuating process)',
-        'The process has zero dead time'
-      ],
-      answer: 1,
-      explanation: 'K > 1: a 10% CO step produces more than 10% PV change — the process amplifies the input. This makes the controller more sensitive; high Kp will cause oscillation faster. K < 1: the process attenuates. K = 1 is neutral. High-gain processes need lower Kp; low-gain processes can tolerate higher Kp.'
-    },
-    {
-      id: 'proc8',
-      type: 'mcq',
-      question: 'For a liquid level process with a pumped outlet (constant flow out, variable flow in), the correct process model is:',
-      options: [
-        'Self-regulating FOPDT',
-        'Integrating process (ramp response to step input)',
-        'Underdamped second-order process',
-        'Pure dead time process'
-      ],
-      answer: 1,
-      explanation: 'Constant outflow + variable inflow = the level integrates the difference. A step change in inlet flow causes level to ramp linearly — not settle to a new steady state. This is the integrating process model. Gravity-drained tanks with variable head are approximately self-regulating; pumped-out tanks with level-independent flow are integrating. This distinction changes the correct tuning approach fundamentally.'
-    },
-    {
-      id: 'proc9',
-      type: 'fill',
-      question: 'The time constant τ is defined as the time for a first-order process to reach ___% of its final value after dead time ends.',
-      answer: '63.2',
-      hint: 'Same as 1 - e^(-1)',
-      explanation: '63.2% — the standard first-order time constant definition. Two time constants: 86.5%. Three: 95%. Five: 99.3%. Engineers conventionally say "settled" at 5τ. If you\'re waiting for 99.3% of response, you have patience. Most processes drift enough in that time that the model is questionable anyway.'
-    },
-    {
-      id: 'proc10',
-      type: 'mcq',
-      question: 'A heat exchanger controlling outlet temperature is typically modeled as:',
-      options: [
-        'An integrating process',
-        'A pure dead time process',
-        'A self-regulating FOPDT process',
-        'An unstable process'
-      ],
-      answer: 2,
-      explanation: 'Heat exchangers are the canonical FOPDT self-regulating process. Open more steam valve → temperature starts rising (dead time first, then first-order lag) → settles to a new higher temperature. Classic, textbook, well-behaved. Or it would be, if the steam header pressure weren\'t varying and the process flow weren\'t constantly changing.'
-    },
-    {
-      id: 'proc11',
-      type: 'mcq',
-      question: 'Which process characteristic makes pH control particularly challenging?',
-      options: [
-        'pH processes have very long dead times',
-        'The pH titration curve is highly nonlinear — small reagent additions near neutrality cause large pH swings',
-        'pH processes are always integrating',
-        'pH control does not require feedback'
-      ],
-      answer: 1,
-      explanation: 'The titration curve is the villain. Far from the neutrality point, you can dump in reagent and barely move the pH. Near neutrality, a fraction of a milliliter causes pH to swing from 4 to 10. The effective process gain changes by orders of magnitude across the operating range. This is why pH control is the hazing ritual of process control engineers.'
-    },
-    {
-      id: 'proc12',
-      type: 'mcq',
-      question: 'Transportation lag (dead time) in a pipeline is caused by:',
-      options: [
-        'Heat transfer resistance between fluid and pipe wall',
-        'The time required for fluid to travel physically from one point to another',
-        'Instrument response time in the transmitter',
-        'Chemical reaction kinetics in the process fluid'
-      ],
-      answer: 1,
-      explanation: 'Transportation lag = pipe volume / flow rate. The fluid takes time to travel from the injection point to the measurement point. During that time, any correction is already in the pipe but hasn\'t arrived yet. Longer pipes, lower flows, larger pipe diameters all increase dead time. Moving the measurement point upstream — if physically possible — directly reduces dead time.'
-    },
-  ],
-
-  cascade: [
-    {
-      id: 'casc1',
-      type: 'mcq',
-      question: 'In a cascade control system, the primary (outer) loop controller output serves as:',
-      options: [
-        'The final signal to the control valve',
-        'The setpoint for the secondary (inner) loop controller',
-        'The measured process variable for the secondary loop',
-        'A feedforward signal to the primary process'
-      ],
-      answer: 1,
-      explanation: 'The primary controller computes what the secondary process should be doing and commands it by setting the secondary\'s setpoint. The secondary controller then drives the actual valve. The primary loop never touches the valve directly. This is the defining feature of cascade: a controller controlling a controller.'
-    },
-    {
-      id: 'casc2',
-      type: 'mcq',
-      question: 'The inner (secondary) loop in cascade control must be how much faster than the outer (primary) loop?',
-      options: [
-        '1–2× faster',
-        '3–10× faster',
-        'Exactly the same speed',
-        '100× faster'
-      ],
-      answer: 1,
-      explanation: '3–10× faster is the rule of thumb. The inner loop must respond fast enough that the primary loop perceives it as essentially instantaneous — otherwise the two controllers fight each other and the whole thing oscillates. If your inner loop is a flow controller, it should settle in seconds; your outer temperature loop can then operate on a minute timescale.'
-    },
-    {
-      id: 'casc3',
-      type: 'mcq',
-      question: 'What is the primary benefit of cascade control over single-loop control?',
-      options: [
-        'It eliminates the need for integral action',
-        'The inner loop rejects disturbances before they propagate to and affect the primary variable',
-        'It allows the use of a simpler PID with no derivative',
-        'It doubles the speed of both loops simultaneously'
-      ],
-      answer: 1,
-      explanation: 'A steam pressure disturbance hits the inner flow loop first. The inner flow controller corrects it immediately — long before the temperature (primary PV) has time to notice. Without cascade, that disturbance travels all the way through the process and shows up as a temperature error the slow outer loop must then correct. Cascade cuts the disturbance off at the source.'
-    },
-    {
-      id: 'casc4',
-      type: 'mcq',
-      question: 'In a heat exchanger cascade (temperature → flow), what are the primary and secondary PVs?',
-      options: [
-        'Primary: steam flow; Secondary: outlet temperature',
-        'Primary: outlet temperature; Secondary: steam flow',
-        'Primary: inlet temperature; Secondary: steam pressure',
-        'Primary: steam pressure; Secondary: outlet temperature'
-      ],
-      answer: 1,
-      explanation: 'Temperature is slow and is what you ultimately care about — it\'s the primary (outer) loop. Steam flow is fast and controllable — it\'s the secondary (inner) loop. The temperature controller says "I need more heat" → sets a higher steam flow setpoint → the flow controller responds immediately. The temperature controller never touches the steam valve directly.'
-    },
-    {
-      id: 'casc5',
-      type: 'fill',
-      question: 'In cascade control, you should tune the ___ loop first before tuning the ___ loop.',
-      answer: 'inner (secondary), outer (primary)',
-      hint: 'Start with the fast loop',
-      explanation: 'Always tune the inner loop first, independently. Get it fast and stable. Then tune the outer loop with the inner loop in cascade/auto. If you try to tune both simultaneously, you have no stable reference and the interactions make it nearly impossible to tell what\'s causing what.'
-    },
-    {
-      id: 'casc6',
-      type: 'mcq',
-      question: 'When should you NOT use cascade control?',
-      options: [
-        'When the inner loop variable is measurable and controllable',
-        'When the inner loop responds at least 3× faster than the outer loop',
-        'When the inner and outer loop dynamics are similar in speed, or the inner loop is slower',
-        'When the outer loop variable is temperature'
-      ],
-      answer: 2,
-      explanation: 'If the inner and outer loops respond at similar speeds, cascade makes things worse — the two controllers will interact, fight, and oscillate. Cascade only helps when the inner loop is significantly faster. If adding an inner loop doesn\'t actually speed up disturbance rejection, you\'ve added complexity for no benefit.'
-    },
-    {
-      id: 'casc7',
-      type: 'mcq',
-      question: 'When the cascade system is in "manual" at the outer loop but "auto" at the inner loop, the operator:',
-      options: [
-        'Controls the valve position directly',
-        'Sets the secondary loop setpoint directly (inner loop still controls)',
-        'Overrides both controllers simultaneously',
-        'Has no control over the process'
-      ],
-      answer: 1,
-      explanation: 'This is "semi-cascade" or inner-loop auto only. The operator manually sets the secondary setpoint (e.g., steam flow rate) while the inner flow controller holds that flow. This is useful during commissioning or when the outer loop is being tuned — you can manually adjust inner SP and watch the primary PV respond.'
-    },
-    {
-      id: 'casc8',
-      type: 'mcq',
-      question: 'Valve positioners on control valves effectively create what type of internal control structure?',
-      options: [
-        'A cascade controller with position as the inner loop',
-        'A feedforward controller for flow',
-        'A Smith Predictor for dead time compensation',
-        'An override controller for pressure limiting'
-      ],
-      answer: 0,
-      explanation: 'A valve positioner is a miniature cascade loop: the position controller (inner) takes the CO signal as its setpoint and drives the valve stem to that exact position regardless of friction, pressure differentials, or stiction. The process controller (outer) sets what position it wants. Positioners dramatically improve valve linearity and reject mechanical disturbances — which is why stiction is less of a problem with positioners.'
-    },
-    {
-      id: 'casc9',
-      type: 'mcq',
-      question: 'What happens to cascade control performance if the secondary measurement transmitter fails?',
-      options: [
-        'The primary loop takes over automatically with no degradation',
-        'The inner loop loses its feedback and may drive the valve open or shut; the primary loop degrades severely',
-        'The cascade automatically switches to feedforward control',
-        'Only the secondary loop is affected; the primary loop continues normally'
-      ],
-      answer: 1,
-      explanation: 'If the inner loop\'s transmitter fails, the secondary controller no longer has valid feedback and will drive the output to a limit — taking the valve with it. The primary loop will see a wild PV response and try to correct, but with no inner loop, it\'s now fighting the process directly. Transmitter failures in cascade loops cascade (pun intended) through the whole system.'
-    },
-    {
-      id: 'casc10',
-      type: 'mcq',
-      question: 'Which real-world application is the most classic example of cascade control?',
-      options: [
-        'Level control on a single tank with one valve',
-        'Temperature control on a heat exchanger with steam flow as the inner loop',
-        'Pressure control using a relief valve',
-        'pH control using a single reagent pump'
-      ],
-      answer: 1,
-      explanation: 'Temperature → steam flow cascade on a heat exchanger is the textbook cascade example. It shows up in every controls textbook, every training course, and every control system design template. If you can explain this example clearly — outer: temperature, inner: steam flow, inner loop 5-10× faster, inner loop rejects steam pressure disturbances — you\'ve got cascade control.'
-    },
-  ],
-
-  digital: [
-    {
-      id: 'dig1',
-      type: 'mcq',
-      question: 'The Nyquist sampling theorem requires that the sampling frequency be:',
-      options: [
-        'Equal to the highest frequency in the signal',
-        'At least twice the highest significant frequency in the signal',
-        'At least 10× the process time constant',
-        'Exactly matched to the process oscillation frequency'
-      ],
-      answer: 1,
-      explanation: 'Nyquist: sample at ≥ 2× the highest significant frequency. For practical PID control, sampling period T ≤ τ/10 is a common rule of thumb — much more conservative than minimum Nyquist because aliasing in control causes instability, not just signal distortion. Sample too slowly and your derivative calculation is meaningless, your controller is sluggish, and strange things happen at 3 AM.'
-    },
-    {
-      id: 'dig2',
-      type: 'mcq',
-      question: 'The Position Algorithm in a digital PID controller calculates:',
-      options: [
-        'The change in output (ΔCO) from the previous sample',
-        'The absolute controller output value (CO) directly',
-        'Only the proportional component of the output',
-        'The valve position feedback signal'
-      ],
-      answer: 1,
-      explanation: 'The Position Algorithm outputs the absolute CO value each scan. It needs to track the integral sum across samples. The Velocity (Incremental) Algorithm instead computes ΔCO — the change from last scan — and adds it to the actual actuator position. Velocity form is less susceptible to integral windup and makes bumpless transfer easier, because ΔCO = 0 when there\'s no change.'
-    },
-    {
-      id: 'dig3',
-      type: 'mcq',
-      question: 'Bumpless transfer (manual-to-auto) requires that:',
-      options: [
-        'The setpoint is ramped up from zero when entering auto mode',
-        'The integral is initialized to the current output value so the CO doesn\'t jump when auto is engaged',
-        'Derivative action is disabled during the transfer',
-        'The output is set to 50% before engaging auto mode'
-      ],
-      answer: 1,
-      explanation: 'When switching from manual to auto, the controller must not jerk the output to whatever its integrator thinks is right. Bumpless transfer initializes the integrator so the first auto scan produces the same CO as the manual value. Without it, engaging auto causes an immediate step change in CO — a "bump" — that disturbs the process. In a live plant, that bump can trip equipment.'
-    },
-    {
-      id: 'dig4',
-      type: 'mcq',
-      question: 'Anti-windup by "clamping" works by:',
-      options: [
-        'Limiting the rate of change of the CO output',
-        'Stopping further integration when the output hits its limit (holding the integrator fixed at the limit)',
-        'Back-calculating the integrator value from the actual output',
-        'Increasing Ti automatically when output saturates'
-      ],
-      answer: 1,
-      explanation: 'Clamping: when CO hits max (or min), stop accumulating the integral — freeze it at the limit. Simple to implement, effective. Back-calculation (the more sophisticated method) feeds the difference between the saturated output and the unsaturated calculation back into the integrator, pulling it back to the saturation boundary continuously. Both work; back-calculation recovers slightly faster.'
-    },
-    {
-      id: 'dig5',
-      type: 'fill',
-      question: 'In a digital PID, the derivative term is typically computed as Td / T × (___ − ___).',
-      answer: 'PVn - PVn-1',
-      hint: 'Current minus previous measurement',
-      explanation: 'D ≈ Td/T × (PVn − PVn-1), where T is the scan period. This is "derivative on measurement" — using the change in PV, not error, to avoid derivative kick on SP changes. The scan time T appears because derivative is a rate (change per time). If T doubles, D halves — which is why changing scan rates requires retuning derivative gain.'
-    },
-    {
-      id: 'dig6',
-      type: 'mcq',
-      question: 'A derivative filter with parameter N in the form N×Td/(N×s+1) — what does increasing N do?',
-      options: [
-        'Increases derivative filtering (more smoothing, slower D response)',
-        'Decreases derivative filtering (less smoothing, more noise passes through)',
-        'Sets the derivative time constant to N',
-        'Has no effect on noise rejection'
-      ],
-      answer: 1,
-      explanation: 'Higher N = less filtering = more raw derivative = more noise amplification. N = 5 is conservative (aggressive filtering). N = 20 is aggressive (light filtering). N → ∞ gives pure derivative with no filtering. Typical industrial range is N = 5 to 20. If your PV signal is clean and your process needs quick D action, use higher N. If your PV is noisy, use lower N or disable D entirely.'
-    },
-    {
-      id: 'dig7',
-      type: 'mcq',
-      question: 'Output rate limiting in a digital PID controller:',
-      options: [
-        'Limits the absolute maximum and minimum CO values',
-        'Limits how fast the CO can change per scan (maximum ΔCO/scan)',
-        'Filters the PV input signal',
-        'Sets the minimum controller scan period'
-      ],
-      answer: 1,
-      explanation: 'Rate limiting caps ΔCO per time — e.g., no more than 10% CO change per second. This protects mechanical equipment (valves, compressors) from sudden step changes that cause wear, water hammer, or process upsets. It also slows the controller during large setpoint changes. The tradeoff: rate limiting slows response to disturbances too.'
-    },
-    {
-      id: 'dig8',
-      type: 'mcq',
-      question: 'The Velocity (Incremental) Algorithm computes:',
-      options: [
-        'The absolute CO required at each scan',
-        'The change in CO (ΔCO) that should be added to the current actuator position',
-        'The velocity of the process variable',
-        'The rate of change of the setpoint'
-      ],
-      answer: 1,
-      explanation: 'Velocity algorithm: ΔCO = Kp×(Δe) + Ki×e×T + Kd×(ΔPV change) — the controller produces an increment to add to the current output. This means if nothing is changing, ΔCO = 0 and the output holds. The integrator windup problem is reduced because the integrator is implicit in the accumulated output. Bumpless transfer is natural: zero change in steady state means zero bump when engaging auto.'
-    },
-    {
-      id: 'dig9',
-      type: 'mcq',
-      question: 'What is aliasing in digital control, and why does it matter?',
-      options: [
-        'A naming convention for controller parameters in different software platforms',
-        'High-frequency signal components appearing as false low-frequency components when sampled too slowly, potentially causing instability',
-        'The process of copying a PID configuration from one controller to another',
-        'An alternative name for dead time in digital systems'
-      ],
-      answer: 1,
-      explanation: 'Sample a 10 Hz signal at 12 Hz and you\'ll see a false 2 Hz signal that doesn\'t exist in reality — that\'s aliasing. In process control, aliased noise can appear as a low-frequency disturbance that the controller tries to correct, causing oscillation. Anti-aliasing filters (low-pass hardware filters before the ADC) prevent this. Skipping them to save cost is a reliable way to create mysterious loop instability.'
-    },
-    {
-      id: 'dig10',
-      type: 'mcq',
-      question: 'If you increase the PLC scan time from 100ms to 1000ms for a PID loop, the effective derivative gain:',
-      options: [
-        'Increases by 10×',
-        'Decreases by 10×',
-        'Remains unchanged',
-        'Becomes infinite'
-      ],
-      answer: 1,
-      explanation: 'D ≈ Td/T × ΔPVT. If T increases 10×, the computed derivative decreases 10× for the same PV change rate. Slowing the scan reduces effective derivative gain. It also reduces integral rate and slows the overall controller response. Changing scan time is a hidden parameter change that requires reviewing all PID gains. Many a mystery oscillation has been traced to a scan time change made "just for testing."'
-    },
-  ],
-
-  plc: [
-    {
-      id: 'plc1',
-      type: 'mcq',
-      question: 'The IEC 61131-3 standard CTRL_PID function block typically accepts which inputs?',
-      options: [
-        'Only SP and PV',
-        'SP, PV, manual output, Kp, Ti, Td, output limits, and mode',
-        'Only Kp, Ti, and Td gain parameters',
-        'PV and CO only, computing SP internally'
-      ],
-      answer: 1,
-      explanation: 'A full CTRL_PID block takes: SP (setpoint), PV (process variable), manual output value (for manual mode), all three gains (Kp/Ti/Td), output limits (high/low), mode selection (auto/manual), and typically anti-windup and derivative filter parameters. Every vendor implements a slightly different version. The first thing you do with any new PLC is read the PID instruction manual. The second thing is read it again.'
-    },
-    {
-      id: 'plc2',
-      type: 'mcq',
-      question: 'In Auto mode on a PLC PID block, the output is:',
-      options: [
-        'Set directly by the operator from the HMI',
-        'Calculated by the PID algorithm based on SP, PV, and tuning parameters',
-        'Held at the last manual value',
-        'Forced to 50% as a safe default'
-      ],
-      answer: 1,
-      explanation: 'Auto mode: the PID algorithm owns the output. Operator sets the SP; controller computes CO. Manual mode: the operator sets CO directly; the PID algorithm is bypassed (but should track for bumpless return to auto). This distinction is fundamental. Operators switching between modes need to understand what they\'re taking control of — and what they\'re giving up.'
-    },
-    {
-      id: 'plc3',
-      type: 'mcq',
-      question: 'An Allen-Bradley Logix PID instruction parameter "CV" represents:',
-      options: [
-        'The setpoint (desired value)',
-        'The process variable (measured value)',
-        'The controller output (control variable — 0 to 100%)',
-        'The control variance (error signal)'
-      ],
-      answer: 2,
-      explanation: 'In A-B Logix PID: SP is setpoint, PV is process variable, CV is "Control Variable" — the controller output (0–100%). Confusingly, in process control literature CV often means "Controlled Variable" (= PV). Allen-Bradley uses CV for output. This terminological landmine has caused countless hours of commissioning confusion. When in doubt, check the instruction\'s tag description, not the mnemonic.'
-    },
-    {
-      id: 'plc4',
-      type: 'mcq',
-      question: 'On a SCADA HMI PID faceplate, which four elements are typically displayed?',
-      options: [
-        'Kp, Ti, Td, and PB%',
-        'SP/PV trend, CO value, mode (auto/manual), and alarm limits',
-        'Process gain, dead time, time constant, and ultimate gain',
-        'Scan time, sample rate, filter coefficient, and derivative gain'
-      ],
-      answer: 1,
-      explanation: 'The operator faceplate shows: SP and PV (often as a trend), CO (current output %), mode (auto/manual/cascade), and alarm limits (high/low). The operator lives on this faceplate. If they can\'t quickly see whether the loop is tracking, what the output is doing, and whether alarms are active — the HMI design failed. Keep it simple, keep it visible.'
-    },
-    {
-      id: 'plc5',
-      type: 'fill',
-      question: 'When a PLC PID instruction executes every scan but the process has a much slower time constant, the scan time can be treated as effectively ___ relative to the process dynamics.',
-      answer: 'continuous',
-      hint: 'The digital approximation becomes equivalent to analog at this limit',
-      explanation: 'When T << τ (scan time much less than process time constant), the digital PID approximates a continuous analog PID very closely. As T grows toward τ, the approximation degrades. Rule of thumb: T ≤ τ/10 keeps the digital approximation good. For fast processes (T ≈ τ), you need to account for sample-and-hold effects in your tuning.'
-    },
-    {
-      id: 'plc6',
-      type: 'mcq',
-      question: 'What does "bumpless transfer" specifically prevent when switching from Manual to Auto?',
-      options: [
-        'It prevents the PV from exceeding the high alarm limit',
-        'It prevents a sudden step change in CO that would disturb the process',
-        'It prevents the derivative term from activating immediately',
-        'It prevents integral windup during manual operation'
-      ],
-      answer: 1,
-      explanation: 'In manual, the operator has been trimming CO to whatever the process needs. If auto mode starts fresh with its own calculated output, the CO jumps to a different value — a "bump" — which upsets the process. Bumpless transfer initializes the controller\'s internal state (especially the integrator) so the first auto CO equals the last manual CO. The loop takes over smoothly. Operators notice bumps. Engineers get blamed for them.'
-    },
-    {
-      id: 'plc7',
-      type: 'mcq',
-      question: 'In a PLC PID scan, derivative is calculated as Td/T × (PVn − PVn-1). If the scan time T doubles accidentally due to a CPU load issue:',
-      options: [
-        'The derivative gain effectively doubles',
-        'The derivative gain effectively halves',
-        'The derivative gain is unchanged because Td compensates',
-        'The controller automatically recalculates derivative to compensate'
-      ],
-      answer: 1,
-      explanation: 'D = Td/T × ΔPVT — longer T means smaller D. If T doubles from 100ms to 200ms, effective derivative action halves. But the integral action also halves (fewer repeats per minute). And the proportional term is unchanged. A CPU overload that slows scan time silently detunes your PID — it becomes more sluggish and less responsive. Monitoring actual scan time is not optional in critical loops.'
-    },
-    {
-      id: 'plc8',
-      type: 'mcq',
-      question: 'Output limits (CO high and CO low) in a PLC PID instruction serve to:',
-      options: [
-        'Adjust the proportional gain automatically',
-        'Clamp the controller output within the actuator\'s safe operating range and enable anti-windup',
-        'Set the alarm thresholds for the process variable',
-        'Define the scan time for PID execution'
-      ],
-      answer: 1,
-      explanation: 'Output limits prevent the CO from commanding the actuator beyond its physical or safe range (e.g., don\'t send 110% to a valve that maxes at 100%). They also enable anti-windup: when the output hits a limit, the integrator can be frozen or back-calculated to prevent windup during the clamped period. Skipping output limits is how you get valve actuators driven into hard mechanical stops repeatedly.'
-    },
-    {
-      id: 'plc9',
-      type: 'mcq',
-      question: 'Which IEC 61131-3 programming language is most commonly used to implement PID logic in industrial PLCs?',
-      options: [
-        'Instruction List (IL)',
-        'Sequential Function Chart (SFC)',
-        'Ladder Diagram (LD) or Structured Text (ST) with a PID function block',
-        'MATLAB/Simulink'
-      ],
-      answer: 2,
-      explanation: 'Most PLC PID implementations use a pre-built PID function block called from Ladder (one rung, one block) or Structured Text. You don\'t code PID math from scratch — you configure a standard block with your parameters. The underlying math is the same regardless of language. MATLAB/Simulink is for simulation and development, not for production PLC execution (despite what some vendors will tell you).'
-    },
-    {
-      id: 'plc10',
-      type: 'mcq',
-      question: 'A PID loop configured with "SP tracking" in manual mode means:',
-      options: [
-        'The SP is automatically increased to track the PV while in manual',
-        'The setpoint follows the process variable in manual mode, so that entering auto causes no SP step change',
-        'The SP ramps toward the target at a configured rate',
-        'The controller tracks the ultimate gain automatically'
-      ],
-      answer: 1,
-      explanation: 'SP tracking: in manual mode, the displayed SP quietly tracks the PV. When the operator switches to auto, SP equals current PV, so there\'s no error at the moment of transfer — no immediate correction, no bump. This is complementary to bumpless transfer on the output side. Together they make manual-to-auto transfers completely smooth. Separately, they\'re only half the solution.'
-    },
-  ],
-
-  troubleshoot: [
-    {
-      id: 'ts1',
-      type: 'mcq',
-      question: 'A PID loop is oscillating continuously with growing amplitude. The most likely cause is:',
-      options: [
-        'Ti too long (too little integral action)',
-        'Kp too high (excessive proportional gain causing instability)',
-        'Td too low (insufficient derivative action)',
-        'Dead time has decreased'
-      ],
-      answer: 1,
-      explanation: 'Growing oscillation = the loop has insufficient gain margin. The most common cause is Kp too high. The controller is overcorrecting every deviation, which causes a larger deviation in the opposite direction, which causes an even larger correction — and off we go to unstable land. Reduce Kp first. If that doesn\'t fix it, check Ti as well.'
-    },
-    {
-      id: 'ts2',
-      type: 'mcq',
-      question: 'A control loop shows steady-state offset — the PV stabilizes 5°C below the setpoint and stays there. The most likely cause is:',
-      options: [
-        'Integral windup',
-        'P-only control with no integral action, or integral disabled',
-        'Derivative gain too high',
-        'Setpoint ramp rate too slow'
-      ],
-      answer: 1,
-      explanation: 'Steady-state offset with no elimination = integral is missing or disabled. P-only control needs error to produce output — at steady state, that error is the offset. Check: is Ti set to an absurdly large number (effectively infinity)? Is integral action disabled in the configuration? Did someone set Ki = 0 "just to see what would happen"? Answer: now you know.'
-    },
-    {
-      id: 'ts3',
-      type: 'mcq',
-      question: 'After a process disturbance clears, the controller output remains pegged at 100% and the PV recovers very slowly. This is symptomatic of:',
-      options: [
-        'Derivative action causing output spikes',
-        'Integral windup — the integrator accumulated a large value during the disturbance',
-        'Kp too low causing sluggish proportional response',
-        'A failed transmitter sending a low signal'
-      ],
-      answer: 1,
-      explanation: 'Classic windup recovery: the output was pinned at the limit during the disturbance, and the integrator kept accumulating. When the disturbance clears, the integrator has a massive accumulated value it must first work off before the output can drop below 100%. The PV overshoots and the recovery is slow and sloppy. Anti-windup prevents this. Recognizing it on a trend tells you to add anti-windup to the configuration.'
-    },
-    {
-      id: 'ts4',
-      type: 'mcq',
-      question: 'High-frequency oscillation of the controller output (short period, small amplitude) is most likely caused by:',
-      options: [
-        'Ti too long',
-        'Kp too low',
-        'Td too high or a missing derivative filter',
-        'Setpoint too high'
-      ],
-      answer: 2,
-      explanation: 'Derivative amplifies high-frequency noise. Without a filter (or with a filter that\'s too loose), every noise spike on the PV creates a large spike in the derivative output, causing the CO to chatter at the noise frequency. The valve tries to follow — causing wear and eventually failure. Reduce Td, add or tighten the derivative filter, or consider moving to PI (no derivative) if the process allows it.'
-    },
-    {
-      id: 'ts5',
-      type: 'mcq',
-      question: 'Valve stiction causes what characteristic pattern in a control loop trend?',
-      options: [
-        'Smooth exponential decay to setpoint',
-        'Large irregular oscillations at varying amplitude',
-        'Regular limit cycling — constant-amplitude oscillation at a fixed period',
-        'Steady-state offset only, no oscillation'
-      ],
-      answer: 2,
-      explanation: 'Stiction (static friction in a valve) causes limit cycling: the controller drives CO higher to overcome friction → valve finally jumps past the setpoint → error reverses → controller drives CO lower → valve sticks again → jumps again. The result is a constant-amplitude, fixed-period oscillation that can\'t be eliminated by tuning alone. The fix is mechanical: repair or replace the valve/actuator, or add a positioner.'
-    },
-    {
-      id: 'ts6',
-      type: 'mcq',
-      question: 'The PV shows random high-frequency noise but no oscillation from the controller. Your first investigative step should be:',
-      options: [
-        'Increase Kp to overcome the noise',
-        'Check the transmitter, wiring, and grounding for noise sources',
-        'Disable integral action to reduce sensitivity',
-        'Increase scan time to average out the noise'
-      ],
-      answer: 1,
-      explanation: 'High-frequency PV noise is usually a measurement problem, not a control problem. Bad grounding, nearby VFDs causing electromagnetic interference, loose connections, or a failing transmitter all produce noisy signals. Fix the source before tuning the controller around it. A derivative filter is the right controller-side mitigation, but it\'s treating the symptom. Trace the root cause first.'
-    },
-    {
-      id: 'ts7',
-      type: 'mcq',
-      question: 'A loop that was well-tuned suddenly becomes oscillatory after no parameter changes. Possible causes include:',
-      options: [
-        'The tuning parameters degrade over time spontaneously',
-        'Process gain, dead time, or time constant changed due to a process change (load, equipment wear, valve wear)',
-        'The PLC battery failed, resetting the PID parameters',
-        'Tuning parameters are only valid at one operating point'
-      ],
-      answer: 1,
-      explanation: 'Loops go out of tune because the process changes, not because the controller changes (unless someone changed parameters). A heat exchanger fouled (τ changes). A valve seat eroded (gain changes). A pipe clogged (dead time increased). The tuning that was perfect for the clean process is now too aggressive for the fouled one. Trending loop performance over time catches these drift problems early.'
-    },
-    {
-      id: 'ts8',
-      type: 'mcq',
-      question: 'When troubleshooting a sluggish loop, you examine the trend and see the PV slowly crawling toward SP over many minutes without oscillation. The most likely tuning fix is:',
-      options: [
-        'Reduce Kp and increase Ti',
-        'Increase Kp and/or reduce Ti (decrease integral time, increase integral action)',
-        'Enable derivative to speed up response',
-        'Enable output rate limiting'
-      ],
-      answer: 1,
-      explanation: 'Sluggish = too conservative tuning. The controller is moving in the right direction but too slowly. Increase Kp to get more initial kick. Reduce Ti to speed up integral action (more repeats per minute, faster windup toward SP). Add D last if the process has enough lag to benefit. Check that you haven\'t accidentally set enormous Ti values — this is surprisingly common when parameters are entered in different units than expected.'
-    },
-    {
-      id: 'ts9',
-      type: 'fill',
-      question: 'To troubleshoot a PID loop effectively, you should always look at the trend of ___, ___, and ___ together.',
-      answer: 'SP, PV, CO',
-      hint: 'The three main loop variables',
-      explanation: 'SP-PV-CO trending is the diagnostic foundation. SP shows what was commanded. PV shows what happened. CO shows what the controller did about it. The relationships between these three reveal: Is the PV tracking SP? Is the CO responding appropriately to error? Is the output saturating? Is there a delay between CO changes and PV response? You can\'t diagnose what you don\'t trend.'
-    },
-    {
-      id: 'ts10',
-      type: 'mcq',
-      question: 'A flow control loop has a CO signal at 60% but the actual flow is significantly lower than expected. Without suspecting the controller tuning, your first checks should be:',
-      options: [
-        'Reduce Ti to add more integral action',
-        'Check valve position, valve trim condition, upstream pressure, and flow transmitter calibration',
-        'Increase Kp to overcome the flow deficit',
-        'Switch to cascade control with a pressure inner loop'
-      ],
-      answer: 1,
-      explanation: 'When CO seems right but PV is wrong, the problem is almost always between them — not in the controller. Check: Is the valve actually responding to CO? (positioner, actuator, I/P converter) Is the valve trim worn or plugged? Is upstream pressure adequate? Is the flow transmitter reading correctly? PID tuning cannot compensate for a partially-failed actuator or a plugged orifice plate.'
-    },
-    {
-      id: 'ts11',
-      type: 'mcq',
-      question: 'An operator reports that the loop "hunts" around setpoint in manual mode. This means:',
-      options: [
-        'The PID tuning is too aggressive',
-        'The manual mode output oscillates — which cannot be caused by PID tuning; it must be a process or measurement issue',
-        'Integral windup is occurring in manual mode',
-        'The setpoint is changing automatically'
-      ],
-      answer: 1,
-      explanation: 'In manual mode, the PID algorithm is bypassed — the operator sets CO directly. If the PV still oscillates in manual, the cause is NOT the PID. It\'s either: the process itself is inherently oscillatory at this operating point, there\'s a measurement problem causing apparent oscillation, or something else in the control system is affecting the process. Manual mode is the great isolator for diagnosing PID vs. process problems.'
-    },
-    {
-      id: 'ts12',
-      type: 'mcq',
-      question: 'What does it mean when a controller shows "output at 100%" but the PV is still falling?',
-      options: [
-        'The controller is working correctly — it has saturated trying to correct',
-        'The integral has wound up to 100%',
-        'Something is wrong in the final control element or process — the controller has done all it can and it\'s not enough',
-        'The setpoint is set too low'
-      ],
-      answer: 2,
-      explanation: 'CO = 100% and PV still falling = the controller has maxed out its response and it\'s insufficient. The problem is not tuning — it\'s capacity. Is the valve stuck closed despite 100% command? Has the process load exceeded what the control element can supply? Has something failed upstream? At this point, you\'re debugging the physical plant, not the PID algorithm. Check field devices, not parameters.'
-    },
-  ],
-
-  lab: [
-    {
-      id: 'lab1',
-      type: 'mcq',
-      question: 'Which Python library provides PID simulation and step response analysis tools?',
-      options: [
-        'numpy',
-        'pandas',
-        'control (pip install control)',
-        'scipy.signal only'
-      ],
-      answer: 2,
-      explanation: 'The Python `control` library (pip install control) provides transfer functions, step response, Bode plots, root locus, and closed-loop analysis tools — essentially a free MATLAB Control System Toolbox. scipy.signal has some overlap but lacks the control-specific abstractions. For PID simulation and learning, `control` is the right tool. It runs in Jupyter, which means you can document your analysis alongside the code.'
-    },
-    {
-      id: 'lab2',
-      type: 'mcq',
-      question: 'For a lab exercise tuning PID on a FOPDT process with K=1, τ=10, θ=2, using the open-loop step test method, what is the θ/τ ratio and what does it indicate?',
-      options: [
-        'θ/τ = 5; this is a very difficult process to control',
-        'θ/τ = 0.2; this is a relatively easy process to control',
-        'θ/τ = 2.0; dead time dominates',
-        'θ/τ = 10; the process is integrating'
-      ],
-      answer: 1,
-      explanation: 'θ/τ = 2/10 = 0.2 — well below 1.0, meaning lag dominates over dead time. This is a well-behaved, relatively easy-to-control process. Good for a learning exercise because the controller has plenty of dynamic response to work with. You can experiment with aggressive tuning without immediately ending up in an unstable oscillation. Save the θ/τ > 1 processes for after you\'ve built some confidence.'
-    },
-    {
-      id: 'lab3',
-      type: 'mcq',
-      question: 'A Bode plot is useful for PID tuning because it shows:',
-      options: [
-        'The time-domain step response of the closed-loop system',
-        'Gain and phase as a function of frequency, revealing gain margin and phase margin for stability analysis',
-        'The valve travel over time during a tuning test',
-        'The integral windup accumulation during a step disturbance'
-      ],
-      answer: 1,
-      explanation: 'The Bode plot shows how the open-loop system\'s gain and phase vary with frequency. Gain margin (how much gain you can add before instability) and phase margin (how much phase lag before instability at unity gain) tell you directly how much stability margin your tuning has. Frequency-domain design lets you specify margins explicitly, rather than hoping empirical tuning has enough margin.'
-    },
-    {
-      id: 'lab4',
-      type: 'mcq',
-      question: 'In MATLAB Control System Toolbox, which function generates a closed-loop step response plot?',
-      options: [
-        'openloop(sys)',
-        'step(feedback(C*P, 1))',
-        'bode(sys, Kp)',
-        'pid_response(C, P, SP)'
-      ],
-      answer: 1,
-      explanation: 'step(feedback(C*P, 1)) — multiply the controller transfer function C by the plant P to get the open-loop, wrap it in negative feedback with feedback(·, 1), then call step() on the closed-loop result. This plots the closed-loop step response. feedback(sys, 1) implements unity negative feedback. The pattern is: define C, define P, close the loop, analyze. Every controls textbook uses this workflow.'
-    },
-    {
-      id: 'lab5',
-      type: 'mcq',
-      question: 'When using a free Excel-based PID simulator for learning, which exercise best illustrates integral windup?',
-      options: [
-        'Apply a small SP step change and observe the smooth response',
-        'Saturate the output at 100% by demanding a very large SP change, then observe slow recovery when the SP is reduced',
-        'Set Kp = 0 and observe I-only response',
-        'Increase Kd until oscillation begins'
-      ],
-      answer: 1,
-      explanation: 'To see windup: set SP very high so the output saturates at 100% immediately. Let the simulation run for 30+ seconds. Then reduce SP to a reasonable value. Watch the PV slowly recover while the output stays pegged — that\'s the integrator unwinding. Then enable anti-windup and repeat: the recovery is immediate. Seeing both behaviors back-to-back makes the concept permanent.'
-    },
-    {
-      id: 'lab6',
-      type: 'mcq',
-      question: 'Simulink (MATLAB) is preferred for PID simulation over a simple spreadsheet because:',
-      options: [
-        'Simulink is free and requires no license',
-        'Simulink enables graphical block diagram modeling of complex control structures, nonlinear elements, and dynamic interactions that spreadsheets cannot represent accurately',
-        'Simulink automatically tunes PID parameters without user input',
-        'Simulink runs faster on older computers'
-      ],
-      answer: 1,
-      explanation: 'Simulink lets you model cascade loops, nonlinear valve characteristics, anti-windup, feedforward, and multi-loop interactions visually and accurately. A spreadsheet approximates simple FOPDT + PID reasonably well but breaks down with anything complex. Simulink also interfaces directly with real hardware via HIL (hardware-in-the-loop) testing. It\'s the difference between sketching a system and engineering it.'
-    },
-  ],
+  intro: {
+    level1: [
+      { id: 'intro_l1_1', type: 'mcq', q: 'What does PID stand for?', options: ['Proportional–Integral–Derivative', 'Process–Input–Data', 'Pressure–Inflow–Discharge', 'Phase–Integration–Drift'], answer: 'Proportional–Integral–Derivative', explanation: 'PID is a three-term feedback controller: Proportional, Integral, and Derivative.' },
+      { id: 'intro_l1_2', type: 'tf', q: 'A PID controller is a type of closed-loop feedback controller.', answer: 'True', explanation: 'PID controllers use feedback from the process to continuously correct error.' },
+      { id: 'intro_l1_3', type: 'mcq', q: 'What is the "error" signal in a PID controller?', options: ['The difference between setpoint and process variable', 'The output signal to the actuator', 'The derivative of the process variable', 'The integral of the control output'], answer: 'The difference between setpoint and process variable', explanation: 'Error = Setpoint – Process Variable. The controller tries to drive this to zero.' },
+      { id: 'intro_l1_4', type: 'mcq', q: 'Which term in a PID controller responds to the current error?', options: ['Proportional', 'Integral', 'Derivative', 'Feedforward'], answer: 'Proportional', explanation: 'The proportional term produces output directly proportional to the current error.' },
+      { id: 'intro_l1_5', type: 'tf', q: 'Open-loop control uses feedback from the process output.', answer: 'False', explanation: 'Open-loop control has no feedback; it acts without measuring the process output.' },
+      { id: 'intro_l1_6', type: 'mcq', q: 'In a PID loop, what is the "process variable" (PV)?', options: ['The measured output of the process', 'The desired target value', 'The controller gain', 'The actuator position'], answer: 'The measured output of the process', explanation: 'The PV is the measured value (e.g., temperature, pressure) fed back to the controller.' },
+      { id: 'intro_l1_7', type: 'mcq', q: 'What is the setpoint (SP) in a control loop?', options: ['The desired value the process should achieve', 'The current measured value', 'The controller output', 'The process gain'], answer: 'The desired value the process should achieve', explanation: 'The setpoint is the target value the controller tries to maintain.' },
+      { id: 'intro_l1_8', type: 'tf', q: 'The output of a PID controller is sent to an actuator (e.g., valve, motor).', answer: 'True', explanation: 'The controller output (CO) drives an actuator that manipulates the process.' },
+      { id: 'intro_l1_9', type: 'mcq', q: 'Which of the following is an example of a process variable in an HVAC system?', options: ['Room temperature', 'Valve opening percentage', 'Setpoint temperature', 'Controller output signal'], answer: 'Room temperature', explanation: 'Room temperature is what is measured and fed back as the process variable.' },
+      { id: 'intro_l1_10', type: 'mcq', q: 'What happens when error = 0 in a PID controller?', options: ['The process variable equals the setpoint', 'The controller output is always zero', 'The derivative term dominates', 'The loop is in open-loop mode'], answer: 'The process variable equals the setpoint', explanation: 'Error = SP – PV. When error is zero, PV has reached the setpoint.' },
+      { id: 'intro_l1_11', type: 'tf', q: 'Feedback control can compensate for disturbances automatically.', answer: 'True', explanation: 'Because it continuously measures PV, feedback control corrects for unexpected disturbances.' },
+      { id: 'intro_l1_12', type: 'mcq', q: 'Which block in a control loop converts the controller output into a physical action?', options: ['Actuator', 'Sensor', 'Transmitter', 'Comparator'], answer: 'Actuator', explanation: 'The actuator (valve, pump, heater) converts the electrical signal into a physical action.' },
+      { id: 'intro_l1_13', type: 'mcq', q: 'What device measures the process variable and sends a signal to the controller?', options: ['Transmitter/sensor', 'Actuator', 'Setpoint potentiometer', 'HMI display'], answer: 'Transmitter/sensor', explanation: 'A sensor or transmitter measures the process variable and sends the feedback signal.' },
+      { id: 'intro_l1_14', type: 'tf', q: 'A higher proportional gain always improves control performance.', answer: 'False', explanation: 'Too high a gain causes oscillation or instability; tuning is needed for optimal performance.' },
+      { id: 'intro_l1_15', type: 'mcq', q: 'Which control mode is simplest but leaves a steady-state error (offset)?', options: ['Proportional-only', 'Integral-only', 'Derivative-only', 'PID'], answer: 'Proportional-only', explanation: 'P-only control is simple but has a steady-state offset because it requires some error to produce output.' },
+      { id: 'intro_l1_16', type: 'mcq', q: 'What does "steady-state error" mean?', options: ['The remaining error when the process has stabilized', 'An error that grows over time', 'An error caused by sensor noise', 'The maximum error during a step change'], answer: 'The remaining error when the process has stabilized', explanation: 'Steady-state (offset) error is the constant difference between SP and PV after the transient dies out.' },
+      { id: 'intro_l1_17', type: 'tf', q: 'Integral action eliminates steady-state error.', answer: 'True', explanation: 'The integral term accumulates error over time and drives it to zero at steady state.' },
+      { id: 'intro_l1_18', type: 'mcq', q: 'PID control is most commonly used in which type of industry?', options: ['Process industries (oil, chemical, power)', 'Automotive assembly lines only', 'Consumer electronics only', 'Aerospace only'], answer: 'Process industries (oil, chemical, power)', explanation: 'PID controllers are the backbone of process control in oil refineries, chemical plants, power stations, and water treatment.' },
+      { id: 'intro_l1_19', type: 'mcq', q: 'What percentage of industrial controllers are estimated to be PID-based?', options: ['More than 90%', 'About 50%', 'Less than 10%', 'About 75%'], answer: 'More than 90%', explanation: 'Studies estimate over 90% of industrial feedback controllers are PID or PI type.' },
+      { id: 'intro_l1_20', type: 'tf', q: 'The "D" term in a PID controller predicts future error by responding to the rate of change of error.', answer: 'True', explanation: 'The derivative term reacts to how fast the error is changing, providing anticipatory damping.' },
+    ],
+    level2: [
+      { id: 'intro_l2_1', type: 'mcq', q: 'In the parallel (ideal) PID form, the controller output is:', options: ['Kp·e + Ki·∫e·dt + Kd·de/dt', 'Kp·(e + (1/Ti)·∫e·dt + Td·de/dt)', 'e/Kp + e·Ti + e/Td', 'Kp·e · Ki·∫e · Kd·de/dt'], answer: 'Kp·e + Ki·∫e·dt + Kd·de/dt', explanation: 'The parallel form uses independent gains: Kp for P, Ki for I, Kd for D.' },
+      { id: 'intro_l2_2', type: 'mcq', q: 'In the standard (ISA) PID form, integral is parameterized by:', options: ['Ti (integral time constant)', 'Ki (integral gain)', 'Ii (integral index)', 'Ri (reset rate squared)'], answer: 'Ti (integral time constant)', explanation: 'The ISA form uses Ti (reset time in minutes/repeat) instead of separate Ki gain.' },
+      { id: 'intro_l2_3', type: 'tf', q: 'A larger Ti (integral time) means faster integral action.', answer: 'False', explanation: 'Larger Ti means SLOWER integral action; Ti is in the denominator of the integral term (1/Ti).' },
+      { id: 'intro_l2_4', type: 'mcq', q: 'What is "reset rate" (repeats per minute) in PID terminology?', options: ['1/Ti — how many times per minute the P-action is repeated by I', 'The rate at which the setpoint changes', 'The number of scan cycles per second', 'The derivative filter coefficient'], answer: '1/Ti — how many times per minute the P-action is repeated by I', explanation: 'Reset rate = 1/Ti; it describes how many times per minute the integral repeats the proportional kick.' },
+      { id: 'intro_l2_5', type: 'mcq', q: 'What is "derivative time" (Td) a measure of?', options: ['How far ahead the derivative predicts based on rate of error change', 'The time constant of the integral filter', 'The scan interval of the PLC', 'The time for the error to reach zero'], answer: 'How far ahead the derivative predicts based on rate of error change', explanation: 'Td represents the prediction horizon; larger Td means stronger derivative action.' },
+      { id: 'intro_l2_6', type: 'tf', q: 'In a series (interacting) PID form, the P, I, and D terms interact with each other.', answer: 'True', explanation: 'In the series form, P multiplies both I and D, causing interaction between terms.' },
+      { id: 'intro_l2_7', type: 'mcq', q: 'Which PID form is most commonly implemented in modern PLCs and DCS systems?', options: ['Parallel (non-interacting) form', 'Series (interacting) form', 'Positional-only form', 'Velocity form only'], answer: 'Parallel (non-interacting) form', explanation: 'Modern systems favor the parallel form for independent tuning of each term.' },
+      { id: 'intro_l2_8', type: 'mcq', q: 'What is "bumpless transfer" in PID control?', options: ['Switching between manual and auto mode without a sudden output jump', 'Filtering setpoint steps to avoid bumps', 'Disabling derivative during setpoint changes', 'Limiting integral windup during manual mode'], answer: 'Switching between manual and auto mode without a sudden output jump', explanation: 'Bumpless transfer initializes the controller state so the output matches when switching to auto.' },
+      { id: 'intro_l2_9', type: 'tf', q: 'Direct-acting control increases output when the process variable increases above the setpoint.', answer: 'True', explanation: 'Direct action: error increases → output increases (e.g., cooling control).' },
+      { id: 'intro_l2_10', type: 'mcq', q: 'In reverse-acting PID control, when the process variable increases above the setpoint:', options: ['The controller output decreases', 'The controller output increases', 'The integral term resets', 'The derivative term is disabled'], answer: 'The controller output decreases', explanation: 'Reverse action: PV above SP → error negative → output decreases (e.g., heating control).' },
+      { id: 'intro_l2_11', type: 'mcq', q: 'What is "integral windup"?', options: ['Excessive accumulation of integral when output is saturated', 'Rapid oscillation caused by high derivative gain', 'A filter applied to the setpoint signal', 'Windup of the setpoint ramp generator'], answer: 'Excessive accumulation of integral when output is saturated', explanation: 'When the output is at its limit (0% or 100%), integral keeps accumulating, causing delayed response.' },
+      { id: 'intro_l2_12', type: 'tf', q: 'Anti-windup techniques limit integral accumulation during output saturation.', answer: 'True', explanation: 'Anti-windup stops or back-calculates the integral when the output is saturated.' },
+      { id: 'intro_l2_13', type: 'mcq', q: 'Which of the following best describes "derivative kick"?', options: ['A sudden spike in derivative output when the setpoint changes abruptly', 'Noise amplification by the derivative term', 'A delay in derivative response', 'An increase in derivative gain over time'], answer: 'A sudden spike in derivative output when the setpoint changes abruptly', explanation: 'A step change in SP causes an instantaneous large derivative output spike called derivative kick.' },
+      { id: 'intro_l2_14', type: 'mcq', q: 'How is derivative kick typically prevented?', options: ['Apply derivative to PV only, not error', 'Reduce proportional gain', 'Increase integral time', 'Use a feedforward path'], answer: 'Apply derivative to PV only, not error', explanation: 'D-on-PV calculates d(PV)/dt instead of d(error)/dt, eliminating the kick on SP steps.' },
+      { id: 'intro_l2_15', type: 'mcq', q: 'What is a "deadband" in process control?', options: ['A range of error within which no control action is taken', 'The time between samples', 'The delay in the actuator response', 'The measurement noise level'], answer: 'A range of error within which no control action is taken', explanation: 'A deadband prevents unnecessary small corrections by ignoring errors within a tolerance band.' },
+      { id: 'intro_l2_16', type: 'tf', q: 'PID control alone is ideal for integrating (non-self-regulating) processes without any special considerations.', answer: 'False', explanation: 'Integrating processes accumulate over time; standard PID may cause windup or instability without care.' },
+      { id: 'intro_l2_17', type: 'mcq', q: 'What is the "control horizon" concept related to PID?', options: ['It is a Model Predictive Control concept, not directly PID', 'The time it takes for PID to reach setpoint', 'The derivative prediction window', 'The integral reset time'], answer: 'It is a Model Predictive Control concept, not directly PID', explanation: 'Control horizon is an MPC concept. PID does not use a receding horizon optimization.' },
+      { id: 'intro_l2_18', type: 'mcq', q: 'In a discrete-time (digital) PID implementation, what replaces the continuous integral?', options: ['A summation (rectangular or trapezoidal approximation)', 'A Laplace transform', 'A finite impulse response filter', 'A Z-transform Kalman gain'], answer: 'A summation (rectangular or trapezoidal approximation)', explanation: 'Digital PID replaces continuous integration with a running sum of error × sample time.' },
+      { id: 'intro_l2_19', type: 'tf', q: 'The velocity form of PID calculates the change in output (ΔCO) rather than the absolute output.', answer: 'True', explanation: 'The velocity (incremental) form outputs ΔCO each scan, which naturally handles bumpless transfer.' },
+      { id: 'intro_l2_20', type: 'mcq', q: 'What is "sample time" (Ts) and why does it matter for digital PID?', options: ['The scan interval; too large causes poor approximation of continuous control', 'The time the loop has been running', 'The derivative filter time constant', 'The time between manual interventions'], answer: 'The scan interval; too large causes poor approximation of continuous control', explanation: 'Sample time must be fast enough (typically 1/10 of the process time constant) for digital PID to approximate continuous control.' },
+    ],
+    level3: [
+      { id: 'intro_l3_1', type: 'mcq', q: 'In the Laplace domain, the parallel PID transfer function C(s) is:', options: ['Kp + Ki/s + Kd·s', 'Kp·(1 + 1/(Ti·s) + Td·s)', 'Kp/(1 + Ti·s + Td·s²)', 'Kp·s/(Ki + Kd·s²)'], answer: 'Kp + Ki/s + Kd·s', explanation: 'C(s) = Kp + Ki/s + Kd·s for the parallel form; s represents the derivative operator, 1/s the integrator.' },
+      { id: 'intro_l3_2', type: 'mcq', q: 'What is the closed-loop transfer function of a unity-feedback system with plant G(s) and controller C(s)?', options: ['C(s)·G(s) / (1 + C(s)·G(s))', 'G(s) / C(s)', 'C(s) / (1 + G(s))', 'G(s)·(1 + C(s))'], answer: 'C(s)·G(s) / (1 + C(s)·G(s))', explanation: 'Standard closed-loop: T(s) = L(s)/(1+L(s)) where L(s) = C(s)·G(s) is the open-loop transfer function.' },
+      { id: 'intro_l3_3', type: 'tf', q: 'The integral term in PID adds a pole at the origin (s=0) in the open-loop transfer function, guaranteeing zero steady-state error for step inputs.', answer: 'True', explanation: 'A pole at s=0 (integrator) provides infinite DC gain, eliminating steady-state error for step references.' },
+      { id: 'intro_l3_4', type: 'mcq', q: 'The derivative term in PID adds a zero at s = −Kp/Kd. How does this affect root locus behavior?', options: ['It pulls closed-loop poles toward the zero, improving damping', 'It adds a pole, slowing the response', 'It has no effect on root locus', 'It moves all poles to the right-half plane'], answer: 'It pulls closed-loop poles toward the zero, improving damping', explanation: 'A zero attracts root locus branches, pulling poles toward it and improving the damping of closed-loop response.' },
+      { id: 'intro_l3_5', type: 'mcq', q: 'What is the Phase Margin (PM) and what PM value typically indicates a well-tuned PID loop?', options: ['The phase difference at gain crossover; 45°–60° is typical', 'The gain difference at phase crossover; > 0 dB is needed', 'The frequency at which gain = 1; should equal the process bandwidth', 'The total phase lag; must be < 90°'], answer: 'The phase difference at gain crossover; 45°–60° is typical', explanation: 'PM = 180° + ∠L(jω) at ω where |L|=1. PM of 45–60° provides good stability with acceptable speed.' },
+      { id: 'intro_l3_6', type: 'tf', q: 'Increasing Kp reduces the gain margin of the closed-loop system.', answer: 'True', explanation: 'Higher Kp increases the open-loop gain, moving the gain crossover frequency up and reducing gain margin.' },
+      { id: 'intro_l3_7', type: 'mcq', q: 'The Smith Predictor is used to handle:', options: ['Large time delays (dead time) in the process', 'Nonlinear valve characteristics', 'Sensor noise amplification by derivative', 'Multiple-input multiple-output coupling'], answer: 'Large time delays (dead time) in the process', explanation: 'Smith Predictor adds a model-based dead-time compensator, allowing PID to control processes with large delays.' },
+      { id: 'intro_l3_8', type: 'mcq', q: 'What is "windup" in terms of the integral state, and how does back-calculation anti-windup work?', options: ['Integral saturates; back-calculation feeds the output clamp error back to limit integration rate', 'Integral oscillates; derivative is increased to damp it', 'Proportional gain is reduced when integral is large', 'Windup is eliminated by reducing sample time'], answer: 'Integral saturates; back-calculation feeds the output clamp error back to limit integration rate', explanation: 'Back-calculation: ΔI_correction = (CO_actual − CO_unlimited)/Tt; this drains the integral during saturation.' },
+      { id: 'intro_l3_9', type: 'mcq', q: 'In the Internal Model Control (IMC) PID design method, the PID parameters are derived from:', options: ['A process model and a single tuning parameter λ (closed-loop time constant)', 'Ziegler-Nichols step response only', 'Gain and phase margins independently', 'Empirical operator experience'], answer: 'A process model and a single tuning parameter λ (closed-loop time constant)', explanation: 'IMC-PID uses the FOPDT model and λ to compute Kp, Ti, Td analytically with a clear performance-robustness tradeoff.' },
+      { id: 'intro_l3_10', type: 'tf', q: 'An underdamped closed-loop response (damping ratio ζ < 1) always indicates poor PID tuning.', answer: 'False', explanation: 'Some overshoot (ζ slightly below 1) is acceptable and may be desirable for fast setpoint tracking; excessively low ζ is problematic.' },
+      { id: 'intro_l3_11', type: 'mcq', q: 'What is the difference between a "regulatory" problem and a "servo" problem in process control?', options: ['Regulatory rejects disturbances; servo tracks setpoint changes', 'Regulatory uses PID; servo uses feedforward only', 'Regulatory is for temperature; servo is for pressure', 'Regulatory applies to slow processes; servo to fast'], answer: 'Regulatory rejects disturbances; servo tracks setpoint changes', explanation: 'Regulatory control maintains SP despite disturbances; servo control follows SP changes — often require different tuning emphasis.' },
+      { id: 'intro_l3_12', type: 'mcq', q: 'For a FOPDT (First Order Plus Dead Time) model Gp(s) = Ke^(−θs)/(τs+1), what are the three parameters?', options: ['K (gain), τ (time constant), θ (dead time)', 'Kp (proportional), Ti (integral), Td (derivative)', 'ωn (natural freq), ζ (damping), K (gain)', 'Gain, Phase Margin, Bandwidth'], answer: 'K (gain), τ (time constant), θ (dead time)', explanation: 'FOPDT has three parameters: process gain K, time constant τ (63.2% response time), and dead time θ.' },
+      { id: 'intro_l3_13', type: 'tf', q: 'The ratio θ/τ (dead time to time constant) is a key difficulty index: ratios > 1 make PID control very challenging.', answer: 'True', explanation: 'When θ/τ > 1 the process is "dead-time dominant" and PID performance degrades severely; advanced methods are needed.' },
+      { id: 'intro_l3_14', type: 'mcq', q: 'What does the "internal model principle" state?', options: ['A controller that includes a model of the disturbance/reference can reject/track it perfectly', 'Every process can be modeled as first-order', 'PID contains a model of the plant', 'Feedforward uses an internal copy of the sensor signal'], answer: 'A controller that includes a model of the disturbance/reference can reject/track it perfectly', explanation: 'The internal model principle: to perfectly reject/track a signal class, the controller must incorporate a model of that signal generator.' },
+      { id: 'intro_l3_15', type: 'mcq', q: 'How does a "filtered derivative" (derivative with first-order filter N) affect the PID transfer function?', options: ['Adds a pole at s = −N/Td, limiting high-frequency amplification', 'Removes the derivative term at low frequencies', 'Increases the integral action at high frequencies', 'Shifts all PID zeros to the right half plane'], answer: 'Adds a pole at s = −N/Td, limiting high-frequency amplification', explanation: 'The filtered derivative Kd·s/(1+s·Td/N) adds a pole that limits noise amplification; N=5–20 is typical.' },
+      { id: 'intro_l3_16', type: 'tf', q: 'The "Two Degree of Freedom" (2DOF) PID structure independently tunes setpoint tracking and disturbance rejection.', answer: 'True', explanation: '2DOF PID uses a setpoint weighting parameter b for P and c for D, decoupling servo and regulatory performance.' },
+      { id: 'intro_l3_17', type: 'mcq', q: 'What is the "describing function" method used for in PID analysis?', options: ['Analyzing limit cycles in nonlinear systems with PID', 'Determining optimal Kp for linear plants', 'Computing integral windup thresholds', 'Designing feedforward gains'], answer: 'Analyzing limit cycles in nonlinear systems with PID', explanation: 'The describing function approximates nonlinear elements (relays, saturations) as linear gains for frequency-domain stability analysis.' },
+      { id: 'intro_l3_18', type: 'mcq', q: 'In the IMC-PID method, increasing λ (the desired closed-loop time constant):', options: ['Slows the response but increases robustness', 'Speeds the response and increases robustness', 'Has no effect on gains', 'Increases Kp and decreases Ti'], answer: 'Slows the response but increases robustness', explanation: 'Larger λ → smaller Kp → slower, more conservative, more robust control. Tradeoff: performance vs robustness.' },
+      { id: 'intro_l3_19', type: 'mcq', q: 'What is "gain scheduling" in PID control?', options: ['Changing PID gains based on operating conditions or setpoint', 'Using a single fixed gain over the full range', 'Scheduling operator shifts to tune PID', 'Automatically computing gains from a self-tuning algorithm'], answer: 'Changing PID gains based on operating conditions or setpoint', explanation: 'Gain scheduling adapts PID parameters (Kp, Ti, Td) to different operating regions where process behavior changes.' },
+      { id: 'intro_l3_20', type: 'tf', q: 'Model Predictive Control (MPC) can outperform PID on processes with constraints and strong interactions, but at higher computational cost.', answer: 'True', explanation: 'MPC optimizes over a future horizon subject to constraints; superior for MIMO with constraints but requires more computation.' },
+    ],
+  },
+  loop: {
+    level1: [
+      { id: 'loop_l1_1', type: 'mcq', q: 'What does a P&ID stand for in process control?', options: ['Piping and Instrumentation Diagram', 'PID and Integration Drawing', 'Process and Instrument Design', 'Proportional and Integral Diagram'], answer: 'Piping and Instrumentation Diagram', explanation: 'P&ID shows the arrangement of process equipment, piping, and control instrumentation.' },
+      { id: 'loop_l1_2', type: 'tf', q: 'A control loop includes at minimum: a sensor, a controller, and an actuator.', answer: 'True', explanation: 'The basic loop components are: sensor (measures PV), controller (computes output), actuator (drives the process).' },
+      { id: 'loop_l1_3', type: 'mcq', q: 'What is a "self-regulating" process?', options: ['A process that naturally reaches equilibrium without control', 'A process that controls itself without a PID', 'A process with no time constant', 'A process that is inherently unstable'], answer: 'A process that naturally reaches equilibrium without control', explanation: 'Self-regulating processes reach a new steady state after a disturbance (e.g., a tank with outlet valve).' },
+      { id: 'loop_l1_4', type: 'mcq', q: 'Which of the following is an example of an integrating (non-self-regulating) process?', options: ['A liquid level tank with a fixed inlet and no outlet valve', 'A temperature-controlled oven', 'A pressure vessel with relief valve', 'A flow-controlled pipe segment'], answer: 'A liquid level tank with a fixed inlet and no outlet valve', explanation: 'A tank with fixed inlet accumulates liquid without equilibrium — classic integrating process.' },
+      { id: 'loop_l1_5', type: 'tf', q: 'Increasing the controller output always increases the process variable.', answer: 'False', explanation: 'It depends on action type: in reverse-acting loops (heating), increased output raises PV; in direct-acting (cooling), it lowers PV.' },
+      { id: 'loop_l1_6', type: 'mcq', q: 'What is "process gain" (Kp)?', options: ['The ratio of change in PV to change in controller output at steady state', 'The proportional gain setting in the controller', 'The ratio of setpoint to error', 'The speed of the actuator'], answer: 'The ratio of change in PV to change in controller output at steady state', explanation: 'Process gain = ΔPV / ΔCO — characterizes how much the process responds to actuator changes.' },
+      { id: 'loop_l1_7', type: 'mcq', q: 'What is a "time constant" (τ) of a first-order process?', options: ['The time to reach 63.2% of the final response after a step change', 'The time for the process to overshoot', 'The time from dead time to oscillation', 'The PID scan interval'], answer: 'The time to reach 63.2% of the final response after a step change', explanation: 'For a first-order system, τ is the time to reach 1 − e⁻¹ ≈ 63.2% of the new steady state.' },
+      { id: 'loop_l1_8', type: 'tf', q: 'Dead time is a pure time delay between the controller output change and the start of the process response.', answer: 'True', explanation: 'Dead time (θ) represents transportation or measurement delays before the process starts responding.' },
+      { id: 'loop_l1_9', type: 'mcq', q: 'Which measurement best describes how fast a process reaches steady state after a disturbance?', options: ['Time constant (τ)', 'Dead time (θ)', 'Process gain (K)', 'Proportional band'], answer: 'Time constant (τ)', explanation: 'The time constant describes the speed of first-order response; larger τ = slower process.' },
+      { id: 'loop_l1_10', type: 'mcq', q: 'What is "proportional band" (PB)?', options: ['100/Kp — the PV range over which the output goes from 0% to 100%', 'The error band within which the integral is active', 'The range of the setpoint', 'The gain multiplied by 100'], answer: '100/Kp — the PV range over which the output goes from 0% to 100%', explanation: 'Proportional band = 100/Kp. Narrow PB = high gain; wide PB = low gain.' },
+      { id: 'loop_l1_11', type: 'tf', q: 'A flow control loop is typically the fastest control loop in a plant hierarchy.', answer: 'True', explanation: 'Flow loops respond quickly (time constants of seconds) and are usually the innermost loops in cascade schemes.' },
+      { id: 'loop_l1_12', type: 'mcq', q: 'What is a "cascade control" structure?', options: ['An outer loop sets the setpoint for an inner loop', 'Two PID controllers running on the same process variable', 'A parallel combination of P, I, and D terms', 'A feedforward path added to a PID loop'], answer: 'An outer loop sets the setpoint for an inner loop', explanation: 'Cascade: the primary (outer) controller output becomes the secondary (inner) controller setpoint.' },
+      { id: 'loop_l1_13', type: 'mcq', q: 'In a temperature control system, the manipulated variable is typically:', options: ['The flow of heating or cooling medium', 'The temperature setpoint', 'The measured temperature', 'The alarm setpoint'], answer: 'The flow of heating or cooling medium', explanation: 'The manipulated variable is what the controller acts on — usually a flow of steam, water, or fuel.' },
+      { id: 'loop_l1_14', type: 'tf', q: 'A "fail-safe" valve position means the valve goes to a predetermined safe state on loss of signal.', answer: 'True', explanation: 'Fail-open or fail-closed valves ensure a safe process state on instrument air or signal failure.' },
+      { id: 'loop_l1_15', type: 'mcq', q: 'What does "4-20 mA" signal represent in process control?', options: ['An analog signal range where 4 mA = 0% and 20 mA = 100% of range', 'A digital fieldbus protocol', 'A voltage signal used for high-power actuators', 'A safety signal for emergency shutdown'], answer: 'An analog signal range where 4 mA = 0% and 20 mA = 100% of range', explanation: '4-20 mA is the standard analog instrumentation signal; 4 mA live zero allows wire-break detection.' },
+      { id: 'loop_l1_16', type: 'mcq', q: 'What is the purpose of a "hand/auto" switch on a controller?', options: ['To switch between manual operator control and automatic PID control', 'To switch between heating and cooling', 'To toggle the derivative term', 'To enable cascade mode'], answer: 'To switch between manual operator control and automatic PID control', explanation: 'The H/A switch allows operators to take manual control over the output or return it to automatic PID.' },
+      { id: 'loop_l1_17', type: 'tf', q: 'In manual mode, the PID controller continuously computes its output but the operator overrides it.', answer: 'False', explanation: 'In manual mode, the controller output is set directly by the operator; PID computation is suspended or tracking.' },
+      { id: 'loop_l1_18', type: 'mcq', q: 'What is a "split-range" control scheme?', options: ['One controller output drives two actuators in different ranges', 'Two controllers sharing one actuator', 'Separate P, I, and D units wired separately', 'Cascade with split setpoints'], answer: 'One controller output drives two actuators in different ranges', explanation: 'Split-range: e.g., 0-50% output drives a heating valve, 50-100% drives a cooling valve.' },
+      { id: 'loop_l1_19', type: 'mcq', q: 'Which loop configuration uses the output of one process as the input to another in sequence?', options: ['Feedforward control', 'Cascade control', 'Ratio control', 'Override control'], answer: 'Ratio control', explanation: 'Ratio control maintains a fixed ratio between two process streams (e.g., fuel-to-air ratio in combustion).' },
+      { id: 'loop_l1_20', type: 'tf', q: 'A "transmitter" converts a physical measurement into a standard process signal (e.g., 4-20 mA).', answer: 'True', explanation: 'Transmitters condition and scale the sensor signal into a standard instrument range for the controller.' },
+    ],
+    level2: [
+      { id: 'loop_l2_1', type: 'mcq', q: 'In an open-loop step test, a 10% CO step causes a 5°C PV change at steady state. What is the process gain K?', options: ['0.5 °C/%', '5 °C/%', '2 °C/%', '0.2 °C/%'], answer: '0.5 °C/%', explanation: 'K = ΔPV/ΔCO = 5°C / 10% = 0.5 °C/%. Used as the basis for Ziegler-Nichols and IMC tuning.' },
+      { id: 'loop_l2_2', type: 'mcq', q: 'A process with time constant τ = 30 min and dead time θ = 5 min has a difficulty ratio θ/τ of:', options: ['0.17', '6', '25', '0.5'], answer: '0.17', explanation: 'θ/τ = 5/30 ≈ 0.17 — well below 1, meaning PID should work well on this process.' },
+      { id: 'loop_l2_3', type: 'tf', q: 'A second-order process has two time constants and can exhibit oscillatory step responses.', answer: 'True', explanation: 'Second-order systems can have complex poles; if underdamped (ζ<1), they exhibit oscillatory responses.' },
+      { id: 'loop_l2_4', type: 'mcq', q: 'What is the "reaction curve" method for process identification?', options: ['An open-loop step test recording PV vs time to find K, τ, θ', 'A closed-loop oscillation test at ultimate gain', 'A frequency-sweep test of the process', 'A ramp test to find process gain only'], answer: 'An open-loop step test recording PV vs time to find K, τ, θ', explanation: 'The reaction curve (step test) gives an S-shaped response from which K, τ, and θ are extracted graphically.' },
+      { id: 'loop_l2_5', type: 'mcq', q: 'In the reaction curve, θ is identified as:', options: ['The initial lag before significant PV movement', 'The time to reach 63.2% of final PV', 'The slope of the PV curve at inflection', 'The time to reach 100% of the final PV'], answer: 'The initial lag before significant PV movement', explanation: 'Dead time θ is the time from the CO step to when the PV tangent line intersects the initial baseline.' },
+      { id: 'loop_l2_6', type: 'tf', q: 'Higher process gain (K) generally requires lower controller gain (Kp) to maintain stability.', answer: 'True', explanation: 'The loop gain is K·Kp; to keep the loop gain in a stable range, higher K requires lower Kp.' },
+      { id: 'loop_l2_7', type: 'mcq', q: 'What is "valve hysteresis" and how does it affect control?', options: ['Dead band in valve travel; causes limit cycles and poor control', 'Valve speed; causes slow response', 'Valve gain nonlinearity; causes setpoint offset', 'Valve cavitation; causes erosion'], answer: 'Dead band in valve travel; causes limit cycles and poor control', explanation: 'Valve hysteresis (stiction, backlash) creates a dead band; the loop hunts around setpoint causing limit cycles.' },
+      { id: 'loop_l2_8', type: 'mcq', q: 'What is the effect of a "linear" vs "equal-percentage" valve trim on control loop behavior?', options: ['Linear gain is constant; equal-% gain increases with opening, requiring gain compensation', 'Equal-% is always better than linear', 'Linear valves are only used in on/off service', 'Equal-% valves are used for low-pressure drop only'], answer: 'Linear gain is constant; equal-% gain increases with opening, requiring gain compensation', explanation: 'Equal-percentage trim has gain that increases with opening (logarithmic), matching process characteristics that decrease with flow.' },
+      { id: 'loop_l2_9', type: 'tf', q: 'Feedforward control can compensate for measurable disturbances before they affect the process variable.', answer: 'True', explanation: 'Feedforward measures a disturbance and adds a compensating signal to the controller output before the PV is affected.' },
+      { id: 'loop_l2_10', type: 'mcq', q: 'In ratio control, the "ratio station" computes:', options: ['The setpoint for the controlled flow as a fraction of the wild flow', 'The difference between two flow signals', 'The sum of two flow rates', 'The integral of the flow error'], answer: 'The setpoint for the controlled flow as a fraction of the wild flow', explanation: 'Ratio station: controlled flow SP = ratio × wild (uncontrolled) flow. Used in combustion, blending, etc.' },
+      { id: 'loop_l2_11', type: 'mcq', q: 'What is "override control" (also called select control)?', options: ['Uses a high or low select to switch between controllers to protect equipment limits', 'Overrides the operator setpoint automatically', 'A cascade variant where secondary overrides primary', 'A mode where derivative overrides integral'], answer: 'Uses a high or low select to switch between controllers to protect equipment limits', explanation: 'Override/select control: multiple controllers compete; a signal selector picks whichever keeps the process safe.' },
+      { id: 'loop_l2_12', type: 'tf', q: 'In a cascade loop, if the secondary (inner) loop is not well tuned, the primary loop performance will suffer.', answer: 'True', explanation: 'Primary loop performance depends on secondary loop being fast and well-tuned; a slow inner loop degrades the cascade.' },
+      { id: 'loop_l2_13', type: 'mcq', q: 'A "decoupling" network between two interacting SISO loops is used to:', options: ['Cancel cross-channel interactions so each loop acts independently', 'Couple the loops together for better coordination', 'Remove derivative action from both loops', 'Filter noise from both process variables'], answer: 'Cancel cross-channel interactions so each loop acts independently', explanation: 'Decouplers add compensating signals that cancel the effect one loop has on the other PV.' },
+      { id: 'loop_l2_14', type: 'mcq', q: 'What is the "pairing" problem in MIMO control?', options: ['Choosing which manipulated variable controls which process variable to minimize interaction', 'Deciding whether to use cascade or ratio', 'Selecting the primary vs secondary variable in cascade', 'Matching sensor range to actuator range'], answer: 'Choosing which manipulated variable controls which process variable to minimize interaction', explanation: 'Pairing selects the MV–PV combinations that minimize loop interaction, often using the Relative Gain Array (RGA).' },
+      { id: 'loop_l2_15', type: 'tf', q: 'The Relative Gain Array (RGA) diagonal element near 1.0 indicates a good pairing for that MV-PV combination.', answer: 'True', explanation: 'RGA element ≈ 1 means the pairing is self-consistent and interactions are small — ideal pairing.' },
+      { id: 'loop_l2_16', type: 'mcq', q: 'What is a "P&ID tag" format for a controller typically?', options: ['Letter code + loop number (e.g., TIC-101 = Temperature Indicating Controller loop 101)', 'Only numbers (e.g., 101)', 'Signal type + address (e.g., AI-4-20)', 'Free-form description'], answer: 'Letter code + loop number (e.g., TIC-101 = Temperature Indicating Controller loop 101)', explanation: 'ISA 5.1 tag format: first letters indicate variable/function (T=temp, I=indicate, C=control), followed by loop number.' },
+      { id: 'loop_l2_17', type: 'mcq', q: 'What is the purpose of a "velocity limiter" or "rate limiter" on a controller output?', options: ['Limits how fast the output can change to protect mechanical equipment', 'Limits the maximum output value', 'Limits setpoint changes to prevent integral windup', 'Limits derivative gain magnitude'], answer: 'Limits how fast the output can change to protect mechanical equipment', explanation: 'Output rate limiting prevents rapid valve movement that could cause water hammer, pressure spikes, or mechanical damage.' },
+      { id: 'loop_l2_18', type: 'tf', q: 'A "positioner" on a control valve eliminates the effect of packing friction on valve position accuracy.', answer: 'True', explanation: 'A valve positioner closes a local position loop around the valve, correcting for friction, pressure drop changes, and hysteresis.' },
+      { id: 'loop_l2_19', type: 'mcq', q: 'What is "split-range sequencing" used for in temperature control of a reactor?', options: ['Heating valve active 0-50% CO, cooling valve active 50-100% CO', 'Two temperature sensors alternating control', 'PID switching between heat and cool modes', 'Cascade with split setpoints for heat and cool'], answer: 'Heating valve active 0-50% CO, cooling valve active 50-100% CO', explanation: 'Split-range allows one controller to manage both heating and cooling actuators over different output ranges.' },
+      { id: 'loop_l2_20', type: 'mcq', q: 'What is the main advantage of cascade control over single-loop control for temperature with steam flow?', options: ['Inner flow loop corrects for steam pressure disturbances before they affect temperature', 'It eliminates integral windup entirely', 'It removes the need for a temperature sensor', 'It allows open-loop operation of the flow valve'], answer: 'Inner flow loop corrects for steam pressure disturbances before they affect temperature', explanation: 'Cascade: the inner flow loop rejects steam pressure disturbances quickly, before they propagate to the slower temperature loop.' },
+    ],
+    level3: [
+      { id: 'loop_l3_1', type: 'mcq', q: 'The Relative Gain Array (RGA) for a 2×2 system is defined as λ_ij = (∂yi/∂uj)|open · (∂yi/∂uj)⁻¹|closed. What does λ_11 > 1 indicate?', options: ['Opening loop 1-1 will increase the effect of u1 on y1 — positive interaction from loop 2', 'Loop 1-1 is decoupled from loop 2', 'u1 has no effect on y2', 'The process is non-minimum phase'], answer: 'Opening loop 1-1 will increase the effect of u1 on y1 — positive interaction from loop 2', explanation: 'λ > 1 means that with other loops closed, interaction amplifies the paired gain — excessive pairing interaction.' },
+      { id: 'loop_l3_2', type: 'mcq', q: 'What is a "non-minimum phase" process, and how does it complicate PID control?', options: ['A process with a right-half-plane zero; PV initially moves opposite to the final direction', 'A process with dead time only', 'A process with negative gain', 'A process with more poles than zeros'], answer: 'A process with a right-half-plane zero; PV initially moves opposite to the final direction', explanation: 'Non-minimum phase (inverse response): e.g., boiler steam drum level dips before rising on increased feedwater — limits controller bandwidth.' },
+      { id: 'loop_l3_3', type: 'tf', q: 'The internal model control (IMC) framework guarantees nominal closed-loop stability for stable, minimum-phase plants.', answer: 'True', explanation: 'IMC structure: the controller Q(s) = G⁻¹(s)·f(s) ensures stability if G(s) is stable and minimum-phase.' },
+      { id: 'loop_l3_4', type: 'mcq', q: 'In distillation control, the "LV configuration" uses:', options: ['Reflux (L) and boilup (V) as manipulated variables for composition control', 'Level (L) and vapor (V) setpoints for pressure', 'Liquid feed and vent for overhead composition', 'Two temperature loops without interaction'], answer: 'Reflux (L) and boilup (V) as manipulated variables for composition control', explanation: 'LV configuration is energy-based: L (reflux) controls top composition, V (boilup) controls bottom — high RGA interaction.' },
+      { id: 'loop_l3_5', type: 'mcq', q: 'The Bristol Relative Gain Array for the LV distillation configuration often shows RGA elements much greater than 1 (e.g., 10–100). What does this imply?', options: ['Strong interaction; small modelling errors cause large detuning requirements', 'The configuration is ideal — no interaction', 'Perfect decoupling is achievable with simple gains', 'The process has no steady-state gain'], answer: 'Strong interaction; small modelling errors cause large detuning requirements', explanation: 'Large RGA values indicate strong coupling; plant-model mismatch causes large performance loss and requires significant detuning.' },
+      { id: 'loop_l3_6', type: 'tf', q: 'Niederlinski stability theorem states that if the sign of the RGA-weighted determinant is negative, the selected pairing will be unstable with integral action.', answer: 'True', explanation: 'Niederlinski index: det(G)/(∏Gii) must be positive for the pairing to be stable with integrating controllers.' },
+      { id: 'loop_l3_7', type: 'mcq', q: 'What is the "Morari Resilience Index" (MRI) used for in MIMO process control?', options: ['Measures the minimum singular value of the steady-state gain matrix as a controllability index', 'Measures operator reaction time', 'Measures valve hysteresis', 'Measures sensor accuracy'], answer: 'Measures the minimum singular value of the steady-state gain matrix as a controllability index', explanation: 'MRI = σ_min(G): higher minimum singular value means better controllability and resilience to uncertainty.' },
+      { id: 'loop_l3_8', type: 'mcq', q: 'In cascade control analysis, the inner loop transfer function G2(s) must satisfy what bandwidth requirement relative to the outer loop?', options: ['Inner loop bandwidth must be 3–10× faster than outer loop bandwidth', 'Inner and outer bandwidths must be equal', 'Inner loop must be slower to avoid interaction', 'No bandwidth requirement exists'], answer: 'Inner loop bandwidth must be 3–10× faster than outer loop bandwidth', explanation: 'For cascade to be effective, the inner loop must be fast enough to appear as unity gain to the outer loop.' },
+      { id: 'loop_l3_9', type: 'mcq', q: 'What is the "condition number" of a process gain matrix G, and why is it relevant?', options: ['σ_max/σ_min of G; high condition number means poor directionality and sensitivity to uncertainty', 'det(G)/trace(G); measures loop interaction', 'The ratio of largest to smallest diagonal element', 'The eigenvalue ratio of the process Jacobian'], answer: 'σ_max/σ_min of G; high condition number means poor directionality and sensitivity to uncertainty', explanation: 'Condition number κ(G) = σ_max/σ_min; high κ means the process gain varies greatly with direction — ill-conditioned, hard to control.' },
+      { id: 'loop_l3_10', type: 'tf', q: 'A "singular value decomposition" (SVD) of the plant gain matrix reveals the input-output directions that maximize and minimize process gain.', answer: 'True', explanation: 'SVD: G = UΣVᵀ. Maximum gain direction = first column of U/V; minimum = last. Used for input selection and controllability analysis.' },
+      { id: 'loop_l3_11', type: 'mcq', q: 'For a boiler steam drum level control (non-minimum phase due to swell/shrink effect), which tuning approach is most appropriate?', options: ['Detune the controller to limit bandwidth below the inverse response frequency', 'Use maximum gain for fast response', 'Apply pure derivative control', 'Eliminate integral to prevent windup'], answer: 'Detune the controller to limit bandwidth below the inverse response frequency', explanation: 'The inverse response sets an upper bound on achievable bandwidth; the controller must be slower than the RHP zero frequency.' },
+      { id: 'loop_l3_12', type: 'mcq', q: 'In the Doyle-Francis-Tannenbaum (DFT) framework, the sensitivity function S(s) = 1/(1+L(s)). The complementary sensitivity T(s) = L/(1+L). The waterbed equality states:', options: ['∫log|S(jω)|dω = π·∑Re(pi) where pi are unstable plant poles', '|S| + |T| = 1 for all ω', 'S·T = 0 at all frequencies', 'Phase of S equals phase of T'], answer: '∫log|S(jω)|dω = π·∑Re(pi) where pi are unstable plant poles', explanation: 'Bode waterbed: reducing |S| at some frequencies increases it at others; unstable poles add fundamental limitations.' },
+      { id: 'loop_l3_13', type: 'tf', q: 'The Youla-Kučera parameterization allows all stabilizing controllers to be expressed in terms of a free stable parameter Q(s).', answer: 'True', explanation: 'Y-K parameterization: C = (Q)/(1-G·Q) for stable plants; every Q gives a stabilizing C, enabling systematic controller design.' },
+      { id: 'loop_l3_14', type: 'mcq', q: 'What does "achievable bandwidth" mean for a process with dead time θ?', options: ['Bandwidth is fundamentally limited to approximately 0.1–0.5/θ rad/s', 'Bandwidth can be increased indefinitely with more gain', 'Dead time does not limit bandwidth', 'Bandwidth equals 1/τ always'], answer: 'Bandwidth is fundamentally limited to approximately 0.1–0.5/θ rad/s', explanation: 'Dead time causes phase loss of θω radians at frequency ω, fundamentally limiting the achievable closed-loop bandwidth.' },
+      { id: 'loop_l3_15', type: 'mcq', q: 'What is a "performance index" ISE and how does it differ from IAE?', options: ['ISE = ∫e² dt (penalizes large errors more); IAE = ∫|e| dt (penalizes all errors equally)', 'ISE is integral of setpoint error; IAE is integral of actuator error', 'ISE uses squared time weighting; IAE does not', 'They are identical performance measures'], answer: 'ISE = ∫e² dt (penalizes large errors more); IAE = ∫|e| dt (penalizes all errors equally)', explanation: 'ISE heavily penalizes large errors (favors fast initial response); IAE penalizes all errors equally (favors sustained small errors).' },
+      { id: 'loop_l3_16', type: 'tf', q: 'ITAE (Integral of Time-weighted Absolute Error) is better than IAE for minimizing sustained oscillations because it weights late errors more heavily.', answer: 'True', explanation: 'ITAE = ∫t|e|dt penalizes errors that persist a long time, driving the controller to eliminate long-lasting errors quickly.' },
+      { id: 'loop_l3_17', type: 'mcq', q: 'The "process control triangle" of performance, robustness, and aggressiveness describes:', options: ['The fundamental tradeoff: faster/more aggressive control sacrifices robustness', 'The three PID gains', 'Three separate control strategies', 'Three types of process variables'], answer: 'The fundamental tradeoff: faster/more aggressive control sacrifices robustness', explanation: 'Better setpoint tracking (aggressive) reduces stability margins (robustness); the tradeoff is fundamental, not avoidable by clever tuning.' },
+      { id: 'loop_l3_18', type: 'mcq', q: 'What is "input-output linearization" in nonlinear process control?', options: ['A feedback transformation that cancels process nonlinearities, yielding a linear input-output map', 'Scaling the input and output to the same engineering units', 'A linear approximation of a nonlinear process', 'Using a linear valve to replace a nonlinear one'], answer: 'A feedback transformation that cancels process nonlinearities, yielding a linear input-output map', explanation: 'Input-output linearization uses state feedback to cancel nonlinearities, making the closed-loop behave as a linear system.' },
+      { id: 'loop_l3_19', type: 'mcq', q: 'What is the "process reaction rate" (R) in the original Ziegler-Nichols step test method?', options: ['The maximum slope of the PV reaction curve (ΔPV/Δt at inflection) divided by the CO step size', 'The ratio of dead time to time constant', 'The process gain multiplied by the scan rate', 'The derivative of the setpoint change'], answer: 'The maximum slope of the PV reaction curve (ΔPV/Δt at inflection) divided by the CO step size', explanation: 'Z-N reaction rate R = slope_max / ΔCO. Combined with dead time θ: Kp_ZN = 1.2/(R·θ) for P-only control.' },
+      { id: 'loop_l3_20', type: 'tf', q: 'For a runaway (open-loop unstable) process, standard PID can stabilize it only if the controller gain is in a specific range between lower and upper stability bounds.', answer: 'True', explanation: 'Unstable plants require the controller gain to be above a minimum (to stabilize) and below a maximum (to avoid instability at high frequency).' },
+    ],
+  },
+  pid: {
+    level1: [
+      { id: 'pid_l1_1', type: 'mcq', q: 'Which PID term produces an output proportional to the accumulated past error?', options: ['Integral', 'Proportional', 'Derivative', 'Feedforward'], answer: 'Integral', explanation: 'The integral term sums error over time, eliminating steady-state offset.' },
+      { id: 'pid_l1_2', type: 'mcq', q: 'What is the effect of increasing proportional gain (Kp) on a control loop?', options: ['Faster response but increased oscillation risk', 'Slower response and more damping', 'Eliminates steady-state error', 'Reduces overshoot always'], answer: 'Faster response but increased oscillation risk', explanation: 'Higher Kp speeds response but reduces stability margins, risking oscillation.' },
+      { id: 'pid_l1_3', type: 'tf', q: 'The derivative term responds to the rate of change of the error signal.', answer: 'True', explanation: 'D = Kd · d(error)/dt — it reacts to how fast the error is changing.' },
+      { id: 'pid_l1_4', type: 'mcq', q: 'In a PI controller, which term is omitted?', options: ['Derivative', 'Proportional', 'Integral', 'Feedforward'], answer: 'Derivative', explanation: 'PI = Proportional + Integral; the derivative term is excluded.' },
+      { id: 'pid_l1_5', type: 'tf', q: 'The derivative term amplifies high-frequency noise.', answer: 'True', explanation: 'Because D = Kd · d(error)/dt, it amplifies rapid changes including measurement noise.' },
+      { id: 'pid_l1_6', type: 'mcq', q: 'When is a PD controller (no integral) commonly used?', options: ['When the process already integrates (e.g., position from velocity)', 'When steady-state error must be zero', 'When noise is not a concern', 'When the process is very slow'], answer: 'When the process already integrates (e.g., position from velocity)', explanation: 'If the plant is integrating, adding an I term can cause instability; PD alone may be appropriate.' },
+      { id: 'pid_l1_7', type: 'mcq', q: 'What does "integral windup" cause in practice?', options: ['Slow recovery from a large disturbance (sluggish return to setpoint)', 'Faster setpoint tracking', 'Reduced overshoot', 'Improved noise rejection'], answer: 'Slow recovery from a large disturbance (sluggish return to setpoint)', explanation: 'Windup: integral accumulates during saturation; when disturbance clears, the large accumulated integral delays recovery.' },
+      { id: 'pid_l1_8', type: 'tf', q: 'Adding derivative action to a PI controller generally increases stability.', answer: 'True', explanation: 'Derivative adds phase lead which improves stability margins (phase margin increases).' },
+      { id: 'pid_l1_9', type: 'mcq', q: 'What is the typical symptom of excessive integral action (Ki too high)?', options: ['Oscillation that grows or sustains', 'Permanent steady-state error', 'Output stuck at 0%', 'No response to setpoint changes'], answer: 'Oscillation that grows or sustains', explanation: 'Too much integral action causes a phase lag that destabilizes the loop, producing sustained or growing oscillations.' },
+      { id: 'pid_l1_10', type: 'mcq', q: 'In a PID controller, which term provides the initial "kick" in response to a sudden setpoint change?', options: ['Proportional', 'Integral', 'Derivative', 'Bias'], answer: 'Proportional', explanation: 'At the instant of a setpoint step, error appears suddenly; proportional reacts immediately based on error magnitude.' },
+      { id: 'pid_l1_11', type: 'tf', q: 'Derivative-on-error (D on error) causes derivative kick during setpoint steps.', answer: 'True', explanation: 'When SP jumps, d(error)/dt is momentarily infinite, causing a spike — derivative kick.' },
+      { id: 'pid_l1_12', type: 'mcq', q: 'Which derivative implementation avoids derivative kick on setpoint changes?', options: ['Derivative on measurement (PV)', 'Derivative on error', 'Derivative with setpoint feedforward', 'High-pass filtered derivative on error'], answer: 'Derivative on measurement (PV)', explanation: 'D-on-PV: computes −Kd · d(PV)/dt, so SP steps cause no derivative kick.' },
+      { id: 'pid_l1_13', type: 'mcq', q: 'What is the "bias" or "output bias" in a PID controller?', options: ['A constant added to the output to handle non-zero equilibrium output', 'The integral initial value', 'The setpoint offset', 'The derivative filter coefficient'], answer: 'A constant added to the output to handle non-zero equilibrium output', explanation: 'Bias is the initial output value representing the steady-state operating point (e.g., 50% valve for equilibrium).' },
+      { id: 'pid_l1_14', type: 'tf', q: 'A controller with only integral action (I-only) is always slower than a PI controller.', answer: 'True', explanation: 'I-only has no proportional kick; it is much slower to respond than PI which immediately acts on error.' },
+      { id: 'pid_l1_15', type: 'mcq', q: 'In process control language, "reset" refers to:', options: ['Integral action (eliminating steady-state offset)', 'Restarting the controller', 'Clearing the derivative filter', 'Resetting the setpoint to zero'], answer: 'Integral action (eliminating steady-state offset)', explanation: '"Reset" is the older term for integral action because it resets (eliminates) the proportional offset.' },
+      { id: 'pid_l1_16', type: 'mcq', q: 'What is the "rate" component in older PID terminology?', options: ['Derivative action', 'Proportional action', 'Integral action', 'Setpoint rate limiter'], answer: 'Derivative action', explanation: '"Rate" is the old term for derivative because it responds to the rate of change of error.' },
+      { id: 'pid_l1_17', type: 'tf', q: 'Reducing integral time (Ti) increases integral action.', answer: 'True', explanation: 'Integral contribution = (1/Ti) · ∫e dt; smaller Ti → larger integral gain → faster integral action.' },
+      { id: 'pid_l1_18', type: 'mcq', q: 'What determines whether to use PI vs PID for a temperature control loop?', options: ['Whether noise is significant and derivative benefit outweighs noise amplification', 'Whether the loop is fast or slow only', 'Only the process gain value', 'Whether the setpoint changes frequently'], answer: 'Whether noise is significant and derivative benefit outweighs noise amplification', explanation: 'PID is preferred when derivative improves response, but if measurement noise is high, PI avoids noise amplification.' },
+      { id: 'pid_l1_19', type: 'mcq', q: 'What does a "filtered derivative" achieve in a PID controller?', options: ['Reduces noise amplification while preserving derivative benefit at lower frequencies', 'Eliminates the derivative term below a cutoff', 'Converts derivative to integral', 'Increases derivative gain at high frequency'], answer: 'Reduces noise amplification while preserving derivative benefit at lower frequencies', explanation: 'A first-order low-pass filter on the derivative limits high-frequency noise while keeping the phase-lead benefit.' },
+      { id: 'pid_l1_20', type: 'tf', q: 'The PID output can typically be limited to a range (e.g., 0–100%) to prevent impossible actuator commands.', answer: 'True', explanation: 'Output clamping limits CO to the physical range of the actuator (e.g., 0–100% for a valve).' },
+    ],
+    level2: [
+      { id: 'pid_l2_1', type: 'mcq', q: 'In the ISA standard PID equation CO = Kp·[e + (1/Ti)·∫e·dt + Td·de/dt], what units does Ti have?', options: ['Time (minutes or seconds)', 'Dimensionless gain', 'Frequency (repeats/min)', 'Percent output per percent error'], answer: 'Time (minutes or seconds)', explanation: 'Ti is the "reset time" or "integral time constant" measured in time units (minutes in US, seconds in some systems).' },
+      { id: 'pid_l2_2', type: 'mcq', q: 'Back-calculation anti-windup uses a tracking time constant Tt. What is the recommended relationship between Tt, Ti, and Td?', options: ['√(Ti·Td) ≤ Tt ≤ Ti', 'Tt = Ti always', 'Tt = Td/2', 'Tt = 0 always'], answer: '√(Ti·Td) ≤ Tt ≤ Ti', explanation: 'Tt should be between √(Ti·Td) and Ti — fast enough to drain windup but not so fast as to destabilize.' },
+      { id: 'pid_l2_3', type: 'tf', q: 'Conditional integration (stopping integration when output is saturated) is a simpler but less optimal anti-windup method than back-calculation.', answer: 'True', explanation: 'Conditional integration simply halts integration at saturation — easy to implement but can cause overshoot on recovery.' },
+      { id: 'pid_l2_4', type: 'mcq', q: 'In a 2DOF PID, the setpoint weighting parameter b (for P term) set to 0 means:', options: ['P acts only on PV change, not setpoint steps — eliminates P-kick on SP changes', 'Proportional action is disabled', 'The setpoint is ignored', 'The loop acts as I-only'], answer: 'P acts only on PV change, not setpoint steps — eliminates P-kick on SP changes', explanation: 'With b=0, P term = Kp·(b·SP − PV) = −Kp·PV; SP steps no longer cause a proportional kick.' },
+      { id: 'pid_l2_5', type: 'mcq', q: 'The "velocity algorithm" (incremental PID) computes ΔCO(k) = CO(k) − CO(k-1). What is the main advantage over the position algorithm?', options: ['Natural bumpless transfer and anti-windup — no special initialization needed', 'Faster computation speed', 'Better noise rejection', 'Higher maximum gain'], answer: 'Natural bumpless transfer and anti-windup — no special initialization needed', explanation: 'Velocity form: CO tracks the physical actuator automatically; switching to auto causes no bump. Windup is inherently bounded.' },
+      { id: 'pid_l2_6', type: 'tf', q: 'Digital PID suffers from quantization error in the integral term when implemented with insufficient numerical precision.', answer: 'True', explanation: 'Integer arithmetic PID can have integral drift due to quantization; double-precision floating point is preferred.' },
+      { id: 'pid_l2_7', type: 'mcq', q: 'For a process with FOPDT parameters K=2, τ=10 min, θ=1 min, the IMC-PID recommendation for Kp (λ=τ) is approximately:', options: ['Kp ≈ τ / (K·(λ+θ)) ≈ 10/(2·(10+1)) ≈ 0.45', 'Kp = K·τ/θ = 20', 'Kp = 1/(K·θ) = 0.5', 'Kp = τ/(K·θ) = 5'], answer: 'Kp ≈ τ / (K·(λ+θ)) ≈ 10/(2·(10+1)) ≈ 0.45', explanation: 'IMC-PID for FOPDT: Kp = τ/(K·(λ+θ)). With λ=τ=10: Kp = 10/(2·11) ≈ 0.45.' },
+      { id: 'pid_l2_8', type: 'mcq', q: 'What is the SIMC (Skogestad IMC) tuning rule for Ti for a FOPDT process?', options: ['Ti = min(τ, 4·(λ+θ))', 'Ti = τ always', 'Ti = θ + τ/2', 'Ti = λ + τ'], answer: 'Ti = min(τ, 4·(λ+θ))', explanation: 'SIMC: Ti = min(τ, 4(λ+θ)). For slow processes (τ >> θ), Ti ≈ min(τ, 4λ) — limits integral to avoid sluggishness.' },
+      { id: 'pid_l2_9', type: 'tf', q: 'For integrating processes (ramp response), the IMC-PID integral time Ti should be set to infinity (I-only derivative control).', answer: 'False', explanation: 'For integrating processes, Kp and Ti are derived differently (Ti ≈ 4θ is a common rule), not infinite.' },
+      { id: 'pid_l2_10', type: 'mcq', q: 'The "practical integral" for a digital PID using trapezoidal integration is:', options: ['I(k) = I(k-1) + Ki·Ts·(e(k)+e(k-1))/2', 'I(k) = I(k-1) + Ki·Ts·e(k)', 'I(k) = Σe(k)', 'I(k) = Ki · e(k) · Ts²'], answer: 'I(k) = I(k-1) + Ki·Ts·(e(k)+e(k-1))/2', explanation: 'Trapezoidal integration averages current and previous error, halving the integration error vs rectangular.' },
+      { id: 'pid_l2_11', type: 'mcq', q: 'What is "derivative filtering" with filter coefficient N, and what is a typical value of N?', options: ['D filter: Kd·s / (1 + s·Td/N); N = 5 to 20 is typical', 'D filter: low-pass below 1 Hz; N = 50 Hz', 'D filter: moving average of N samples', 'D filter: digital differentiator of order N'], answer: 'D filter: Kd·s / (1 + s·Td/N); N = 5 to 20 is typical', explanation: 'The filtered derivative adds a pole at ω = N/Td, limiting noise amplification; N=8–12 is a common default.' },
+      { id: 'pid_l2_12', type: 'tf', q: 'A PID controller with Td = 0 reduces to a PI controller.', answer: 'True', explanation: 'When Td=0, derivative contribution = 0; PID collapses to PI.' },
+      { id: 'pid_l2_13', type: 'mcq', q: 'In a practical PLC PID function block, what parameter typically sets the execution (scan) rate of the PID?', options: ['The task cycle time or a dedicated "sample time" parameter (Ts)', 'The proportional gain', 'The integral time Ti', 'The output limit'], answer: 'The task cycle time or a dedicated "sample time" parameter (Ts)', explanation: 'PLC PID must know Ts to correctly compute the integral sum and derivative; either implicit from task cycle or explicit parameter.' },
+      { id: 'pid_l2_14', type: 'mcq', q: 'For which type of process should you generally avoid pure integral (I-only) control?', options: ['Integrating processes (level, position)', 'Self-regulating temperature processes', 'Pressure processes with fast dynamics', 'Flow processes'], answer: 'Integrating processes (level, position)', explanation: 'Combining I-only with an integrating plant gives a double integrator (1/s²) — inherently unstable without at least P action.' },
+      { id: 'pid_l2_15', type: 'tf', q: 'The "position algorithm" PID computes the absolute output CO directly, requiring careful initialization when switching to auto.', answer: 'True', explanation: 'Position form: CO = Kp·e + Ki·I + Kd·D. Initial I must be set to produce the current actuator output on auto engagement.' },
+      { id: 'pid_l2_16', type: 'mcq', q: 'In Siemens S7 PLCs, the PID_Compact block uses which form by default?', options: ['Parallel form with anti-windup and bumpless transfer built in', 'Series interacting form', 'P-only with manual I reset', 'Velocity form only'], answer: 'Parallel form with anti-windup and bumpless transfer built in', explanation: 'PID_Compact implements the ISA parallel form with back-calculation anti-windup, D-on-PV, and bumpless auto/manual transfer.' },
+      { id: 'pid_l2_17', type: 'mcq', q: 'What is the purpose of a "setpoint ramp" (setpoint filter) in a PID loop?', options: ['Limits the rate of setpoint change to reduce overshoot and actuator wear', 'Filters measurement noise', 'Limits integral accumulation', 'Prevents derivative kick'], answer: 'Limits the rate of setpoint change to reduce overshoot and actuator wear', explanation: 'A ramp function on SP smooths aggressive setpoint steps, reducing overshoot and mechanical stress on actuators.' },
+      { id: 'pid_l2_18', type: 'tf', q: 'Measuring the output noise level is a good first step before deciding whether to add derivative action to a PI loop.', answer: 'True', explanation: 'If PV noise > about 0.5% of span, derivative may amplify noise more than it improves response — quantify before adding D.' },
+      { id: 'pid_l2_19', type: 'mcq', q: 'What is the "PIDE" instruction in Rockwell ControlLogix PLCs?', options: ['An enhanced PID with built-in anti-windup, feedforward, cascade, and override options', 'A PID with only external derivative', 'A position-only PID for servo drives', 'A PID with only event-driven execution'], answer: 'An enhanced PID with built-in anti-windup, feedforward, cascade, and override options', explanation: 'PIDE (Enhanced PID) in Studio 5000 supports ISA-5.1 features: anti-windup, cascade, feedforward, ratio control, and more.' },
+      { id: 'pid_l2_20', type: 'mcq', q: 'What happens when a PID loop has a very long integral time Ti relative to the process time constant τ?', options: ['Slow elimination of offset — nearly P-only behavior at short time scales', 'Integral acts too fast, causing oscillation', 'Steady-state error remains permanently', 'Derivative gain increases automatically'], answer: 'Slow elimination of offset — nearly P-only behavior at short time scales', explanation: 'Very long Ti: integral action is weak; the loop behaves mostly like P-only on transients, slowly eliminating offset over long periods.' },
+    ],
+    level3: [
+      { id: 'pid_l3_1', type: 'mcq', q: 'The parallel PID transfer function in discrete time using Euler forward approximation (s ≈ (z−1)/Ts) gives the integral as:', options: ['I(z) = Ki·Ts/(z−1), a first-order IIR accumulator', 'I(z) = Ki·z/(z+1)', 'I(z) = Ki·(z−1)/Ts', 'I(z) = Ki·Ts²/(z²−1)'], answer: 'I(z) = Ki·Ts/(z−1), a first-order IIR accumulator', explanation: 'Euler forward: 1/s → Ts/(z−1). Discretized integral: I accumulates Ki·Ts·e(k) each sample.' },
+      { id: 'pid_l3_2', type: 'mcq', q: 'The Tustin (bilinear) discretization of the integrator 1/s gives:', options: ['Ts/2·(z+1)/(z−1) — trapezoidal integration with improved frequency accuracy', 'Ts/(z−1) — Euler forward', 'z/(Ts·(z−1)) — Euler backward', '(z−1)/(Ts·z) — first-difference derivative'], answer: 'Ts/2·(z+1)/(z−1) — trapezoidal integration with improved frequency accuracy', explanation: 'Bilinear (Tustin): s → 2/Ts·(z−1)/(z+1), so 1/s → Ts/2·(z+1)/(z−1). More accurate than Euler for same Ts.' },
+      { id: 'pid_l3_3', type: 'tf', q: 'The bilinear transformation introduces frequency warping; pre-warping corrects the discrete filter to match exactly at the target frequency ω0.', answer: 'True', explanation: 'Pre-warping: replace Ts/2 with (ω0/tan(ω0·Ts/2))·(Ts/2) to make the digital filter match exactly at ω0.' },
+      { id: 'pid_l3_4', type: 'mcq', q: 'For a PID with back-calculation anti-windup, the integrator update rule is (continuous): dI/dt = e + (CO_actual − CO_unlimited)/Tt. In discrete time, the conditionally stable Tt range to avoid integrator instability is:', options: ['Ts < Tt < Ti (tracking time constant between sample time and integral time)', 'Tt = Ts always', 'Tt must equal Ti exactly', 'Tt > 10·Ti to avoid saturation'], answer: 'Ts < Tt < Ti (tracking time constant between sample time and integral time)', explanation: 'Tt too small (< Ts) destabilizes the anti-windup feedback; Tt > Ti slows windup correction too much.' },
+      { id: 'pid_l3_5', type: 'mcq', q: 'What is "structured singular value" (μ) analysis, and why is it relevant to robust PID tuning?', options: ['μ measures robust stability under structured uncertainty; PID gains can be found to guarantee μ < 1', 'μ is the sensitivity function peak; minimize for PID tuning', 'μ is the phase margin in degrees', 'μ is the integral gain normalized to process time constant'], answer: 'μ measures robust stability under structured uncertainty; PID gains can be found to guarantee μ < 1', explanation: 'μ-analysis (DK-iteration) finds the worst-case uncertainty combination; μ < 1 guarantees stability for all modeled uncertainties.' },
+      { id: 'pid_l3_6', type: 'tf', q: 'H∞ loop shaping can be used to design a PID-structured controller by projecting the optimal H∞ controller onto the PID structure.', answer: 'True', explanation: 'H∞ gives optimal robustness; the resulting controller is projected (e.g., by frequency-domain fitting) onto PID parameters.' },
+      { id: 'pid_l3_7', type: 'mcq', q: 'In the SIMC tuning rules for a pure integrating process (Kp_proc/s), the recommended controller gain is:', options: ['Kc = 1 / (Kp_proc · (λ+θ)) — derived from direct synthesis for integrating plant', 'Kc = τ / (K · (λ+θ))', 'Kc = 1 / (K · θ)', 'Kc = K · τ / (λ · θ)'], answer: 'Kc = 1 / (Kp_proc · (λ+θ)) — derived from direct synthesis for integrating plant', explanation: 'For integrating plant G=Kp/s, direct synthesis with setpoint filter gives Kc = 1/(Kp·(λ+θ)).' },
+      { id: 'pid_l3_8', type: 'mcq', q: 'The "achievable performance" for a PID controlling an integrating process with dead time θ is limited such that the closed-loop time constant must satisfy:', options: ['λ ≥ θ (cannot be faster than dead time)', 'λ ≥ τ (cannot be faster than process time constant)', 'No limitation from dead time', 'λ ≥ 2·θ for stability with integral'], answer: 'λ ≥ θ (cannot be faster than dead time)', explanation: 'For integrating processes, minimum achievable λ ≈ θ; faster desired response requires more complex dead-time compensators.' },
+      { id: 'pid_l3_9', type: 'tf', q: 'In IEC 61511 (functional safety), the PID SIL (Safety Integrity Level) rating of a loop depends on the probability of dangerous failure on demand.', answer: 'True', explanation: 'IEC 61511 assigns SIL based on PFD (probability of failure on demand); control loops in safety functions must meet SIL requirements.' },
+      { id: 'pid_l3_10', type: 'mcq', q: 'What is "input multiplicity" in nonlinear PID control and how does it complicate operation?', options: ['Multiple steady states with the same output for different inputs; PID may lock onto wrong operating point', 'Multiple sensors providing redundant input signals', 'Multiple setpoints defined simultaneously', 'Multiple integral reset actions'], answer: 'Multiple steady states with the same output for different inputs; PID may lock onto wrong operating point', explanation: 'Nonlinear processes can have multiple steady states (input multiplicity); PID may stabilize a runaway or wrong branch.' },
+      { id: 'pid_l3_11', type: 'mcq', q: 'In H2 optimal control theory, minimizing ∫(e²+ρ·u²)dt leads to which fundamental control-effort tradeoff?', options: ['Higher ρ weights control effort, producing more conservative (detuned) gains', 'Higher ρ increases gains and speed', 'ρ=0 gives maximum robustness', 'ρ has no effect on PID gains'], answer: 'Higher ρ weights control effort, producing more conservative (detuned) gains', explanation: 'LQR cost with ρ·u² term: larger ρ penalizes input use → smaller gains → slower, more conservative control.' },
+      { id: 'pid_l3_12', type: 'tf', q: 'The "closed-loop identification" method (CLID) can identify process dynamics while the PID loop is running in closed-loop mode.', answer: 'True', explanation: 'CLID uses closed-loop signals (SP perturbations or measured disturbances) to identify the process model without opening the loop.' },
+      { id: 'pid_l3_13', type: 'mcq', q: 'What is the "Åström-Hägglund relay feedback test" and what does it identify?', options: ['Relay replaces controller to induce sustained oscillation; identifies ultimate gain Ku and period Tu', 'An open-loop step test using a relay switch', 'A relay that filters noise before the derivative', 'A safety relay that trips on high error'], answer: 'Relay replaces controller to induce sustained oscillation; identifies ultimate gain Ku and period Tu', explanation: 'Relay feedback auto-tuning: a relay (±d) causes a limit cycle; Ku ≈ 4d/(π·a), Tu = oscillation period.' },
+      { id: 'pid_l3_14', type: 'mcq', q: 'In auto-tuning based on relay feedback, once Ku and Tu are identified, Z-N ultimate cycle rules give:', options: ['Kp = 0.6·Ku, Ti = Tu/2, Td = Tu/8', 'Kp = Ku, Ti = Tu, Td = 0', 'Kp = 0.45·Ku, Ti = Tu/1.2', 'Kp = 1.2·Ku, Ti = 2·Tu'], answer: 'Kp = 0.6·Ku, Ti = Tu/2, Td = Tu/8', explanation: 'Ziegler-Nichols ultimate gain rules for PID: Kp=0.6·Ku, Ti=Tu/2, Td=Tu/8.' },
+      { id: 'pid_l3_15', type: 'tf', q: 'Model-free adaptive (MFA) PID variants adjust gains automatically without an explicit process model, using performance metrics like IAE.', answer: 'True', explanation: 'MFA controllers use optimization of performance indices to adaptively adjust PID gains in real-time without a model.' },
+      { id: 'pid_l3_16', type: 'mcq', q: 'For a MIMO system with n inputs and n outputs, how many SISO PID controllers are needed for decentralized control?', options: ['n PID controllers (one per input-output pair)', 'n² PID controllers', '2n controllers', '1 combined PID'], answer: 'n PID controllers (one per input-output pair)', explanation: 'Decentralized control: n PIDs, one per selected pairing. Cross-channel interaction is handled by loop detuning.' },
+      { id: 'pid_l3_17', type: 'mcq', q: 'The "Nyquist stability criterion" applied to a PID-controlled loop states the closed-loop is stable if:', options: ['The Nyquist plot of L(jω) does not encircle −1 for a stable open-loop plant', 'The Nyquist plot crosses the real axis above 0', 'The Bode plot shows phase > −180° everywhere', 'The root locus remains in the left half-plane'], answer: 'The Nyquist plot of L(jω) does not encircle −1 for a stable open-loop plant', explanation: 'For stable L(s): N = 0 encirclements of −1 required for closed-loop stability (Nyquist criterion).' },
+      { id: 'pid_l3_18', type: 'tf', q: 'A PID controller with a derivative filter can be shown to be a lead-lag compensator with an integrator.', answer: 'True', explanation: 'PID = integrator × PD filter; the filtered PD is equivalent to a lead-lag compensator, providing lead at process bandwidth.' },
+      { id: 'pid_l3_19', type: 'mcq', q: 'What is "IMC design for unstable plants," and why is it more complex than for stable plants?', options: ['Unstable plant poles must be factored out separately; IMC inversion of unstable poles would give an unstable controller', 'IMC cannot be applied to unstable plants at all', 'IMC for unstable plants uses more integral action', 'Unstable plants only need derivative action'], answer: 'Unstable plant poles must be factored out separately; IMC inversion of unstable poles would give an unstable controller', explanation: 'For unstable G(s), factorize G = G+ · G− (G+ has RHP poles/zeros); invert only G− and choose filter f(s) to stabilize G+.' },
+      { id: 'pid_l3_20', type: 'mcq', q: 'In industrial practice, what is the most common reason for poor PID performance despite correct tuning?', options: ['Valve problems (stiction, hysteresis, wrong sizing)', 'Controller algorithm errors', 'Sensor calibration drift', 'Incorrect Kp only'], answer: 'Valve problems (stiction, hysteresis, wrong sizing)', explanation: 'Studies show 30–60% of control loops have valve problems as the primary cause of poor performance — an instrumentation issue, not a tuning issue.' },
+    ],
+  },
+  tuning: {
+    level1: [
+      { id: 'tuning_l1_1', type: 'mcq', q: 'What did Ziegler and Nichols develop in 1942?', options: ['A set of PID tuning rules based on process step response and ultimate gain tests', 'The first digital PID algorithm', 'The IMC framework for process control', 'The standard for process P&IDs'], answer: 'A set of PID tuning rules based on process step response and ultimate gain tests', explanation: 'Ziegler and Nichols published two tuning methods in 1942: the reaction curve (step test) and ultimate cycle methods.' },
+      { id: 'tuning_l1_2', type: 'tf', q: 'Ziegler-Nichols tuning is well known to produce somewhat aggressive (oscillatory) control with about 25% overshoot.', answer: 'True', explanation: 'Z-N is designed for fast response but gives ~25% overshoot and poor robustness — often used as a starting point, not final tuning.' },
+      { id: 'tuning_l1_3', type: 'mcq', q: 'The "ultimate gain" (Ku) is the controller gain at which:', options: ['The closed-loop system is on the verge of sustained oscillation', 'The process variable reaches setpoint fastest', 'The integral time is at its optimum', 'The output is at 50% for any error'], answer: 'The closed-loop system is on the verge of sustained oscillation', explanation: 'Ku is the critical proportional gain (P-only) that causes the loop to sustain constant-amplitude oscillations.' },
+      { id: 'tuning_l1_4', type: 'mcq', q: 'In Z-N reaction curve method, what three parameters are extracted from an open-loop step test?', options: ['Process gain K, dead time θ, and maximum slope R (or time constant τ)', 'Kp, Ti, and Td', 'Ku, Tu, and bandwidth', 'Rise time, overshoot, and settling time'], answer: 'Process gain K, dead time θ, and maximum slope R (or time constant τ)', explanation: 'The step reaction curve yields K (gain), θ (lag/dead time), and R (reaction rate = slope at inflection).' },
+      { id: 'tuning_l1_5', type: 'tf', q: 'Lambda tuning is generally more conservative (less aggressive) than Ziegler-Nichols tuning.', answer: 'True', explanation: 'Lambda tuning with λ > τ gives slower, more robust control compared to aggressive Z-N recommendations.' },
+      { id: 'tuning_l1_6', type: 'mcq', q: 'What is "lambda" (λ) in lambda tuning?', options: ['The desired closed-loop time constant (speed of response)', 'The process dead time', 'The integral time Ti', 'The process gain'], answer: 'The desired closed-loop time constant (speed of response)', explanation: 'λ is the user-selected closed-loop time constant; larger λ = slower, more robust control.' },
+      { id: 'tuning_l1_7', type: 'mcq', q: 'For a self-regulating process, what is the trial-and-error tuning starting procedure?', options: ['Start with P-only at low gain, increase until oscillation, then add I, then D', 'Set all terms to maximum and reduce until stable', 'Set Ti = θ and Td = 0 and adjust only Kp', 'Use Ku/4 as starting Kp'], answer: 'Start with P-only at low gain, increase until oscillation, then add I, then D', explanation: 'The classic approach: increase P until oscillation, back off by half; then find good Ti; then optionally add D.' },
+      { id: 'tuning_l1_8', type: 'tf', q: 'For a liquid level (integrating) process, tuning rules for self-regulating processes can be applied directly.', answer: 'False', explanation: 'Integrating processes have different dynamics (no self-regulation); they require different tuning rules (e.g., lambda for integrating plants).' },
+      { id: 'tuning_l1_9', type: 'mcq', q: 'What is the typical symptom of a PID loop that has too much proportional gain?', options: ['Sustained oscillation or large overshoot', 'Slow response with no overshoot', 'Permanent offset from setpoint', 'Output stuck at 0%'], answer: 'Sustained oscillation or large overshoot', explanation: 'Excessive Kp: the loop responds too aggressively, overshoots, and may oscillate continuously.' },
+      { id: 'tuning_l1_10', type: 'mcq', q: 'What is the symptom of too much integral action (Ti too small or Ki too large)?', options: ['Oscillation that persists or grows after a setpoint change', 'Permanent offset', 'Very slow response', 'No response to setpoint changes'], answer: 'Oscillation that persists or grows after a setpoint change', explanation: 'Excessive integral accumulates too fast, driving oscillation that the proportional term cannot damp.' },
+      { id: 'tuning_l1_11', type: 'tf', q: 'Increasing derivative time (Td) always improves PID performance.', answer: 'False', explanation: 'Too much derivative action amplifies noise excessively and can destabilize the loop; Td must be balanced.' },
+      { id: 'tuning_l1_12', type: 'mcq', q: 'The Cohen-Coon tuning method is an improvement over Z-N for processes with:', options: ['Large dead-time-to-time-constant ratios (θ/τ > 0.1)', 'Small dead times only', 'Integrating processes only', 'Nonlinear valves'], answer: 'Large dead-time-to-time-constant ratios (θ/τ > 0.1)', explanation: 'Cohen-Coon extends Z-N by better accounting for dead time, giving improved performance when θ/τ is significant.' },
+      { id: 'tuning_l1_13', type: 'mcq', q: 'What does "quarter-decay ratio" mean in Z-N context?', options: ['Each successive oscillation peak is 1/4 of the previous peak amplitude', 'The process reaches 25% of setpoint after one time constant', 'The controller output decays to 25% at steady state', 'The derivative time is 1/4 of integral time'], answer: 'Each successive oscillation peak is 1/4 of the previous peak amplitude', explanation: 'Z-N classic criterion: successive peaks in a damped oscillation should have a 4:1 ratio — fast but somewhat oscillatory.' },
+      { id: 'tuning_l1_14', type: 'tf', q: 'Auto-tuning features built into modern PLCs and DCS use the relay feedback method or step tests to identify process parameters.', answer: 'True', explanation: 'Built-in auto-tuners use relay oscillation or step response to identify K, τ, θ and compute PID parameters automatically.' },
+      { id: 'tuning_l1_15', type: 'mcq', q: 'For flow control loops, which PID configuration is most commonly used?', options: ['PI (no derivative due to flow noise and fast dynamics)', 'PD (no integral needed)', 'PID with strong derivative', 'P-only'], answer: 'PI (no derivative due to flow noise and fast dynamics)', explanation: 'Flow loops are fast and noisy; derivative amplifies noise. PI provides offset elimination without noise amplification.' },
+      { id: 'tuning_l1_16', type: 'mcq', q: 'What is the first step in tuning a PID controller in an operating plant?', options: ['Put the loop in manual and perform a step test to identify the process', 'Immediately apply Z-N formulas to existing data', 'Set all gains to zero and manually operate', 'Check with operations before making any changes'], answer: 'Put the loop in manual and perform a step test to identify the process', explanation: 'Best practice: switch to manual safely, apply a step CO change, record the PV response, then identify K, τ, θ.' },
+      { id: 'tuning_l1_17', type: 'tf', q: 'A well-tuned PID loop will show a slight overshoot (5–15%) in most process applications.', answer: 'True', explanation: 'Moderate overshoot indicates good balance of speed and stability; zero overshoot may mean overly conservative tuning.' },
+      { id: 'tuning_l1_18', type: 'mcq', q: 'Which tuning method requires no process model and no step test — using only existing closed-loop operating data?', options: ['Closed-loop identification or performance-based tuning', 'Ziegler-Nichols reaction curve', 'IMC-PID', 'Cohen-Coon'], answer: 'Closed-loop identification or performance-based tuning', explanation: 'Closed-loop ID methods (PRBS, correlation) identify the process from normal operating variations without open-loop tests.' },
+      { id: 'tuning_l1_19', type: 'mcq', q: 'What is the "ITAE minimum" tuning criterion?', options: ['PID gains that minimize ITAE = ∫t·|e(t)|dt — good balance of speed and minimal sustained error', 'Tuning to minimize peak overshoot only', 'Z-N quarter-decay criterion', 'Maximum gain before oscillation'], answer: 'PID gains that minimize ITAE = ∫t·|e(t)|dt — good balance of speed and minimal sustained error', explanation: 'ITAE-minimum tuning (Rovira, etc.) gives well-balanced response — faster than conservative methods, less oscillatory than Z-N.' },
+      { id: 'tuning_l1_20', type: 'tf', q: 'Tuning parameters found by simulation are always directly applicable to the real plant without adjustment.', answer: 'False', explanation: 'Model-plant mismatch, valve nonlinearities, and noise mean simulation tuning is a starting point; field verification always needed.' },
+    ],
+    level2: [
+      { id: 'tuning_l2_1', type: 'mcq', q: 'For a FOPDT process with K=1.5, τ=20 min, θ=2 min, the Z-N reaction curve (open-loop) method gives Kp = 1.2·τ/(K·θ·100%). What is Kp?', options: ['8', '4', '2.4', '12'], answer: '8', explanation: 'Z-N open-loop PID: Kp = 1.2·τ/(K·R·100) where R=K/τ. Equivalently Kp = 1.2·τ/(K·θ·100) is not standard; using Kp = 1.2/(K·R·θ): R = K·slope; standard Z-N PI: Kp=0.9/(R·θ). For PID: Kp=1.2/(K·θ/τ) = 1.2·τ/(K·θ) = 1.2·20/(1.5·2) = 8.' },
+      { id: 'tuning_l2_2', type: 'mcq', q: 'IMC-PID for FOPDT with K=2, τ=15 min, θ=3 min, λ=5 min gives Ti =?', options: ['15 min (= τ for FOPDT IMC-PID)', '5 min (= λ)', '3 min (= θ)', '8 min (= λ+θ)'], answer: '15 min (= τ for FOPDT IMC-PID)', explanation: 'IMC-PID for FOPDT: Ti = τ (independent of λ and θ for the basic form). Ti = 15 min.' },
+      { id: 'tuning_l2_3', type: 'tf', q: 'The SIMC rule Ti = min(τ, 4·(λ+θ)) ensures that the integral is not faster than needed, preventing over-aggressive integral action for slow processes.', answer: 'True', explanation: 'For very slow processes (large τ), unconstrained Ti=τ could be very long; SIMC caps it at 4(λ+θ) for adequate disturbance rejection.' },
+      { id: 'tuning_l2_4', type: 'mcq', q: 'The Tyreus-Luyben (TL) tuning rules from Ku and Tu give more conservative control than Z-N. For PID, Kp_TL =?', options: ['Ku/3.2', 'Ku/0.6 = 1.67·Ku', '0.6·Ku', 'Ku/2'], answer: 'Ku/3.2', explanation: 'Tyreus-Luyben PID: Kp = Ku/3.2, Ti = 2.2·Tu, Td = Tu/6.3 — significantly more conservative than Z-N.' },
+      { id: 'tuning_l2_5', type: 'mcq', q: 'The Pessen integral rule (for better load rejection) gives PID tuning of Kp = ?', options: ['0.7·Ku', '0.6·Ku', '0.45·Ku', '1.2·Ku'], answer: '0.7·Ku', explanation: 'Pessen integral: Kp=0.7·Ku, Ti=0.4·Tu, Td=0.15·Tu — aggressive load rejection, slightly more oscillatory than Z-N.' },
+      { id: 'tuning_l2_6', type: 'tf', q: 'Manual tuning using the "closed-loop step test" method involves making a setpoint step while in auto mode and observing the PV response.', answer: 'True', explanation: 'Closed-loop step test: apply SP step, observe PV; adjust Kp/Ti/Td based on response shape (overshoot, oscillation, speed).' },
+      { id: 'tuning_l2_7', type: 'mcq', q: 'If a closed-loop step response shows no overshoot and a very slow approach to setpoint, the recommended tuning adjustment is:', options: ['Increase Kp and/or decrease Ti', 'Decrease Kp and increase Ti', 'Increase Td only', 'Decrease all gains equally'], answer: 'Increase Kp and/or decrease Ti', explanation: 'Overdamped slow response: more aggressive tuning needed — higher Kp for faster proportional action, smaller Ti for faster integral.' },
+      { id: 'tuning_l2_8', type: 'mcq', q: 'A PID loop shows sustained oscillation after a setpoint step. The FIRST adjustment to try is:', options: ['Reduce Kp by 20-30%', 'Increase Ti', 'Add more derivative (increase Td)', 'Reduce both Ti and Td'], answer: 'Reduce Kp by 20-30%', explanation: 'Oscillation usually indicates excessive gain; reducing Kp is the first, simplest fix before adjusting other terms.' },
+      { id: 'tuning_l2_9', type: 'tf', q: 'For a cascade control system, the inner loop should be tuned first and put in auto before tuning the outer loop.', answer: 'True', explanation: 'The outer loop depends on inner loop performance; inner must be fast and stable first before outer loop tuning.' },
+      { id: 'tuning_l2_10', type: 'mcq', q: 'For level control with a "tight level" requirement, which tuning approach is appropriate?', options: ['Standard PID with normal tuning for tight level control', 'Very aggressive PI with small Ti', 'P-only (proportional) or "averaging" level control with large Ti', 'PD without integral'], answer: 'Standard PID with normal tuning for tight level control', explanation: 'Tight level needs normal aggressive PID. Note: some level applications use "averaging" control (slow PI) to smooth flow disturbances — depends on the application.' },
+      { id: 'tuning_l2_11', type: 'mcq', q: 'What is the correct tuning adjustment if a PID loop oscillates slowly (long period, small amplitude)?', options: ['Decrease integral action (increase Ti)', 'Increase Kp', 'Add more derivative', 'Decrease Ti further'], answer: 'Decrease integral action (increase Ti)', explanation: 'Slow, long-period oscillation is a characteristic signature of excessive integral action — increase Ti to slow the integral.' },
+      { id: 'tuning_l2_12', type: 'tf', q: 'High-frequency oscillation in a PID loop is typically a sign of excessive derivative action amplifying sensor noise.', answer: 'True', explanation: 'Fast (high-frequency) oscillation in a PID loop is usually caused by derivative amplifying measurement noise.' },
+      { id: 'tuning_l2_13', type: 'mcq', q: 'In the "Gain and Phase Margin" approach to PID tuning, what gain margin is typically targeted?', options: ['GM > 2 (6 dB)', 'GM > 10 (20 dB)', 'GM = 1 (0 dB, barely stable)', 'GM between 0.5 and 1'], answer: 'GM > 2 (6 dB)', explanation: 'A gain margin of at least 2 (6 dB) is typically required; some applications demand GM > 3 (10 dB) for more robustness.' },
+      { id: 'tuning_l2_14', type: 'mcq', q: 'The "Good Gain" method (Haugen) for PID tuning suggests starting with Kp and Ti settings where the loop shows a specific step response characteristic. What is the "good gain" criterion?', options: ['A slightly underdamped response with about one overshoot cycle then stable', 'Zero overshoot always', 'Maximum oscillation amplitude', 'Quarter-decay ratio of exactly 4:1'], answer: 'A slightly underdamped response with about one overshoot cycle then stable', explanation: 'Good Gain: step response should show one clear overshoot (slight underdamping) — indicates good balance of speed and stability.' },
+      { id: 'tuning_l2_15', type: 'tf', q: 'Scheduling PID gains as a function of operating conditions (gain scheduling) is a practical approach for processes with strong nonlinearities.', answer: 'True', explanation: 'Gain scheduling adjusts Kp, Ti, Td based on measured conditions (load, setpoint, flow rate) to maintain consistent performance.' },
+      { id: 'tuning_l2_16', type: 'mcq', q: 'A loop that oscillates at a frequency much higher than the process natural frequency is most likely caused by:', options: ['Electrical noise in the PV signal coupled with excessive derivative gain', 'Too little integral action', 'Dead time being too large', 'Very slow process dynamics'], answer: 'Electrical noise in the PV signal coupled with excessive derivative gain', explanation: 'High-frequency oscillations are a classic derivative + noise problem; the D term amplifies high-frequency noise into the output.' },
+      { id: 'tuning_l2_17', type: 'mcq', q: 'What is the "robustness test" for a tuned PID loop?', options: ['Verify performance is acceptable after introducing ±50% changes in process gain', 'Run the loop at maximum speed and maximum output', 'Test with the derivative term disabled', 'Verify the loop holds SP during a power cycle'], answer: 'Verify performance is acceptable after introducing ±50% changes in process gain', explanation: 'A robust loop maintains acceptable response when process gain varies ±50%; if not, re-tune more conservatively.' },
+      { id: 'tuning_l2_18', type: 'tf', q: 'Process control software like ExperTune and AspenTech DMCplus include tools for closed-loop PID performance assessment.', answer: 'True', explanation: 'Commercial tools analyze PID performance (oscillation index, robustness, loop health) from closed-loop operating data.' },
+      { id: 'tuning_l2_19', type: 'mcq', q: 'What is the significance of performing a step test at the actual operating point vs at different loads?', options: ['Process gain and dynamics may differ at different loads; tuning valid only near test conditions', 'Step tests are equally valid at all operating points', 'Only the dead time changes with load', 'Load has no effect on process dynamics'], answer: 'Process gain and dynamics may differ at different loads; tuning valid only near test conditions', explanation: 'Nonlinear processes have different K, τ, θ at different operating points; tuning at one point may not work at others.' },
+      { id: 'tuning_l2_20', type: 'mcq', q: 'When detuning a PID loop for robustness (increasing λ), what happens to disturbance rejection performance?', options: ['Disturbance rejection slows — larger IAE for load disturbances', 'Disturbance rejection improves', 'No change in disturbance rejection', 'Disturbance rejection improves but setpoint tracking worsens'], answer: 'Disturbance rejection slows — larger IAE for load disturbances', explanation: 'More conservative tuning (larger λ) reduces control aggressiveness, slowing disturbance rejection — fundamental performance-robustness tradeoff.' },
+    ],
+    level3: [
+      { id: 'tuning_l3_1', type: 'mcq', q: 'The SIMC (Simplified IMC) rules for FOPDT are Kp = τ/(K·(λ+θ)), Ti = min(τ, 4(λ+θ)), Td = θ/2. What is the recommended λ for "tight" control?', options: ['λ = θ (minimum achievable closed-loop time constant)', 'λ = τ', 'λ = Ti', 'λ = 10·θ'], answer: 'λ = θ (minimum achievable closed-loop time constant)', explanation: 'SIMC "tight" recommendation: λ = θ. This gives maximum performance while maintaining adequate robustness.' },
+      { id: 'tuning_l3_2', type: 'mcq', q: 'At λ=θ, the SIMC Kp for FOPDT becomes Kp = τ/(K·2θ) = τ/(2Kθ). What is the resulting phase margin approximately?', options: ['~65° — well-damped with moderate speed', '~30° — marginally stable', '~90° — extremely conservative', '~10° — nearly unstable'], answer: '~65° — well-damped with moderate speed', explanation: 'SIMC at λ=θ achieves approximately PM ≈ 65°, combining good performance with adequate robustness margin.' },
+      { id: 'tuning_l3_3', type: 'tf', q: 'The "Skogestad half-rule" approximates higher-order process models as FOPDT by adding half the second largest time constant to the dead time.', answer: 'True', explanation: 'Half-rule: θ_approx = θ + τ2/2, τ_approx = τ1. Converts higher-order models to FOPDT for SIMC tuning.' },
+      { id: 'tuning_l3_4', type: 'mcq', q: 'For a double integrating process (G = K/s²), the SIMC-PID controller gain is:', options: ['Kp = 1/(K·(λ+θ)²) — derived from double integrator direct synthesis', 'Kp = τ/(K·(λ+θ))', 'Kp = 1/(K·θ)', 'Kp = K·θ/(λ²)'], answer: 'Kp = 1/(K·(λ+θ)²) — derived from direct synthesis', explanation: 'Double integrator requires more detuning: Kp ∝ 1/(λ+θ)² to account for the double phase lag of two integrators.' },
+      { id: 'tuning_l3_5', type: 'mcq', q: 'In frequency-domain PID design, the "loop shaping" approach selects gains to achieve a desired open-loop Bode plot L(jω). What are the key targets?', options: ['Gain crossover near desired bandwidth ωc; phase margin > 45°; high low-frequency gain for disturbance rejection', 'Zero phase shift at ωc; gain margin > 1; flat phase above ωc', 'Maximum gain at all frequencies; phase between −90° and −180°', 'Minimum gain at ωc; PM > 90°'], answer: 'Gain crossover near desired bandwidth ωc; phase margin > 45°; high low-frequency gain for disturbance rejection', explanation: 'Loop shaping targets: ωc ≈ desired bandwidth; PM > 45°; |L(jω)| >> 1 at low ω for regulation.' },
+      { id: 'tuning_l3_6', type: 'tf', q: 'For a process with dead time θ and time constant τ, the maximum achievable bandwidth ωmax is approximately limited to 1/(2θ) rad/s.', answer: 'True', explanation: 'Dead time causes 90° phase lag at ω = π/(2θ) ≈ 1.57/θ; practical bandwidth limit is ωmax ≈ 0.5–1.0/θ.' },
+      { id: 'tuning_l3_7', type: 'mcq', q: 'What is the "stability robustness test" for a FOPDT-tuned PID (sensitivity function analysis)?', options: ['The maximum sensitivity Ms = max|S(jω)| should be < 2 (6 dB) for robust performance', 'The gain margin must exceed 20 dB', 'The sensitivity must be 0 dB at all frequencies', 'Phase margin must be > 90°'], answer: 'The maximum sensitivity Ms = max|S(jω)| should be < 2 (6 dB) for robust performance', explanation: 'Ms < 2 (6 dB peak sensitivity) ensures the system withstands 50% gain reduction or 30° phase loss — Skogestad recommendation.' },
+      { id: 'tuning_l3_8', type: 'mcq', q: 'In a gain-scheduled PID system, the scheduling variable should be chosen as:', options: ['The variable that best explains process gain and dynamics changes (e.g., production rate, feed composition)', 'Always the process variable', 'Always the setpoint', 'Always the controller output'], answer: 'The variable that best explains process gain and dynamics changes (e.g., production rate, feed composition)', explanation: 'Scheduling variable should correlate with process gain variation — often feed rate, load, or a key composition measurement.' },
+      { id: 'tuning_l3_9', type: 'tf', q: 'Self-tuning regulators (STR) combine online process identification with automatic PID gain updates using techniques like recursive least squares.', answer: 'True', explanation: 'STR: recursive estimation updates FOPDT model parameters continuously; new PID gains computed and applied in real-time.' },
+      { id: 'tuning_l3_10', type: 'mcq', q: 'What is the "idle index" for a PID loop, and what does a high idle index (close to 1) indicate?', options: ['Fraction of time PV is within the deadband; close to 1 means the loop is barely being exercised (over-controlled)', 'Fraction of time the output is saturated', 'Fraction of time the loop is in manual', 'Fraction of time the error exceeds the alarm limit'], answer: 'Fraction of time PV is within the deadband; close to 1 means the loop is barely being exercised (over-controlled)', explanation: 'Idle index ≈ 1 means the loop barely moves — either very well controlled or the setpoint is too easy; review if deadband is too wide.' },
+      { id: 'tuning_l3_11', type: 'mcq', q: 'For a first-order process with τ = 100 min and θ = 10 min, the SIMC "tight" closed-loop time constant λ = θ = 10 min. The resulting Kp = τ/(K·2θ). If K=2, Kp =?', options: ['2.5', '5', '1', '10'], answer: '2.5', explanation: 'Kp = τ/(K·2θ) = 100/(2·2·10) = 100/40 = 2.5.' },
+      { id: 'tuning_l3_12', type: 'tf', q: 'The "Morari-Zafiriou" tuning rule for robust performance uses the model uncertainty description to derive robust stability margins directly.', answer: 'True', explanation: 'Morari-Zafiriou IMC-based tuning: λ is chosen from the model uncertainty bound lm(ω) to ensure μ < 1 for all modeled uncertainties.' },
+      { id: 'tuning_l3_13', type: 'mcq', q: 'What is the "practical stability" concept in PID tuning for integrating processes (e.g., level)?', options: ['Proportional-only level control is practically stable even though it has offset — offset is acceptable for averaging level', 'Level always needs integral to be practically stable', 'Derivative must be used for level stability', 'All integrating processes require cascade control for stability'], answer: 'Proportional-only level control is practically stable even though it has offset — offset is acceptable for averaging level', explanation: 'Averaging level control uses P-only with wide PB; some offset is acceptable to smooth downstream flow variations.' },
+      { id: 'tuning_l3_14', type: 'mcq', q: 'In model-based predictive control (MPC) compared to PID, what is the fundamental advantage for constrained multivariable processes?', options: ['MPC optimizes future trajectory respecting constraints; PID cannot handle constraints or interactions systematically', 'MPC is computationally simpler', 'MPC does not require a process model', 'MPC has faster scan rates than PID'], answer: 'MPC optimizes future trajectory respecting constraints; PID cannot handle constraints or interactions systematically', explanation: 'MPC online optimization handles constraints, multivariable interactions, and dead time systematically — impossible with individual PID loops.' },
+      { id: 'tuning_l3_15', type: 'tf', q: 'For dead-time dominant processes (θ/τ > 1), Smith Predictor-based control can achieve performance approaching that of a process without dead time.', answer: 'True', explanation: 'Smith Predictor removes effective dead time from the control loop by using a model; performance limited only by τ, not θ.' },
+      { id: 'tuning_l3_16', type: 'mcq', q: 'The "Dahlin" (internal model control) algorithm for digital systems with dead time n·Ts is designed as:', options: ['A digital controller derived from desired first-order closed-loop response with dead time', 'A modified Z-N algorithm for digital systems', 'A relay-based digital auto-tuner', 'A model-free adaptive digital controller'], answer: 'A digital controller derived from desired first-order closed-loop response with dead time', explanation: 'Dahlin algorithm: design C(z) for desired closed-loop T(z) = (1−γ)z^(−n)/(1−γz^(−1)); equivalent to digital IMC.' },
+      { id: 'tuning_l3_17', type: 'mcq', q: 'The "Ringing" or "Dahlin ringing" problem occurs when the Dahlin controller has a zero near z = −1, causing:', options: ['Alternating large output swings every sample period', 'Integrator windup', 'Output saturation at 0%', 'Loss of derivative action'], answer: 'Alternating large output swings every sample period', explanation: 'Ringing: a zero near z=−1 in the Dahlin controller excites the Nyquist frequency, causing alternating ±large output swings.' },
+      { id: 'tuning_l3_18', type: 'tf', q: 'A process with RHP (right-half-plane) zeros has an inherent limitation on the achievable closed-loop bandwidth equal to approximately 1/2 of the RHP zero frequency.', answer: 'True', explanation: 'RHP zero at s=z_rhp limits bandwidth: ωc < z_rhp (strictly). Practical guideline: ωc < z_rhp/2 for adequate robustness.' },
+      { id: 'tuning_l3_19', type: 'mcq', q: 'What is the "FOPDT-E" model (FOPDT with exponential nonlinearity) and why is it used in adaptive PID?', options: ['It describes valve-process nonlinearity; adaptive PID uses it to schedule gains vs operating point', 'It is a linear FOPDT model fitted to exponential data', 'It describes integrating processes with exponential decay', 'It is a higher-order model with exponential numerator'], answer: 'It describes valve-process nonlinearity; adaptive PID uses it to schedule gains vs operating point', explanation: 'Some adaptive PID systems model process gain as K(u) = K0·exp(β·u) to capture valve+process nonlinearity for gain scheduling.' },
+      { id: 'tuning_l3_20', type: 'mcq', q: 'In control performance monitoring, the "Harris index" η compares achieved closed-loop variance to the minimum achievable variance under minimum variance control. What does η = 1 indicate?', options: ['The controller achieves the theoretical minimum variance (optimal minimum-variance performance)', 'The controller is marginally stable', 'The variance is infinite', 'The loop is in manual mode'], answer: 'The controller achieves the theoretical minimum variance (optimal minimum-variance performance)', explanation: 'Harris index η = σ²_mv/σ²_actual; η=1 means perfect minimum variance control. η<0.5 indicates significant room for improvement.' },
+    ],
+  },
+  process: {
+    level1: [
+      { id: 'process_l1_1', type: 'mcq', q: 'What is a "first-order" process in control terms?', options: ['A process described by one time constant (one energy storage element)', 'A process with one input and one output', 'The simplest process with no time delay', 'A process controlled by a single PID loop'], answer: 'A process described by one time constant (one energy storage element)', explanation: 'First-order process: one dominant time constant τ — one lag in the response (e.g., a well-mixed tank).' },
+      { id: 'process_l1_2', type: 'mcq', q: 'Which process type is represented by a "ramp" (continuously increasing) response to a constant input?', options: ['Integrating (non-self-regulating)', 'Self-regulating (first-order)', 'Runaway (unstable)', 'Second-order underdamped'], answer: 'Integrating (non-self-regulating)', explanation: 'Integrating process: constant input → PV ramps linearly (accumulates). Example: liquid level with constant flow in.' },
+      { id: 'process_l1_3', type: 'tf', q: 'Temperature control in a well-mixed tank is typically a self-regulating process.', answer: 'True', explanation: 'A heated tank self-regulates: more heat input → higher temp → higher heat loss at equilibrium.' },
+      { id: 'process_l1_4', type: 'mcq', q: 'What is an example of a "runaway" (open-loop unstable) process?', options: ['An exothermic reactor where increased temperature increases reaction rate (positive feedback)', 'A flow control valve', 'A well-mixed temperature tank', 'A liquid level with pump control'], answer: 'An exothermic reactor where increased temperature increases reaction rate (positive feedback)', explanation: 'Runaway: temperature rises → faster exothermic reaction → more heat → higher temperature (positive feedback loop).' },
+      { id: 'process_l1_5', type: 'tf', q: 'Dead time is the most difficult process characteristic for PID to handle.', answer: 'True', explanation: 'Dead time delays feedback, preventing the controller from responding until the effect appears — fundamentally limiting control performance.' },
+      { id: 'process_l1_6', type: 'mcq', q: 'What is an example of transportation lag (dead time)?', options: ['Time for fluid to travel from injection point to sensor in a pipe', 'The time constant of a well-mixed tank', 'The valve stroke time', 'The sensor response time'], answer: 'Time for fluid to travel from injection point to sensor in a pipe', explanation: 'Pure dead time (transport lag): the time for a change to physically travel from the manipulated point to the measurement point.' },
+      { id: 'process_l1_7', type: 'mcq', q: 'A process with multiple tanks in series (e.g., three stirred tanks) is best modeled as:', options: ['A higher-order process with multiple time constants', 'A single FOPDT process', 'An integrating process', 'A dead-time-only process'], answer: 'A higher-order process with multiple time constants', explanation: 'N tanks in series → Nth-order transfer function with N time constants; the response is more S-shaped with more lag.' },
+      { id: 'process_l1_8', type: 'tf', q: 'Process gain (K) is the ratio of steady-state change in PV to change in controller output.', answer: 'True', explanation: 'K = ΔPV_ss / ΔCO — measured from an open-loop step test at steady state.' },
+      { id: 'process_l1_9', type: 'mcq', q: 'A temperature process with a large thermal mass (e.g., large furnace) will have:', options: ['A large time constant (slow response)', 'A small time constant (fast response)', 'Large dead time but no time constant', 'Zero process gain'], answer: 'A large time constant (slow response)', explanation: 'Large thermal mass = more energy storage = longer time to heat/cool = large τ.' },
+      { id: 'process_l1_10', type: 'mcq', q: 'What causes "process interaction" in a multi-loop system?', options: ['Changes in one loop\'s output affect another loop\'s process variable', 'Multiple sensors measuring the same variable', 'Two controllers sharing one output', 'Setpoint changes in both loops simultaneously'], answer: 'Changes in one loop\'s output affect another loop\'s process variable', explanation: 'Interaction: valve A affects both PV1 and PV2; this cross-coupling complicates independent loop control.' },
+      { id: 'process_l1_11', type: 'tf', q: 'A pressure process is typically faster (smaller time constant) than a temperature process.', answer: 'True', explanation: 'Pressure changes propagate at the speed of sound; time constants are small (seconds to minutes) vs temperature (minutes to hours).' },
+      { id: 'process_l1_12', type: 'mcq', q: 'What is a "disturbance" in process control?', options: ['An unmeasured input that affects the process variable', 'A deliberate setpoint change', 'Controller output noise', 'Sensor calibration error'], answer: 'An unmeasured input that affects the process variable', explanation: 'Disturbances (load changes) are uncontrolled inputs — feed flow changes, temperature changes, etc. — that push PV away from SP.' },
+      { id: 'process_l1_13', type: 'mcq', q: 'Which process is best controlled by a PI (not PID) controller due to its speed and noise characteristics?', options: ['Flow (fast and noisy)', 'Temperature (slow and clean)', 'Level (integrating)', 'Pressure (medium speed)'], answer: 'Flow (fast and noisy)', explanation: 'Flow is fast with noisy measurement; derivative would amplify noise. PI is the standard choice for flow control.' },
+      { id: 'process_l1_14', type: 'tf', q: 'A "distributed parameter" process (e.g., a heat exchanger) has infinite-order dynamics and is often approximated as FOPDT for control.', answer: 'True', explanation: 'Distributed processes have partial differential equation dynamics (infinite order); FOPDT approximation captures dominant lag and dead time.' },
+      { id: 'process_l1_15', type: 'mcq', q: 'In a heat exchanger, what creates dead time in the temperature control loop?', options: ['Fluid transport time through the exchanger from inlet to sensor', 'Thermal mass of the shell', 'Fouling on the heat transfer surfaces', 'The temperature controller scan rate'], answer: 'Fluid transport time through the exchanger from inlet to sensor', explanation: 'Dead time in a heat exchanger is the fluid residence/transport time — the time for a temperature change to reach the outlet sensor.' },
+      { id: 'process_l1_16', type: 'mcq', q: 'What is "steady-state gain" and where is it measured on a step test?', options: ['The ratio of final PV change to CO change after all transients die out', 'The initial slope of the PV response', 'The gain at the inflection point of the S-curve', 'The process gain during the dead time period'], answer: 'The ratio of final PV change to CO change after all transients die out', explanation: 'Steady-state gain K = ΔPV_final / ΔCO — measured after the step response has completely settled (t >> 5τ).' },
+      { id: 'process_l1_17', type: 'tf', q: 'Process nonlinearity means the process gain K changes with the operating point.', answer: 'True', explanation: 'Nonlinear processes: K(u,PV) varies; a PID tuned at one operating point may perform poorly at others.' },
+      { id: 'process_l1_18', type: 'mcq', q: 'What is the primary cause of inverse response (non-minimum phase) in a boiler steam drum level?', options: ['Increased heat shrinks bubbles before feedwater raises level (swell/shrink effect)', 'Large drum thermal mass', 'Long feed-water pipe dead time', 'High drum pressure'], answer: 'Increased heat shrinks bubbles before feedwater raises level (swell/shrink effect)', explanation: 'Boiler drum: increased firing → steam bubbles swell → level rises initially; then feedwater flow change eventually determines level.' },
+      { id: 'process_l1_19', type: 'mcq', q: 'What does "process capacity" (capacitance) physically mean for a liquid level process?', options: ['The cross-sectional area of the tank — larger area → larger time constant', 'The maximum flow rate into the tank', 'The maximum valve opening', 'The pump head pressure'], answer: 'The cross-sectional area of the tank — larger area → larger time constant', explanation: 'Level process time constant τ = A/(q_out/h) where A is the tank area; larger tank → larger τ → slower response.' },
+      { id: 'process_l1_20', type: 'tf', q: 'A "plug flow" reactor has significant dead time because fluid moves through the reactor without mixing.', answer: 'True', explanation: 'Plug flow: fluid elements travel sequentially without mixing; reaction effects appear at the outlet after a transportation delay = reactor volume / flow rate.' },
+    ],
+    level2: [
+      { id: 'process_l2_1', type: 'mcq', q: 'For a CSTR (continuous stirred tank reactor) under perfect mixing, the transfer function from reactant concentration input to output concentration is approximately:', options: ['K/(τs+1) with τ = V/F (residence time)', 'K·e^(−θs)/(τs+1)', 'K/s (pure integrator)', 'K·(τ₁s+1)/(τ₂s+1)'], answer: 'K/(τs+1) with τ = V/F (residence time)', explanation: 'CSTR with first-order reaction: linear approximation gives first-order lag with τ = V/F = mean residence time.' },
+      { id: 'process_l2_2', type: 'mcq', q: 'The "swell-shrink" phenomenon in boiler drum level causes what type of process behavior?', options: ['Inverse response (non-minimum phase zero)', 'Pure integrating response', 'Runaway instability', 'Dead-time dominant response'], answer: 'Inverse response (non-minimum phase zero)', explanation: 'Swell-shrink: level initially moves opposite to what the final direction will be — classic inverse response, RHP zero in transfer function.' },
+      { id: 'process_l2_3', type: 'tf', q: 'For a heat exchanger with bypass, the process gain changes significantly with the fraction of flow bypassed.', answer: 'True', explanation: 'Heat exchanger bypass: gain is highly nonlinear — process gain changes significantly as bypass fraction changes, especially near fully open or closed.' },
+      { id: 'process_l2_4', type: 'mcq', q: 'In a distillation column, what are the two primary control objectives?', options: ['Top product composition (distillate) and bottom product composition (bottoms)', 'Column pressure and reflux ratio only', 'Feed flow rate and reboiler duty only', 'Column temperature and level only'], answer: 'Top product composition (distillate) and bottom product composition (bottoms)', explanation: 'Distillation primary objective: maintain product quality (composition) at both top (distillate) and bottom streams.' },
+      { id: 'process_l2_5', type: 'mcq', q: 'What is the "operating window" of a chemical process?', options: ['The range of operating conditions where the process is safe, stable, and produces spec product', 'The time window for process changes', 'The range of setpoints allowed by the PLC', 'The controller output range'], answer: 'The range of operating conditions where the process is safe, stable, and produces spec product', explanation: 'Operating window: constraints from safety (high temp/pressure), product quality (specs), and equipment limits define the feasible region.' },
+      { id: 'process_l2_6', type: 'tf', q: 'An exothermic CSTR can have multiple steady states: low-conversion (cold), intermediate (unstable), and high-conversion (hot).', answer: 'True', explanation: 'CSTR multiplicity: the heat generation curve (S-shape) intersects the heat removal line at up to 3 points; the middle is unstable.' },
+      { id: 'process_l2_7', type: 'mcq', q: 'What is the practical model used for a pH control process, and why is it difficult to control with a linear PID?', options: ['Highly nonlinear S-curve gain vs pH; gain changes by orders of magnitude near neutral pH', 'First-order linear with large dead time', 'Pure integrating process', 'Runaway above pH 7'], answer: 'Highly nonlinear S-curve gain vs pH; gain changes by orders of magnitude near neutral pH', explanation: 'pH control: gain is enormous near pH 7 (where S-curve is steep) and very small far from neutral — requires nonlinear control or gain scheduling.' },
+      { id: 'process_l2_8', type: 'mcq', q: 'For a compressor surge control system, what process characteristic makes this challenging?', options: ['Very fast dynamics and the need to prevent the compressor from crossing the surge line', 'Very slow temperature dynamics', 'Integrating process behavior', 'Negative process gain'], answer: 'Very fast dynamics and the need to prevent the compressor from crossing the surge line', explanation: 'Compressor surge occurs in milliseconds; the anti-surge controller must respond faster than the surge initiation time — very tight constraints.' },
+      { id: 'process_l2_9', type: 'tf', q: 'A liquid level process with gravity-drained outlet (h → √h relationship) is nonlinear but can be linearized around an operating point.', answer: 'True', explanation: 'Gravity drain: F_out = Cd·√h. Linearizing: ΔF_out ≈ (Cd/2√h0)·Δh — gain changes with h0, requiring gain scheduling or nonlinear control.' },
+      { id: 'process_l2_10', type: 'mcq', q: 'In a furnace temperature control, what are typical sources of dead time?', options: ['Combustion residence time, flame propagation delay, and thermowell thermal lag', 'Valve stroke time only', 'PLC scan rate', 'Fuel valve hysteresis'], answer: 'Combustion residence time, flame propagation delay, and thermowell thermal lag', explanation: 'Furnace dead time: combustion delay + gas residence time + thermowell lag + refractory thermal capacity all contribute.' },
+      { id: 'process_l2_11', type: 'mcq', q: 'What is a "thermowell" and how does it affect temperature measurement dynamics?', options: ['A protective housing for thermocouples that adds thermal lag (additional time constant) to measurement', 'A high-speed infrared sensor', 'A reference junction for thermocouple calibration', 'A redundant temperature sensor for safety'], answer: 'A protective housing for thermocouples that adds thermal lag (additional time constant) to measurement', explanation: 'Thermowell protects sensors but adds thermal mass and lag — can add 15-120 seconds additional time constant to measurement.' },
+      { id: 'process_l2_12', type: 'tf', q: 'For a pressure-driven gas flow system, the process dynamics are typically faster than liquid flow systems.', answer: 'True', explanation: 'Gas pressure changes propagate at acoustic velocity; gas flow responds much faster than liquid flow (seconds vs minutes).' },
+      { id: 'process_l2_13', type: 'mcq', q: 'What is "valve sizing" and how does it affect loop controllability?', options: ['Selecting valve Cv so the control range occupies 10-90% of stroke at design flow', 'Maximizing valve flow coefficient', 'Setting valve fail position', 'Calibrating valve positioner span'], answer: 'Selecting valve Cv so the control range occupies 10-90% of stroke at design flow', explanation: 'Proper sizing ensures the control range falls in the middle of valve travel where sensitivity is best — oversized/undersized valves degrade control.' },
+      { id: 'process_l2_14', type: 'mcq', q: 'Why is cascade control preferred for exothermic reactor temperature control?', options: ['Inner coolant flow loop rejects cooling water pressure disturbances before they affect reactor temperature', 'It eliminates the need for a temperature sensor', 'It allows open-loop operation during upsets', 'It reduces process gain by half'], answer: 'Inner coolant flow loop rejects cooling water pressure disturbances before they affect reactor temperature', explanation: 'Cascade inner flow loop corrects fast cooling water disturbances; outer temperature loop then only deals with slower process changes.' },
+      { id: 'process_l2_15', type: 'tf', q: 'Process gain inversion (sign change) can occur in distillation near a "pinch" point, making control exceptionally difficult.', answer: 'True', explanation: 'Near column flooding or pinch, the process gain can change sign — standard PID control may destabilize the column.' },
+      { id: 'process_l2_16', type: 'mcq', q: 'In a blending process, what is the "ratio" control objective?', options: ['Maintaining a fixed proportion of two streams (e.g., A:B = 2:1 by flow)', 'Setting the total blend flow rate', 'Controlling blend temperature', 'Adjusting blend pressure'], answer: 'Maintaining a fixed proportion of two streams (e.g., A:B = 2:1 by flow)', explanation: 'Ratio control: one flow (controlled) tracks a fixed fraction of another (wild) flow to maintain consistent blend composition.' },
+      { id: 'process_l2_17', type: 'mcq', q: 'A "self-regulating" process reaches a new steady state after a disturbance because:', options: ['The process gain has a negative feedback effect that opposes the disturbance', 'The PID controller corrects it', 'The disturbance naturally decays over time', 'The process operates at a fixed setpoint'], answer: 'The process gain has a negative feedback effect that opposes the disturbance', explanation: 'Self-regulation: e.g., higher tank level → higher outlet flow → reduces level — natural negative feedback without a controller.' },
+      { id: 'process_l2_18', type: 'tf', q: 'The "boiling point" temperature in a distillation column depends on column pressure, creating a pressure-compensated temperature control challenge.', answer: 'True', explanation: 'As column pressure changes, boiling points change; temperature setpoint must be compensated for pressure to infer composition correctly.' },
+      { id: 'process_l2_19', type: 'mcq', q: 'What is "process identification" in closed-loop operation, and why is it more challenging than open-loop identification?', options: ['Identifying G(s) from closed-loop data; challenging because the feedback correlation confounds input and disturbance identification', 'Identifying from a manual step test', 'Identifying from alarm history', 'Computing K and τ from engineering drawings'], answer: 'Identifying G(s) from closed-loop data; challenging because the feedback correlation confounds input and disturbance identification', explanation: 'Closed-loop ID: the feedback creates correlation between input u and disturbance d, making independent estimation difficult — requires special methods (PRBS, IV, subspace).' },
+      { id: 'process_l2_20', type: 'mcq', q: 'A combustion air-fuel ratio control system uses ratio control. What is the consequence of a lean (excess air) vs rich (excess fuel) mixture?', options: ['Lean: lower efficiency but safer; rich: incomplete combustion, CO formation, possible explosion risk', 'Lean: better efficiency; rich: higher NOx only', 'Lean causes equipment damage; rich is always preferred', 'Both have identical consequences'], answer: 'Lean: lower efficiency but safer; rich: incomplete combustion, CO formation, possible explosion risk', explanation: 'Rich (fuel-rich) → incomplete combustion → CO production and explosion risk. Lean → excess air → heat loss. Optimal: stoichiometric ± small margin.' },
+    ],
+    level3: [
+      { id: 'process_l3_1', type: 'mcq', q: 'The dynamic model of a CSTR with first-order exothermic reaction A→B gives a Jacobian at the steady state that has a positive eigenvalue. This implies:', options: ['The steady state is open-loop unstable; it requires a stabilizing feedback controller', 'The reactor is in steady-state equilibrium', 'The reaction is endothermic', 'The conversion is 100%'], answer: 'The steady state is open-loop unstable; it requires a stabilizing feedback controller', explanation: 'Positive Jacobian eigenvalue → unstable steady state → runaway risk. PID controller must stabilize it and maintain it at the desired operating point.' },
+      { id: 'process_l3_2', type: 'mcq', q: 'The transfer function for a tubular (plug flow) reactor with first-order reaction A→B and dispersion number Pe → ∞ approximates to:', options: ['G(s) = K·e^(−θs) where θ = L/v (pure dead time — no mixing)', 'G(s) = K/(τs+1) (CSTR approximation)', 'G(s) = K·(τs+1)/(τ²s²+2τs+1)', 'G(s) = K/s (integrating behavior)'], answer: 'G(s) = K·e^(−θs) where θ = L/v (pure dead time — no mixing)', explanation: 'Pe→∞ means perfect plug flow (no dispersion): the response is a pure time delay θ = L/v — the hardest case for PID control.' },
+      { id: 'process_l3_3', type: 'tf', q: 'For a pH neutralization process, a nonlinear feedforward based on the titration curve can dramatically improve control compared to linear PID alone.', answer: 'True', explanation: 'Titration curve (pH vs reagent volume) is highly nonlinear; model-based feedforward can pre-compensate the nonlinearity before PID corrects residual error.' },
+      { id: 'process_l3_4', type: 'mcq', q: 'The "Damköhler number" (Da) in reactor analysis is the ratio of:', options: ['Reaction rate to convective transport rate; Da >> 1 means reaction is much faster than flow', 'Diffusion to reaction rate', 'Heat transfer to reaction rate', 'Reactor volume to feed flow'], answer: 'Reaction rate to convective transport rate; Da >> 1 means reaction is much faster than flow', explanation: 'Da = τ_flow/τ_reaction. Large Da: reaction limited by transport; small Da: transport is fast, reaction is rate-limiting.' },
+      { id: 'process_l3_5', type: 'mcq', q: 'In a binary distillation column, the Relative Volatility α between components determines:', options: ['The ease of separation; larger α means easier separation and less reflux required', 'The column pressure requirement', 'The reboiler duty only', 'The number of actual trays needed only'], answer: 'The ease of separation; larger α means easier separation and less reflux required', explanation: 'α = (y/x)/(y*/x*) = p1_vap/p2_vap; large α → component 1 preferentially vaporizes → easier separation → fewer stages, lower reflux.' },
+      { id: 'process_l3_6', type: 'tf', q: 'The "wave model" (traveling concentration wave) is used to understand composition dynamics in packed distillation columns.', answer: 'True', explanation: 'Wave model: compositions travel as fronts through the column; wave velocity and shape determine column response time and control implications.' },
+      { id: 'process_l3_7', type: 'mcq', q: 'What is "parametric sensitivity" in exothermic reactor design, and why is it critical for control?', options: ['Small changes in parameters cause large changes in reactor temperature (high sensitivity region) — must be avoided or tightly controlled', 'Sensitivity of parameters to model error', 'The effect of feed composition on conversion', 'The sensitivity of PID gain to process gain changes'], answer: 'Small changes in parameters cause large changes in reactor temperature (high sensitivity region) — must be avoided or tightly controlled', explanation: 'Parametric sensitivity: near ignition/extinction boundary, small disturbances cause large temperature excursions — tight control is critical for safety.' },
+      { id: 'process_l3_8', type: 'mcq', q: 'For a process described by G(s) = K(1−τ_z·s)/((τ_1s+1)(τ_2s+1)) with a RHP zero at s=1/τ_z, the maximum achievable bandwidth is limited to approximately:', options: ['ωc < 1/τ_z', 'ωc > 1/τ_z', 'ωc = 1/τ_z exactly', 'No bandwidth limitation from RHP zero'], answer: 'ωc < 1/τ_z', explanation: 'RHP zero at s=1/τ_z adds a phase deficiency; bandwidth must be below the RHP zero frequency to maintain adequate phase margin.' },
+      { id: 'process_l3_9', type: 'tf', q: 'Passivity-based control is applicable to processes where the energy function (Lyapunov function) can be derived from the physical process model.', answer: 'True', explanation: 'Passivity exploits the physical energy structure; for thermodynamic systems, entropy or enthalpy functions serve as natural Lyapunov candidates.' },
+      { id: 'process_l3_10', type: 'mcq', q: 'For a compressor surge control problem, the main process control objective is:', options: ['Keep the operating point to the right of the surge line on the compressor map using fast anti-surge valve control', 'Maximize throughput regardless of surge line', 'Minimize energy consumption at all times', 'Control discharge pressure only'], answer: 'Keep the operating point to the right of the surge line on the compressor map using fast anti-surge valve control', explanation: 'Anti-surge control: rapidly opens recycle/blow-off valve to increase flow when approaching surge line — must act in milliseconds.' },
+      { id: 'process_l3_11', type: 'mcq', q: 'What is the "inverse-response" transfer function for a boiler drum level approximately?', options: ['G(s) = K(1−τ_z·s)/(s(τ_1s+1)) — RHP zero from shrink, integrator from mass balance', 'G(s) = K·e^(−θs)/(τs+1)', 'G(s) = K/(τs+1)²', 'G(s) = −K/(τs+1)'], answer: 'G(s) = K(1−τ_z·s)/(s(τ_1s+1)) — RHP zero from shrink, integrator from mass balance', explanation: 'Drum level: integrating (mass balance) with RHP zero (swell-shrink). The combined effect severely limits achievable control bandwidth.' },
+      { id: 'process_l3_12', type: 'tf', q: 'A "gain-adaptive" PID that estimates process gain online using a recursive least squares algorithm can handle slowly varying process nonlinearities.', answer: 'True', explanation: 'Online RLS estimates K continuously; gain-adaptive PID updates Kp = 1/(K·(λ+θ)) automatically as K changes with operating point.' },
+      { id: 'process_l3_13', type: 'mcq', q: 'In refinery crude distillation, the "atmospheric residue" (bottom product) quality is typically inferred from:', options: ['A temperature at a specific tray location correlated with flash point or viscosity', 'Direct composition analyzer', 'Bottom level measurement', 'Reboiler duty only'], answer: 'A temperature at a specific tray location correlated with flash point or viscosity', explanation: 'Direct composition analyzers have long dead times; temperature inference (correlated to ASTM cut points) is used for faster feedback.' },
+      { id: 'process_l3_14', type: 'mcq', q: 'For a jacketed batch reactor with exothermic reaction, the energy balance gives a state model. What is the main control challenge?', options: ['Time-varying gain and dynamics as reaction progresses; conditions change significantly over the batch', 'Pure integrating level dynamics', 'Dead-time dominant mass transfer', 'Constant linear dynamics throughout batch'], answer: 'Time-varying gain and dynamics as reaction progresses; conditions change significantly over the batch', explanation: 'Batch reactor: heat of reaction varies as conversion changes; reactant concentration falls; heat transfer coefficient changes — highly time-varying.' },
+      { id: 'process_l3_15', type: 'tf', q: 'The "vessel residence time distribution" (RTD) measured by an impulse tracer test provides information about mixing non-idealities (short-circuiting, dead zones) that affect process dynamics.', answer: 'True', explanation: 'RTD: E(t) = tracer concentration profile; deviation from ideal CSTR (exponential) or PFR (δ function) reveals mixing problems that alter dead time and τ.' },
+      { id: 'process_l3_16', type: 'mcq', q: 'The Ziegler-Nichols ultimate cycle method implicitly assumes the process can be approximated near the ultimate frequency by:', options: ['A pure dead time process: G(jωu) ≈ Ke^(−jπ) at the ultimate frequency', 'A first-order process at all frequencies', 'An integrating process near crossover', 'A second-order underdamped process'], answer: 'A pure dead time process: G(jωu) ≈ Ke^(−jπ) at the ultimate frequency', explanation: 'Z-N assumes the phase lag of −180° at ωu comes from dead time; thus the process looks like a pure dead time at the crossover — why Z-N works for many processes.' },
+      { id: 'process_l3_17', type: 'mcq', q: 'What does the "Péclet number" Pe describe for dispersion in tubular reactors, and what are its control implications?', options: ['Pe = vL/D_ax; small Pe (high dispersion) → CSTR-like with τ; large Pe (low dispersion) → PFR-like with dead time', 'Pe = reaction/diffusion rate ratio', 'Pe = heat transfer coefficient / thermal conductivity', 'Pe = pressure drop / flow rate'], answer: 'Pe = vL/D_ax; small Pe (high dispersion) → CSTR-like with τ; large Pe (low dispersion) → PFR-like with dead time', explanation: 'Axial Pe determines whether a tubular reactor behaves more like a CSTR (well-mixed, τ dominant) or PFR (plug flow, θ dominant).' },
+      { id: 'process_l3_18', type: 'tf', q: 'For a series of N equal CSTRs, as N→∞ the response approaches that of a plug flow reactor (pure dead time equal to N·τ_each).', answer: 'True', explanation: 'N identical CSTRs in series → nth-order lag. As N→∞ with fixed total residence time, the response approaches a pure dead time (PFR behavior).' },
+      { id: 'process_l3_19', type: 'mcq', q: 'In a reactive distillation column, what additional control challenge arises compared to conventional distillation?', options: ['Simultaneous reaction and separation dynamics are coupled; composition, temperature, and catalyst activity all interact', 'Simpler dynamics due to reduced number of stages', 'No vapor-liquid equilibrium considerations', 'Only pressure control is needed'], answer: 'Simultaneous reaction and separation dynamics are coupled; composition, temperature, and catalyst activity all interact', explanation: 'Reactive distillation: reaction generates heat and changes composition simultaneously with separation — highly coupled, nonlinear dynamics.' },
+      { id: 'process_l3_20', type: 'mcq', q: 'What is the "operability index" for a distillation column, and what does it measure?', options: ['The range of achievable product specifications given constraints on manipulated variables and disturbances', 'The column efficiency (actual vs theoretical stages)', 'The reflux ratio at minimum energy', 'The maximum allowable feed rate'], answer: 'The range of achievable product specifications given constraints on manipulated variables and disturbances', explanation: 'Operability: maps MV range (u_min to u_max) to output space; overlap with desired output range gives the achievable operating region.' },
+    ],
+  },
+  cascade: {
+    level1: [
+      { id: 'cascade_l1_1', type: 'mcq', q: 'What is the primary purpose of cascade control?', options: ['To reject inner-loop disturbances before they affect the outer loop PV', 'To control two different process variables simultaneously', 'To provide redundant control in case one controller fails', 'To add feedforward to the primary loop'], answer: 'To reject inner-loop disturbances before they affect the outer loop PV', explanation: 'Cascade: inner loop controls a fast intermediate variable, rejecting disturbances before they reach the slow primary PV.' },
+      { id: 'cascade_l1_2', type: 'tf', q: 'In cascade control, the output of the primary (outer) controller becomes the setpoint of the secondary (inner) controller.', answer: 'True', explanation: 'Cascade structure: Primary CO → Secondary SP → Secondary CO → Process → Primary PV (via secondary process).' },
+      { id: 'cascade_l1_3', type: 'mcq', q: 'A classic example of cascade control in a heat exchanger is:', options: ['Outer temperature controller sets SP for inner steam flow controller', 'Two temperature controllers on inlet and outlet', 'Outer flow controller sets SP for inner temperature controller', 'Inner pressure controller sets SP for outer temperature'], answer: 'Outer temperature controller sets SP for inner steam flow controller', explanation: 'Temperature-flow cascade: outer TIC controls process temperature; its output sets the SP for the inner steam flow controller (FIC).' },
+      { id: 'cascade_l1_4', type: 'mcq', q: 'For cascade control to improve performance, the inner loop must be:', options: ['Significantly faster than the outer loop (3-10× faster bandwidth)', 'Slower than the outer loop', 'The same speed as the outer loop', 'As slow as possible to prevent interaction'], answer: 'Significantly faster than the outer loop (3-10× faster bandwidth)', explanation: 'Inner loop must be fast enough to appear as unity gain to the outer loop; 3-10× faster is the practical guideline.' },
+      { id: 'cascade_l1_5', type: 'tf', q: 'When placing the cascade system in manual mode, the inner loop should be placed in manual first, then the outer loop.', answer: 'False', explanation: 'Correct procedure: outer loop to manual first, then inner loop — this prevents the outer loop from driving the inner loop SP unexpectedly.' },
+      { id: 'cascade_l1_6', type: 'mcq', q: 'When returning a cascade system from manual to auto, the correct order is:', options: ['Inner loop to auto first, then outer loop to auto', 'Both simultaneously', 'Outer loop first, then inner loop', 'Inner loop and outer loop in any order'], answer: 'Inner loop to auto first, then outer loop to auto', explanation: 'Start-up order: inner auto first (stabilize inner), then outer auto — outer loop needs stable inner loop to set SP properly.' },
+      { id: 'cascade_l1_7', type: 'mcq', q: 'What variable is typically the "secondary" (inner) controlled variable in a reactor temperature cascade?', options: ['Coolant flow rate (or jacket temperature)', 'Reactor temperature', 'Feed flow rate', 'Product composition'], answer: 'Coolant flow rate (or jacket temperature)', explanation: 'Inner loop: coolant flow (fast, directly manipulated). Outer loop: reactor temperature (slow primary objective).' },
+      { id: 'cascade_l1_8', type: 'tf', q: 'Cascade control can reject inner-loop disturbances completely before they reach the outer loop if the inner loop is sufficiently fast.', answer: 'True', explanation: 'A fast inner loop maintains its setpoint despite disturbances, effectively isolating the outer loop from inner-loop disturbances.' },
+      { id: 'cascade_l1_9', type: 'mcq', q: 'What is the difference between "setpoint cascade" and "override cascade"?', options: ['Setpoint cascade: primary output → secondary SP. Override: a selector chooses between two controllers based on limits', 'Setpoint cascade has two PVs; override has one PV and two SPs', 'Setpoint cascade uses feedforward; override uses feedback only', 'No difference — same concept'], answer: 'Setpoint cascade: primary output → secondary SP. Override: a selector chooses between two controllers based on limits', explanation: 'Override (select) control: high/low select picks between a regulatory and a protective controller to enforce equipment limits.' },
+      { id: 'cascade_l1_10', type: 'mcq', q: 'In a furnace with cascade control, the outer loop controls:', options: ['Process outlet temperature', 'Fuel flow rate', 'Combustion air flow', 'Flue gas temperature'], answer: 'Process outlet temperature', explanation: 'Outer primary loop: process outlet temperature (main objective). Inner loop: fuel flow rate (fast, directly adjustable).' },
+      { id: 'cascade_l1_11', type: 'tf', q: 'In cascade control, the primary controller can be tuned more aggressively than in a single-loop arrangement.', answer: 'True', explanation: 'With a fast inner loop handling disturbances, the outer loop sees a more controlled environment and can be tuned more aggressively.' },
+      { id: 'cascade_l1_12', type: 'mcq', q: 'Which type of disturbance does cascade control handle best?', options: ['Disturbances in the inner loop (secondary process)', 'Disturbances in the primary process only', 'Setpoint changes on the primary controller', 'Sensor noise in the primary measurement'], answer: 'Disturbances in the inner loop (secondary process)', explanation: 'Cascade excels at rejecting inner-loop disturbances (e.g., steam pressure changes) before they propagate to the primary PV.' },
+      { id: 'cascade_l1_13', type: 'mcq', q: 'What is the anti-windup consideration for cascade control?', options: ['When the inner SP limit is hit, the outer controller integral must be frozen or back-calculated', 'Windup never occurs in cascade control', 'Only the inner loop needs anti-windup', 'Anti-windup is not used with cascade control'], answer: 'When the inner SP limit is hit, the outer controller integral must be frozen or back-calculated', explanation: 'If the inner SP reaches its limit (saturation), the outer controller must apply anti-windup to prevent its integral from winding up.' },
+      { id: 'cascade_l1_14', type: 'tf', q: 'Cascade control requires at least two process measurements (one for each controller).', answer: 'True', explanation: 'Two sensors needed: one for primary PV (e.g., temperature) and one for secondary PV (e.g., flow rate) — two control loops, two measurements.' },
+      { id: 'cascade_l1_15', type: 'mcq', q: 'In a refinery crude preheat train, what is a typical cascade structure?', options: ['Outlet temperature controller → heat medium flow controller (inner)', 'Pressure controller → temperature controller (inner)', 'Flow controller → level controller (inner)', 'Temperature controller → pressure controller (inner)'], answer: 'Outlet temperature controller → heat medium flow controller (inner)', explanation: 'Preheat cascade: primary = crude outlet temperature; inner = hot oil or steam flow to the exchanger.' },
+      { id: 'cascade_l1_16', type: 'mcq', q: 'Why is cascade control NOT justified when inner and outer loop speeds are similar?', options: ['Cascade provides no benefit if inner loop cannot reject disturbances fast enough to isolate the outer loop', 'Cascade requires exactly equal speeds for stability', 'Similar speeds cause cascade to become unstable', 'Similar speeds cause both loops to lose integral action'], answer: 'Cascade provides no benefit if inner loop cannot reject disturbances fast enough to isolate the outer loop', explanation: 'If inner is not faster, it cannot reject disturbances before they reach the outer loop — cascade provides no benefit over single loop.' },
+      { id: 'cascade_l1_17', type: 'tf', q: 'Ratio control is a form of open-loop cascade where the ratio station sets the wild-flow-based setpoint for the controlled flow.', answer: 'True', explanation: 'Ratio control: ratio station (SP = ratio × wild flow) feeds the setpoint of a flow controller — similar to cascade but the "outer controller" is a simple ratio multiplier.' },
+      { id: 'cascade_l1_18', type: 'mcq', q: 'What is "batch cascade" used for in polymerization reactor control?', options: ['Temperature control via jacket cooling as the primary cascade during different reaction phases', 'Flow control for batch addition of reactants', 'Level control of the batch reactor', 'Pressure control during polymerization'], answer: 'Temperature control via jacket cooling as the primary cascade during different reaction phases', explanation: 'Batch polymerization: temperature is the primary variable; cascade to jacket coolant flow controls the exothermic heat release during reaction.' },
+      { id: 'cascade_l1_19', type: 'mcq', q: 'Which of the following is the best secondary (inner) variable for a cascade fuel gas pressure/flow control?', options: ['Fuel gas flow rate (inner) — fast, directly manipulated via flow control valve', 'Burner temperature (inner)', 'Flame length (inner)', 'Flue gas oxygen concentration (inner)'], answer: 'Fuel gas flow rate (inner) — fast, directly manipulated via flow control valve', explanation: 'Flow is the fastest controllable inner variable; temperature and composition are much slower and less directly controllable.' },
+      { id: 'cascade_l1_20', type: 'tf', q: 'The inner controller in cascade control is typically tuned with a tighter (more aggressive) proportional band than the outer controller.', answer: 'True', explanation: 'Inner loop is tuned for fast response; outer loop is tuned more conservatively (wider proportional band) since it relies on the inner loop for disturbance rejection.' },
+    ],
+    level2: [
+      { id: 'cascade_l2_1', type: 'mcq', q: 'The closed-loop transfer function of the inner loop (secondary) in cascade control is G2cl(s) = G2(s)·C2(s)/(1 + G2(s)·C2(s)). If this is tuned to be fast, it approximates:', options: ['G2cl(s) ≈ 1 over the frequency range of the outer loop', 'G2cl(s) ≈ 0 at all frequencies', 'G2cl(s) ≈ G2(s) (open loop)', 'G2cl(s) ≈ 1/(C2(s))'], answer: 'G2cl(s) ≈ 1 over the frequency range of the outer loop', explanation: 'Fast inner loop: G2cl ≈ 1 at outer-loop frequencies — the secondary variable tracks its setpoint perfectly, as seen by the outer loop.' },
+      { id: 'cascade_l2_2', type: 'mcq', q: 'For a cascade system with primary process G1(s) = 1/(10s+1) and inner process G2(s) = 1/(2s+1), what is the outer loop apparent process when inner loop is closed with high gain C2?', options: ['Approximately G1(s) = 1/(10s+1) (inner loop appears as unity)', 'G1·G2 = 1/((10s+1)(2s+1))', 'G1/(1+G2) = 1/((10s+1)(1+G2))', '1/G2·G1 = (2s+1)/(10s+1)'], answer: 'Approximately G1(s) = 1/(10s+1) (inner loop appears as unity)', explanation: 'When inner loop bandwidth >> outer loop bandwidth, the inner closed-loop ≈ 1, and outer sees only the primary process G1.' },
+      { id: 'cascade_l2_3', type: 'tf', q: 'In a cascade system, if the inner loop has windup and is saturated, the outer loop will also experience windup because the outer output (inner SP) cannot drive the inner PV to track.', answer: 'True', explanation: 'Cascade windup propagation: inner saturation → inner error persists → outer loop continues integrating → outer windup. Both need anti-windup coordination.' },
+      { id: 'cascade_l2_4', type: 'mcq', q: 'What is the "back-calculation cascade" anti-windup strategy?', options: ['Inner loop sends its actual vs requested SP back to outer controller to limit outer integral when inner is saturated', 'Outer loop resets inner loop integral directly', 'Both loops use conditional integration simultaneously', 'Derivative term prevents cascade windup'], answer: 'Inner loop sends its actual vs requested SP back to outer controller to limit outer integral when inner is saturated', explanation: 'Cascade back-calculation: outer CO = inner SP; when inner SP is clamped, the clamped signal feeds back to drain outer integral.' },
+      { id: 'cascade_l2_5', type: 'mcq', q: 'For a cascade temperature-flow system, the inner PI flow controller should have Ti_inner set to approximately:', options: ['About 1–3× the flow loop process time constant (fast reset)', '10× the temperature time constant', 'Same as outer Ti', 'Greater than outer Ti always'], answer: 'About 1–3× the flow loop process time constant (fast reset)', explanation: 'Inner flow loop: typical τ_flow = 2–10 sec; Ti_inner ≈ 1–3 × τ_flow for fast offset elimination without oscillation.' },
+      { id: 'cascade_l2_6', type: 'tf', q: 'In a cascade system on a DCS, the "auto/cascade/manual" mode selector allows the inner setpoint to be driven either by the operator or by the outer controller output.', answer: 'True', explanation: '"Cascade" mode: outer CO drives inner SP automatically. "Auto" on inner: operator sets inner SP manually. "Manual": operator sets inner CO directly.' },
+      { id: 'cascade_l2_7', type: 'mcq', q: 'What additional measurement is needed to implement a temperature-flow cascade on a steam-heated heat exchanger compared to a single temperature loop?', options: ['A steam flow measurement (or valve position feedback)', 'A pressure transmitter on steam header', 'An additional temperature sensor', 'A level sensor on steam drum'], answer: 'A steam flow measurement (or valve position feedback)', explanation: 'Cascade needs an inner PV — steam flow measurement (flow transmitter on steam line) for the inner flow controller.' },
+      { id: 'cascade_l2_8', type: 'mcq', q: 'An alternative to a full cascade is a "valve position controller" (VPC). What does VPC do?', options: ['Optimizes a slow secondary variable (e.g., pressure) by adjusting the primary setpoint while keeping the primary loop in auto', 'Directly controls valve position without a PID', 'Measures valve position and corrects for hysteresis', 'Acts as inner loop in cascade — same as standard cascade'], answer: 'Optimizes a slow secondary variable (e.g., pressure) by adjusting the primary setpoint while keeping the primary loop in auto', explanation: 'VPC: slowly adjusts SP of an existing PID loop to optimize a secondary objective (e.g., keep a supply pressure near minimum), without cascade.' },
+      { id: 'cascade_l2_9', type: 'tf', q: 'A well-designed cascade system should reduce the integrated error (IAE) for inner disturbances by approximately the ratio of inner to outer loop bandwidth.', answer: 'True', explanation: 'Cascade benefit ratio ≈ ωc_inner/ωc_outer; if inner is 10× faster, IAE for inner disturbances is reduced ~10× compared to single-loop.' },
+      { id: 'cascade_l2_10', type: 'mcq', q: 'In a polymerization reactor, the cascade structure uses temperature as primary and jacket temperature as secondary. What is the main advantage over coolant FLOW as secondary?', options: ['Jacket temperature is a better proxy for heat removal than flow — it accounts for coolant inlet temperature changes', 'Jacket temperature is faster than flow control', 'Flow control has no sensor available', 'Jacket temperature cascade eliminates the need for anti-windup'], answer: 'Jacket temperature is a better proxy for heat removal than flow — it accounts for coolant inlet temperature changes', explanation: 'Jacket temperature secondary directly measures heat removal capacity, compensating for coolant supply temperature changes that flow-based cascade cannot.' },
+      { id: 'cascade_l2_11', type: 'mcq', q: 'In a crude distillation column cascade, the outer loop controls side draw temperature and inner loop controls side draw flow. If crude feed flow changes by 20%, what happens?', options: ['Inner flow loop corrects draw flow immediately; outer loop slowly corrects temperature by adjusting inner SP', 'Outer loop immediately corrects temperature by opening the flow valve', 'Both loops see the disturbance simultaneously with no isolation', 'Inner loop has no response until outer loop acts'], answer: 'Inner flow loop corrects draw flow immediately; outer loop slowly corrects temperature by adjusting inner SP', explanation: 'Feed disturbance affects draw rate; inner flow loop corrects it immediately. Temperature then settles; outer loop fine-tunes SP if needed.' },
+      { id: 'cascade_l2_12', type: 'tf', q: 'For override control using a high selector, the non-selected controller experiences integral windup.', answer: 'True', explanation: 'High/low selector: the non-selected controller has its output not actuating the valve — its integral winds up. Anti-windup (tracking) is needed for both.' },
+      { id: 'cascade_l2_13', type: 'mcq', q: 'A "split-range cascade" is a control scheme where:', options: ['Outer controller output is split between two inner controllers/valves at different CO ranges', 'One outer loop has two inner loops on the same variable', 'Two outer loops share one inner loop', 'Cascade is applied in split (parallel) mode across shifts'], answer: 'Outer controller output is split between two inner controllers/valves at different CO ranges', explanation: 'Split-range cascade: e.g., outer temperature controls heating (0-50% CO) via one valve cascade and cooling (50-100% CO) via another cascade inner loop.' },
+      { id: 'cascade_l2_14', type: 'mcq', q: 'What is the risk of operating a cascade system with the outer loop in "auto" but inner loop in "manual"?', options: ['Outer loop tries to adjust inner SP, but operator also controls inner CO — conflict and possible instability', 'Both loops stabilize independently', 'Outer loop automatically switches to P-only mode', 'No risk; this is normal cascade start-up mode'], answer: 'Outer loop tries to adjust inner SP, but operator also controls inner CO — conflict and possible instability', explanation: 'Outer auto with inner manual: outer generates a changing SP for inner but inner output is fixed by operator — uncoordinated, potentially destabilizing.' },
+      { id: 'cascade_l2_15', type: 'tf', q: 'The "cascade tracking" feature (inner loop tracking outer CO when outer is in manual) ensures bumpless transfer when outer loop returns to auto.', answer: 'True', explanation: 'Tracking: while outer is manual, inner SP tracks the outer output = current CO; when outer switches to auto, inner SP already matches — bumpless.' },
+      { id: 'cascade_l2_16', type: 'mcq', q: 'What limits the maximum inner SP in cascade control, and how is this constraint handled?', options: ['Equipment limits on the secondary variable; limit the outer CO range to match safe secondary SP range', 'Only the inner controller output limits apply', 'The inner SP is unlimited if outer is in auto', 'Inner SP is limited to ±100% of the outer SP'], answer: 'Equipment limits on the secondary variable; limit the outer CO range to match safe secondary SP range', explanation: 'Scale the outer controller output range to match the safe SP range of the secondary variable (e.g., max coolant flow).' },
+      { id: 'cascade_l2_17', type: 'mcq', q: 'In a steam pressure-temperature cascade for a superheater, the outer loop controls steam temperature and inner controls steam pressure. This is unusual because:', options: ['Pressure is typically controlled directly, not as a secondary of temperature — unusual but sometimes used for specific dynamics', 'Pressure is always the outer (primary) variable', 'Temperature is always the inner (secondary) variable', 'Steam pressure control does not need a PID'], answer: 'Pressure is typically controlled directly, not as a secondary of temperature — unusual but sometimes used for specific dynamics', explanation: 'Normally pressure is an independent objective; using it as inner secondary of temperature is a special design for superheater dynamics.' },
+      { id: 'cascade_l2_18', type: 'tf', q: 'Cascade control can be cascaded multiple times — e.g., composition → temperature → flow — forming a three-level cascade.', answer: 'True', explanation: 'Multi-level cascade: composition (primary) → temperature (secondary outer) → flow (secondary inner) — each level handles progressively faster dynamics.' },
+      { id: 'cascade_l2_19', type: 'mcq', q: 'In Siemens SIMATIC PCS 7, how is cascade control typically configured?', options: ['Using function blocks with "CAS" mode, where the primary output becomes the secondary setpoint via the SP_EXT input', 'By hardwiring the primary output to secondary input at the terminal strip', 'By using a single multi-loop PID function block', 'By configuring the inner loop in open-loop mode'], answer: 'Using function blocks with "CAS" mode, where the primary output becomes the secondary setpoint via the SP_EXT input', explanation: 'PCS 7 cascade: outer loop output connects to inner SP_EXT; inner is placed in CAS mode to accept external setpoint from the outer controller.' },
+      { id: 'cascade_l2_20', type: 'mcq', q: 'How does the cascade structure handle a failure of the inner loop transmitter?', options: ['Fall back to outer loop in manual with operator controlling inner CO directly; inner SP from outer is meaningless without inner PV', 'Outer loop continues in auto — inner loop tracks without measurement', 'Both loops automatically switch to derivative-only mode', 'Cascade continues using predicted inner PV from process model'], answer: 'Fall back to outer loop in manual with operator controlling inner CO directly; inner SP from outer is meaningless without inner PV', explanation: 'Inner transmitter failure: inner loop goes to manual or output tracking; operator takes over. Outer is also placed in manual until inner is restored.' },
+    ],
+    level3: [
+      { id: 'cascade_l3_1', type: 'mcq', q: 'The two-degree-of-freedom cascade closed-loop from outer SP to primary PV is:', options: ['[C1·G2cl·G1/(1+C1·G2cl·G1)]·R — where G2cl = C2G2/(1+C2G2) is the closed inner loop', 'C1·G1·G2/(1+C1·C2·G1·G2)', 'C1·C2·G1·G2/(1+C1·C2·G1·G2)', 'C1·G1/(1+C1·C2·G1·G2)'], answer: '[C1·G2cl·G1/(1+C1·G2cl·G1)]·R — where G2cl = C2G2/(1+C2G2) is the closed inner loop', explanation: 'Cascade: C1 sees the composite plant G_apparent = G2cl·G1 where G2cl = C2G2/(1+C2G2). Outer closed-loop: C1·G_apparent/(1+C1·G_apparent).' },
+      { id: 'cascade_l3_2', type: 'mcq', q: 'If the inner loop achieves a closed-loop time constant τ2cl, the outer controller effective dead time is approximately increased by:', options: ['τ2cl (inner closed-loop adds effective lag seen by outer controller)', 'Zero change — inner loop is transparent', '2·τ2cl additional dead time', 'τ2cl/2 additional lag'], answer: 'τ2cl (inner closed-loop adds effective lag seen by outer controller)', explanation: 'G2cl ≈ e^(−τ2cl·s) (first-order FOPDT approximation of inner closed loop) — adds τ2cl effective lag to the outer plant.' },
+      { id: 'cascade_l3_3', type: 'tf', q: 'The optimal outer controller gains for cascade depend on the achieved inner closed-loop bandwidth, not just the primary plant G1 alone.', answer: 'True', explanation: 'Outer plant = G2cl·G1; outer tuning must account for G2cl dynamics. As inner bandwidth increases, outer can be more aggressive.' },
+      { id: 'cascade_l3_4', type: 'mcq', q: 'What is the stability condition for a cascade control system in terms of the individual loop stability margins?', options: ['Both inner and outer loops must be independently stable; the cascade is stable if each individual loop is stable', 'Only the outer loop needs to be stable', 'Only the inner loop needs to be stable', 'Stability of the combined system must be checked; individual stability is neither necessary nor sufficient'], answer: 'Both inner and outer loops must be independently stable; the cascade is stable if each individual loop is stable', explanation: 'For cascade stability: if both inner and outer loops are independently stable, the cascade is stable. (This is a sufficient condition for linear systems.)' },
+      { id: 'cascade_l3_5', type: 'mcq', q: 'In a cascade system with integrating inner process G2(s) = K2/s (e.g., level cascade), the inner PI controller must include:', options: ['Integral action to avoid offset in the inner variable, but inner τ_I must be carefully tuned to prevent inner loop instability', 'No integral — P-only is sufficient', 'Only derivative action', 'Fixed-gain proportional only'], answer: 'Integral action to avoid offset in the inner variable, but inner τ_I must be carefully tuned to prevent inner loop instability', explanation: 'Integrating inner plant + integral controller = double integrator — marginal stability boundary; careful Ti selection needed to maintain stability.' },
+      { id: 'cascade_l3_6', type: 'tf', q: 'For a cascade with primary plant containing a RHP zero, the zero limits the achievable bandwidth of the outer loop, regardless of how fast the inner loop is made.', answer: 'True', explanation: 'RHP zero in G1 limits outer loop bandwidth to < 1/τ_z regardless of inner loop speed — fundamental limitation from the plant.' },
+      { id: 'cascade_l3_7', type: 'mcq', q: 'The "HYSYS Dynamic" or "DynSim" simulation tools for cascade control testing are useful because they:', options: ['Allow testing cascade logic, tuning, and failure scenarios in a virtual plant without risk', 'Are required by IEC 61511 for safety loops', 'Can automatically tune PID without any process knowledge', 'Replace the need for open-loop step testing on the real plant'], answer: 'Allow testing cascade logic, tuning, and failure scenarios in a virtual plant without risk', explanation: 'Dynamic process simulators: test cascade configuration, operator training, failure modes (inner loop failure, windup) safely before plant commissioning.' },
+      { id: 'cascade_l3_8', type: 'mcq', q: 'What is a "coordinated control system" in power plant boiler-turbine control, and how does it relate to cascade?', options: ['Both boiler (firing rate) and turbine (throttle valve) are controlled in a coordinated manner using interlocking cascade strategies for load following', 'A cascade where pressure controls flow on the boiler only', 'A multi-variable predictive controller without cascade', 'A distributed system where each boiler unit has independent PID control'], answer: 'Both boiler (firing rate) and turbine (throttle valve) are controlled in a coordinated manner using interlocking cascade strategies for load following', explanation: 'Power plant coordinated control: boiler master → firing rate inner cascade; turbine master → throttle cascade; both coordinate to track electrical load demand.' },
+      { id: 'cascade_l3_9', type: 'tf', q: 'The "closed-loop steady-state error" from disturbances in a cascade system with integral in the outer loop is zero, regardless of whether the inner loop has integral.', answer: 'True', explanation: 'Outer loop integral eliminates steady-state error at the primary PV regardless of inner loop — inner disturbances must be within inner SP range, but outer integral handles the rest.' },
+      { id: 'cascade_l3_10', type: 'mcq', q: 'In a nonlinear cascade (e.g., pH control with flow cascade), how should the outer controller handle the nonlinear pH-to-reagent-flow relationship?', options: ['Use a nonlinear pre-compensator (inverse titration curve) on the outer CO before it becomes the inner SP', 'Use only linear PID outer controller at all times', 'Put the nonlinearity into the inner flow controller', 'Use derivative-heavy outer control to handle nonlinearity'], answer: 'Use a nonlinear pre-compensator (inverse titration curve) on the outer CO before it becomes the inner SP', explanation: 'Linearizing: apply f⁻¹(pH_error) to map controller output through the inverse pH curve before sending to inner flow SP — equivalent to input linearization.' },
+      { id: 'cascade_l3_11', type: 'mcq', q: 'The "split-range valve pairing" in a cascade with split-range inner creates what control challenge when transitioning from one valve to the other?', options: ['Process gain and dynamics change at the split point — gain scheduling or smooth transition logic is needed', 'No challenge — valves are interchangeable', 'The transition always causes integral windup in the outer controller', 'Split-range is incompatible with cascade control'], answer: 'Process gain and dynamics change at the split point — gain scheduling or smooth transition logic is needed', explanation: 'At the split point, one valve closes and another opens; different valve Cv and dynamics mean gain changes — must account for this in outer loop tuning.' },
+      { id: 'cascade_l3_12', type: 'tf', q: 'In model predictive control (MPC), cascade control is implicitly embedded when the MPC prediction model includes the inner-loop dynamics.', answer: 'True', explanation: 'MPC with inner loop model: the optimizer plans trajectories through inner dynamics without explicit cascade structure — equivalent but more systematic.' },
+      { id: 'cascade_l3_13', type: 'mcq', q: 'For a cascade steam-heated heat exchanger with inner steam flow control, when the steam header pressure drops significantly, which loop corrects first?', options: ['Inner flow loop immediately increases valve opening to maintain steam flow SP', 'Outer temperature loop detects temperature drop first and adjusts inner SP', 'Both loops respond simultaneously', 'Neither responds until operator intervenes'], answer: 'Inner flow loop immediately increases valve opening to maintain steam flow SP', explanation: 'Cascade benefit: inner flow loop detects and corrects the flow drop (due to pressure change) before the temperature can deviate significantly.' },
+      { id: 'cascade_l3_14', type: 'mcq', q: 'What is the mathematical relationship between outer loop bandwidth ωc_outer and inner loop bandwidth ωc_inner for cascade stability and effectiveness?', options: ['ωc_inner >> ωc_outer required (typically 3-10× or more); otherwise cascade instability or no benefit', 'ωc_inner = ωc_outer for maximum benefit', 'ωc_inner < ωc_outer always', 'No relationship — they are independent'], answer: 'ωc_inner >> ωc_outer required (typically 3-10× or more); otherwise cascade instability or no benefit', explanation: 'Inner must close much faster than outer; if ωc_inner ≤ ωc_outer, the inner loop appears as a lag to the outer, potentially reducing stability and performance.' },
+      { id: 'cascade_l3_15', type: 'tf', q: 'Furnace coordinated firing control uses cascade: combustion air flow (inner) → excess oxygen control (outer) to maintain optimal air-fuel ratio.', answer: 'True', explanation: 'Furnace cascade: outer O2 analyzer controls excess air; inner air flow controller tracks the O2-derived setpoint — handles combustion air header pressure changes.' },
+      { id: 'cascade_l3_16', type: 'mcq', q: 'What is the "cascade decoupling" strategy for a 2×2 interacting system where standard decoupling is too sensitive to model error?', options: ['Using cascade to control one pairing with the other loop providing a feedforward signal as the cascade setpoint', 'Eliminating cascade and using full decoupling matrix', 'Using only proportional control in both loops', 'Adding derivative terms to both loops simultaneously'], answer: 'Using cascade to control one pairing with the other loop providing a feedforward signal as the cascade setpoint', explanation: 'Partial cascade decoupling: use the second variable as a feedforward into the first loop SP — less sensitive to model error than full matrix decoupling.' },
+      { id: 'cascade_l3_17', type: 'mcq', q: 'In IMC-based cascade design, how are inner and outer controllers derived?', options: ['Inner IMC Q2(s) designed for G2, outer Q1(s) designed for G1 with G2cl as effective inner model; both use independent λ parameters', 'Single λ for both loops from combined plant G1·G2', 'Outer uses IMC; inner uses Z-N', 'Both inner and outer use the same Q(s) parameterization'], answer: 'Inner IMC Q2(s) designed for G2, outer Q1(s) designed for G1 with G2cl as effective inner model; both use independent λ parameters', explanation: 'IMC cascade design: design Q2 for G2 (inner), then design Q1 for G1·G2cl (outer effective plant) — two separate IMC designs with independent robustness tradeoffs.' },
+      { id: 'cascade_l3_18', type: 'tf', q: 'The Kalman filter can be used in a cascade-like structure where state estimates (not measurements) serve as inner "process variables" for state feedback control.', answer: 'True', explanation: 'State feedback + Kalman filter (LQG): state estimates ẑ are fed back — conceptually analogous to cascade but in state-space, not output-based cascade.' },
+      { id: 'cascade_l3_19', type: 'mcq', q: 'In IEC 61511 functional safety, can a cascade control loop be part of a Safety Instrumented Function (SIF)?', options: ['Yes, if it meets the required SIL and uses SIL-rated instruments and logic solvers', 'No, cascade control cannot be part of any SIF', 'Yes, any cascade loop automatically qualifies as SIL 1', 'Only the inner loop can be SIL-rated, not the outer'], answer: 'Yes, if it meets the required SIL and uses SIL-rated instruments and logic solvers', explanation: 'IEC 61511 allows cascade structures in SIFs if the hardware PFD (probability of failure on demand) meets the required SIL level.' },
+      { id: 'cascade_l3_20', type: 'mcq', q: 'What is "predictive cascade" (cascade with feed-forward prediction), and what does it achieve?', options: ['The outer controller uses a process model to predict future inner SP, reducing the phase lag limitation of the cascade', 'Cascade with a future setpoint trajectory entered by the operator', 'Using a Kalman filter to predict inner PV', 'A cascade where the inner setpoint is ramped rather than stepped'], answer: 'The outer controller uses a process model to predict future inner SP, reducing the phase lag limitation of the cascade', explanation: 'Predictive cascade: outer controller computes inner SP one dead time ahead using a model — reduces effective cascade lag, improving outer loop performance.' },
+    ],
+  },
+  digital: {
+    level1: [
+      { id: 'digital_l1_1', type: 'mcq', q: 'What distinguishes a "digital" PID controller from an "analog" PID controller?', options: ['Digital PID operates on sampled (discrete-time) signals using a microprocessor or PLC', 'Digital PID uses digital displays only', 'Digital PID has more gain settings', 'Digital PID does not use integral action'], answer: 'Digital PID operates on sampled (discrete-time) signals using a microprocessor or PLC', explanation: 'Digital PID: discrete-time implementation running in a PLC/DCS/microcontroller at a fixed sample rate (Ts).' },
+      { id: 'digital_l1_2', type: 'tf', q: 'The sample rate of a digital PID controller must be fast enough relative to the process dynamics to provide adequate control.', answer: 'True', explanation: 'If sample rate is too slow, the digital PID approximates continuous control poorly — Nyquist theorem and control theory both constrain minimum sample rate.' },
+      { id: 'digital_l1_3', type: 'mcq', q: 'What is the typical rule of thumb for minimum sample rate for a digital PID controller?', options: ['Sample at least 4–10× faster than the process bandwidth (or 10–20× the closed-loop speed)', 'Sample at least once per minute', 'Sample exactly at the process time constant', 'Sample rate equals the process dead time'], answer: 'Sample at least 4–10× faster than the process bandwidth (or 10–20× the closed-loop speed)', explanation: 'Practical rule: Ts ≤ τ/10 (or θ/3 for dead-time dominated processes). Too slow sampling → poor control, aliasing.' },
+      { id: 'digital_l1_4', type: 'mcq', q: 'What is "aliasing" in the context of digital process control?', options: ['High-frequency signals being misrepresented as low-frequency signals due to insufficient sampling rate', 'Two control loops with the same tag name', 'Controller output being aliased to a rounded value', 'A sensor reading the wrong process variable'], answer: 'High-frequency signals being misrepresented as low-frequency signals due to insufficient sampling rate', explanation: 'Aliasing: if sample rate < 2× signal frequency, high-frequency components appear as false low-frequency components — distorts control.' },
+      { id: 'digital_l1_5', type: 'tf', q: 'PLCs typically execute PID loops in cyclic scan tasks with a defined cycle time.', answer: 'True', explanation: 'PLC tasks have defined cycle times (e.g., 10 ms, 100 ms); PID executes once per cycle — cycle time = effective sample time.' },
+      { id: 'digital_l1_6', type: 'mcq', q: 'In a DCS (Distributed Control System), PID execution is typically:', options: ['Periodic (every 200 ms, 500 ms, or 1 s depending on loop speed class)', 'Event-driven only', 'As fast as possible with no defined period', 'Once per operator action'], answer: 'Periodic (every 200 ms, 500 ms, or 1 s depending on loop speed class)', explanation: 'DCS PID controllers run in predefined period modules (e.g., 200 ms for fast loops, 1 s for slow loops) selected based on process speed.' },
+      { id: 'digital_l1_7', type: 'mcq', q: 'What is the difference between a "PLC" and a "DCS" in process control context?', options: ['PLC: program logic focused, faster scan, originally for discrete control. DCS: designed for continuous PID and process control with rich HMI integration', 'PLC is analog-only; DCS is digital-only', 'PLC is used in refineries; DCS is used in manufacturing', 'No practical difference — same thing'], answer: 'PLC: program logic focused, faster scan, originally for discrete control. DCS: designed for continuous PID and process control with rich HMI integration', explanation: 'PLCs excel at fast, logic-intensive tasks; DCS excels at large-scale continuous PID control with integrated historian and operator interfaces.' },
+      { id: 'digital_l1_8', type: 'tf', q: 'Modern PLCs can run PID control effectively for most process applications, blurring the historical PLC/DCS distinction.', answer: 'True', explanation: 'Modern PLCs (ControlLogix, S7-1500) have PID function blocks, historian integration, and HMI that rival DCS capability for many applications.' },
+      { id: 'digital_l1_9', type: 'mcq', q: 'Which Rockwell Automation PLC instruction provides a full-featured PID with anti-windup and cascade?', options: ['PIDE (Enhanced PID)', 'PID (basic)', 'PID_L (linear)', 'PIDX (external)'], answer: 'PIDE (Enhanced PID)', explanation: 'PIDE in Studio 5000 provides: parallel/series PID forms, anti-windup, feedforward, cascade, ratio, and override capabilities.' },
+      { id: 'digital_l1_10', type: 'mcq', q: 'In Siemens TIA Portal, which function block is used for PID control in S7-1200/1500?', options: ['PID_Compact (or PID_3Step for valve control)', 'FC 41 CONT_C', 'FB 41 CONT_C (for S7-300/400 only)', 'All are correct depending on hardware generation'], answer: 'All are correct depending on hardware generation', explanation: 'TIA Portal: PID_Compact/PID_3Step for S7-1200/1500; FB41 CONT_C for S7-300/400. Choice depends on hardware.' },
+      { id: 'digital_l1_11', type: 'tf', q: 'A "deadband" in a digital PID prevents unnecessary control output changes when the error is very small.', answer: 'True', explanation: 'Deadband: if |error| < deadband_limit, output is unchanged — prevents valve hunting due to measurement noise or small errors.' },
+      { id: 'digital_l1_12', type: 'mcq', q: 'What is "A/D conversion" and why does it matter for digital PID?', options: ['Analog-to-Digital conversion of sensor signals; resolution and noise affect control quality', 'Auto/manual to Digital switching', 'Amplitude to Derivative conversion in the PID', 'Actuator to Device connection protocol'], answer: 'Analog-to-Digital conversion of sensor signals; resolution and noise affect control quality', explanation: 'ADC converts the analog 4-20 mA sensor signal to digital values; quantization resolution (12-16 bit) affects measurement precision.' },
+      { id: 'digital_l1_13', type: 'mcq', q: 'A 12-bit ADC for a 0-100% process range provides a resolution of approximately:', options: ['0.024% (100/4096)', '1% (100/100)', '0.1% (100/1000)', '0.001% (100/100000)'], answer: '0.024% (100/4096)', explanation: '12-bit ADC: 2¹² = 4096 steps. Resolution = 100/4096 ≈ 0.024% — adequate for most process control applications.' },
+      { id: 'digital_l1_14', type: 'tf', q: 'HART (Highway Addressable Remote Transducer) protocol allows digital communication superimposed on the 4-20 mA analog signal.', answer: 'True', explanation: 'HART: FSK digital signal at 1200/2200 Hz rides on the 4-20 mA wire, enabling digital configuration, diagnostics, and secondary variable communication.' },
+      { id: 'digital_l1_15', type: 'mcq', q: 'What is a "foundation fieldbus" (FF) controller compared to a traditional 4-20 mA PID?', options: ['FF runs PID in the field device (transmitter or valve positioner) over a digital bus — eliminates A/D conversion', 'FF uses wireless sensors with higher latency', 'FF requires a central DCS to run all PID calculations', 'FF is only used for safety loops'], answer: 'FF runs PID in the field device (transmitter or valve positioner) over a digital bus — eliminates A/D conversion', explanation: 'Foundation Fieldbus: function blocks (PID, AIN, AO) run in field devices on the bus — distributed control, no A/D conversion, digital accuracy.' },
+      { id: 'digital_l1_16', type: 'mcq', q: 'In a PLC-based system, which task priority should a fast PID loop run in?', options: ['High-priority periodic task with a shorter cycle time than slow loops', 'Lowest priority background task', 'Same priority as HMI communication task', 'Event-driven interrupt task only'], answer: 'High-priority periodic task with a shorter cycle time than slow loops', explanation: 'Fast loops (flow, pressure) need high-priority, fast-cycle tasks to ensure timely execution; slow loops (temp, level) can run in longer cycles.' },
+      { id: 'digital_l1_17', type: 'tf', q: 'PROFIBUS PA and PROFINET IO can carry process signals from field instruments to a PLC-based control system digitally.', answer: 'True', explanation: 'PROFIBUS PA: intrinsically safe digital fieldbus for process instruments. PROFINET IO: Ethernet-based process data communication — both eliminate 4-20 mA wiring.' },
+      { id: 'digital_l1_18', type: 'mcq', q: 'What is "bump test" in the context of digital PID commissioning?', options: ['A deliberate step change to the CO to observe process response for model identification', 'Testing the controller under maximum load', 'A physical test of the valve actuator', 'A test that bumps (rapidly toggles) the setpoint'], answer: 'A deliberate step change to the CO to observe process response for model identification', explanation: 'Bump test: apply a CO step in manual mode, record PV vs time — used to identify K, τ, θ for PID tuning.' },
+      { id: 'digital_l1_19', type: 'mcq', q: 'What is the purpose of "loop sheet" documentation in process control systems?', options: ['Detailed wiring, instrument ranges, controller parameters, and calibration data for each control loop', 'The PLC program source code listing', 'The P&ID drawing for the entire plant', 'The safety interlock trip logic'], answer: 'Detailed wiring, instrument ranges, controller parameters, and calibration data for each control loop', explanation: 'Loop sheets: engineering documents showing each loop\'s instruments, tag numbers, ranges, wiring, and control parameters — essential for maintenance.' },
+      { id: 'digital_l1_20', type: 'tf', q: 'Software-based PID simulators (like MATLAB/Simulink or Python control libraries) are useful for testing PID tuning before applying parameters to a real plant.', answer: 'True', explanation: 'Simulation: verify PID gains on a process model before plant implementation — reduces risk of upset during commissioning.' },
+    ],
+    level2: [
+      { id: 'digital_l2_1', type: 'mcq', q: 'The Z-transform of the unit step is U(z) = z/(z-1). The Z-transform of a sampled exponential e^(-aTs) is:', options: ['z/(z - e^(-aTs))', '1/(z - e^(-aTs))', 'z·e^(-aTs)/(z-1)', 'e^(-aTs)/(z-1)'], answer: 'z/(z - e^(-aTs))', explanation: 'Z{a^k·u(k)} = z/(z-a) where a=e^(-aTs). The sampled exponential has Z-transform z/(z-e^{-aTs}).' },
+      { id: 'digital_l2_2', type: 'mcq', q: 'The discrete PID position algorithm (Euler forward) for sample k is:', options: ['CO(k) = Kp·e(k) + Ki·Ts·Σe(j) + Kd·(e(k)-e(k-1))/Ts', 'CO(k) = Kp·(e(k)-e(k-1)) + Ki·Ts·e(k) + Kd·e(k)/Ts', 'CO(k) = Kp·e(k)·Ts', 'CO(k) = Kp/Ts·Σe(j)'], answer: 'CO(k) = Kp·e(k) + Ki·Ts·Σe(j) + Kd·(e(k)-e(k-1))/Ts', explanation: 'Discrete position form: P=Kp·e(k), I=Ki·Ts·(accumulated sum), D=Kd·(e(k)-e(k-1))/Ts.' },
+      { id: 'digital_l2_3', type: 'tf', q: 'The velocity (incremental) PID algorithm computes ΔCO(k) = CO(k) - CO(k-1), requiring the actuator to implement an integrating (memory) behavior.', answer: 'True', explanation: 'Velocity form: ΔCO each scan; the actuator (e.g., a valve positioner with memory) or a software accumulator maintains the running output.' },
+      { id: 'digital_l2_4', type: 'mcq', q: 'In a digital PID with derivative filter, the filtered derivative D(k) is computed as:', options: ['D(k) = (1-α)·D(k-1) + α·Kd·(e(k)-e(k-1))/Ts where α = N·Ts/(N·Ts+Td)', 'D(k) = Kd·(e(k)-e(k-1))/Ts always', 'D(k) = Kd·Σ(e(k)-e(k-1))', 'D(k) = Kd·e(k)/Ts²'], answer: 'D(k) = (1-α)·D(k-1) + α·Kd·(e(k)-e(k-1))/Ts where α = N·Ts/(N·Ts+Td)', explanation: 'Discrete derivative filter: first-order IIR with α = N·Ts/(Td + N·Ts). α close to 1 → no filtering; α close to 0 → heavy filtering.' },
+      { id: 'digital_l2_5', type: 'mcq', q: 'What is the "scan jitter" problem in PLC-based PID execution?', options: ['Variable cycle time causes inconsistent Ts, affecting integral and derivative accuracy', 'PID scan runs faster than the sensor update rate', 'Communication delays from fieldbus sensors', 'HMI screen refresh causing display jitter'], answer: 'Variable cycle time causes inconsistent Ts, affecting integral and derivative accuracy', explanation: 'Jitter: PLC cycle time varies due to communication or I/O load — PID assumes fixed Ts, so variable Ts introduces integration error.' },
+      { id: 'digital_l2_6', type: 'tf', q: 'Using a time-stamped Ts (measuring actual elapsed time per scan) in the PID calculation compensates for scan jitter.', answer: 'True', explanation: 'Timestamped Ts: PID reads system clock each scan and uses actual elapsed time — compensates for jitter by using real dt instead of nominal Ts.' },
+      { id: 'digital_l2_7', type: 'mcq', q: 'In Foundation Fieldbus H1, the PID function block executes in the field device. What determines the execution period?', options: ['The configured macrocycle (schedule) set by the DCS engineer, typically 250 ms–1 s', 'The DCS scan rate only', 'The field device CPU speed automatically', 'The 4-20 mA signal update rate'], answer: 'The configured macrocycle (schedule) set by the DCS engineer, typically 250 ms–1 s', explanation: 'FF H1: function blocks execute on a scheduled macrocycle (link active scheduler). Typical: 250 ms (fast) to 1 s (slow) loops.' },
+      { id: 'digital_l2_8', type: 'mcq', q: 'When a digital PID\'s sample time is too long relative to process dead time (Ts > θ/2), what is the control implication?', options: ['Effective dead time is increased by Ts/2, significantly degrading performance', 'Performance is unaffected by sample time', 'Only the integral term is affected', 'The loop becomes stable with higher gain'], answer: 'Effective dead time is increased by Ts/2, significantly degrading performance', explanation: 'ZOH (zero-order hold) effect: sampling adds Ts/2 effective dead time. If Ts > θ/2, added lag dominates — tune for θ_eff = θ + Ts/2.' },
+      { id: 'digital_l2_9', type: 'tf', q: 'A "watchdog" timer in a PLC ensures the PID output goes to a safe state if the PLC scan stops executing.', answer: 'True', explanation: 'Watchdog: if PLC stops running (crash/fault), output drops to safe value. Prevents runaway from a frozen-output PID.' },
+      { id: 'digital_l2_10', type: 'mcq', q: 'What is "split second control" (or event-driven PID) and where is it used?', options: ['PID executed only when the error exceeds a threshold — used for slow processes to reduce computation load', 'PID executed exactly at the millisecond boundary', 'PID with 1-second minimum sample rate only', 'PID triggered by SCADA events only'], answer: 'PID executed only when the error exceeds a threshold — used for slow processes to reduce computation load', explanation: 'Event-driven PID: skips execution when |e| < threshold — saves CPU cycles on slow processes where frequent execution adds no value.' },
+      { id: 'digital_l2_11', type: 'mcq', q: 'In ControlLogix Studio 5000, the PIDE instruction parameter "PV_EGU" represents:', options: ['Process Variable in Engineering Units (actual engineering units scale for PV)', 'Proportional Velocity gain', 'PV error gain unit', 'Physical variable European Union standard'], answer: 'Process Variable in Engineering Units (actual engineering units scale for PV)', explanation: 'PV_EGU: PIDE parameter holding the PV in actual engineering units (°C, bar, kg/h) — not percent. Used with EGU-mode PIDE.' },
+      { id: 'digital_l2_12', type: 'tf', q: 'In a DCS like Honeywell Experion, PID parameters can be changed online (while the loop is running) without interrupting control.', answer: 'True', explanation: 'DCS PID: parameters (Kp, Ti, Td) can be modified online in auto mode — the running PID immediately uses new values. Bumpless if proper.' },
+      { id: 'digital_l2_13', type: 'mcq', q: 'What is the "OPC UA" standard and how does it relate to digital PID systems?', options: ['An interoperability standard for secure, platform-independent data exchange between process systems — allows SCADA/HMI to access PLC PID data', 'An Open Process Control universal algorithm for PID', 'A fieldbus protocol for 4-20 mA replacement', 'An alarm management standard for PID loops'], answer: 'An interoperability standard for secure, platform-independent data exchange between process systems — allows SCADA/HMI to access PLC PID data', explanation: 'OPC UA: IEC 62541 standard for secure, vendor-neutral data exchange. SCADA reads PID PV, SP, CO, mode from any OPC UA-compliant PLC/DCS.' },
+      { id: 'digital_l2_14', type: 'mcq', q: 'What is "ISA-S88 batch control" and how does it interact with PID control?', options: ['A standard for batch process control phases using procedural state machines that invoke PID loops as equipment modules', 'A PID tuning standard for batch reactors', 'A DCS communication protocol for batch', 'An alarm standard for batch processes'], answer: 'A standard for batch process control phases using procedural state machines that invoke PID loops as equipment modules', explanation: 'ISA-88: batch procedures invoke PID control phases (e.g., "heat to temperature" → runs temperature PID until SP reached). PID serves as basic control.' },
+      { id: 'digital_l2_15', type: 'tf', q: 'A "Function Block Diagram" (FBD) in IEC 61131-3 can be used to implement a PID algorithm graphically.', answer: 'True', explanation: 'IEC 61131-3 FBD: PID function blocks connected graphically — standard way to implement PID in most DCS/PLC environments.' },
+      { id: 'digital_l2_16', type: 'mcq', q: 'What is the purpose of a "D/A converter" (DAC) in a digital PID system?', options: ['Converts the digital controller output to an analog signal (e.g., 4-20 mA) for the control valve', 'Converts data to alarm signals', 'Converts derivatives to analog derivatives', 'Converts digital displays to analog panel meters'], answer: 'Converts the digital controller output to an analog signal (e.g., 4-20 mA) for the control valve', explanation: 'DAC: digital CO (0-100%) → analog 4-20 mA → I/P converter → valve positioner → valve position.' },
+      { id: 'digital_l2_17', type: 'mcq', q: 'What is the "I/P transducer" in a digital valve control system?', options: ['Current-to-Pneumatic converter: 4-20 mA → 3-15 psi (or 0.2-1.0 bar) pneumatic signal for valve actuator', 'Integral-to-Proportional algorithm converter', 'Instrument to Process safety barrier', 'Integrated protection transducer'], answer: 'Current-to-Pneumatic converter: 4-20 mA → 3-15 psi (or 0.2-1.0 bar) pneumatic signal for valve actuator', explanation: 'I/P (current-to-pressure): converts 4-20 mA electrical signal to 3-15 psi pneumatic to drive pneumatic valve actuators.' },
+      { id: 'digital_l2_18', type: 'tf', q: 'PROFINET IRT (Isochronous Real-Time) achieves sub-millisecond cycle times suitable for motion control but is generally faster than needed for process PID loops.', answer: 'True', explanation: 'PROFINET IRT: 250 μs–1 ms cycles for motion. Process PID: 100 ms–1 s typical. IRT is overkill for process loops but may be used for compressor surge.' },
+      { id: 'digital_l2_19', type: 'mcq', q: 'What is "historian" software (OSIsoft PI, Aveva, etc.) used for in a digital PID context?', options: ['Archives PID PV, SP, CO, and mode in time-series database for performance monitoring, troubleshooting, and optimization', 'Programs the PID controller parameters', 'Provides real-time control override', 'Archives alarm logs only'], answer: 'Archives PID PV, SP, CO, and mode in time-series database for performance monitoring, troubleshooting, and optimization', explanation: 'Historian: time-series database storing process variables — enables loop performance analysis, regulatory compliance, and troubleshooting of past events.' },
+      { id: 'digital_l2_20', type: 'mcq', q: 'What is the purpose of the "PID_3Step" function block in Siemens for valve control?', options: ['Controls a 3-wire motor-driven valve with separate OPEN/CLOSE/STOP outputs and position feedback', 'A PID with 3 cascaded stages', 'A 3-position (open/partial/closed) setpoint controller', 'A PID executed every 3 seconds'], answer: 'Controls a 3-wire motor-driven valve with separate OPEN/CLOSE/STOP outputs and position feedback', explanation: 'PID_3Step: designed for motorized valve actuators with discrete open/close outputs and optional position feedback — replaces analog output for electromotoric actuators.' },
+    ],
+    level3: [
+      { id: 'digital_l3_1', type: 'mcq', q: 'The closed-loop poles of a digital PID system are found from the characteristic equation 1 + C(z)·G(z) = 0. For stability, all poles must be:', options: ['Inside the unit circle |z| < 1 in the z-plane', 'In the left half of the s-plane', 'Outside the unit circle |z| > 1', 'On the unit circle |z| = 1'], answer: 'Inside the unit circle |z| < 1 in the z-plane', explanation: 'Z-plane stability: discrete-time poles inside the unit circle → stable. (Analogous to s-plane left-half-plane for continuous systems.)' },
+      { id: 'digital_l3_2', type: 'mcq', q: 'The ZOH (zero-order hold) discretization of G(s) = K/(τs+1) gives G(z) = ?', options: ['K(1-e^(-Ts/τ))·z^(-1)/(1-e^(-Ts/τ)·z^(-1))', 'K·Ts/(τ(z-1))', 'K/(τ(z-1)/Ts + 1)', 'K·e^(-Ts/τ)/(z-1)'], answer: 'K(1-e^(-Ts/τ))·z^(-1)/(1-e^(-Ts/τ)·z^(-1))', explanation: 'ZOH discretization: G(z) = (1-z^{-1})·Z{G(s)/s}. For first-order: G(z) = K(1-a)z^{-1}/(1-az^{-1}) where a = e^{-Ts/τ}.' },
+      { id: 'digital_l3_3', type: 'tf', q: 'The Jury stability criterion is the discrete-time equivalent of the Routh-Hurwitz criterion for checking polynomial root locations in the z-plane.', answer: 'True', explanation: 'Jury test: algebraic conditions on closed-loop characteristic polynomial coefficients to determine if all roots are inside the unit circle.' },
+      { id: 'digital_l3_4', type: 'mcq', q: 'For the discrete PID with derivative filter, the transfer function C(z) using Euler backward (s ≈ (z-1)/(Ts·z)) for all terms is:', options: ['A proper rational function in z (poles and zeros inside/on unit circle) — unlike Euler forward which can produce unstable zeros', 'An improper transfer function', 'An FIR (no poles) filter', 'A pure delay followed by PID'], answer: 'A proper rational function in z (poles and zeros inside/on unit circle) — unlike Euler forward which can produce unstable zeros', explanation: 'Euler backward discretization: s → (z-1)/(Ts·z) maps LHP s-poles into unit circle z-poles — numerically stable. Forward can map to outside unit circle.' },
+      { id: 'digital_l3_5', type: 'mcq', q: 'What is the "minimum variance controller" and what is its relationship to PID?', options: ['The controller that minimizes output variance for a given disturbance model; PID approximates it for ARIMA disturbance models', 'A PID tuned to minimize peak overshoot', 'A controller that eliminates all derivative action to minimize signal variance', 'A fixed-gain controller with minimum number of parameters'], answer: 'The controller that minimizes output variance for a given disturbance model; PID approximates it for ARIMA disturbance models', explanation: 'Minimum variance (MVC): optimal stochastic controller. For ARIMA(1,1) disturbances and FOPDT plants, MVC has a PID-like structure.' },
+      { id: 'digital_l3_6', type: 'tf', q: 'Digital redesign (designing continuous C(s) then discretizing) is generally simpler than direct digital design (designing C(z) directly) but may lose performance at longer sample times.', answer: 'True', explanation: 'Digital redesign: design C(s) with continuous methods, then discretize (Tustin, ZOH). Works well for fast sampling; direct z-domain design handles slow sampling better.' },
+      { id: 'digital_l3_7', type: 'mcq', q: 'The "intersample behavior" problem in digital control refers to:', options: ['The process response between samples is not controlled — the plant may oscillate between samples even if sampled values look stable', 'Samples being taken at non-integer multiples of Ts', 'Communication between PLCs between samples', 'Anti-aliasing filter between sample points'], answer: 'The process response between samples is not controlled — the plant may oscillate between samples even if sampled values look stable', explanation: 'Intersample: digital control only ensures stability at sample instants; between samples, the continuous state may deviate — detected with L2 norm analysis.' },
+      { id: 'digital_l3_8', type: 'mcq', q: 'The "lifting" technique in digital control theory is used to analyze:', options: ['Periodic (multirate) systems and intersample behavior using a lifted state-space representation', 'Sampling rate optimization', 'Sensor fusion for multiple measurement rates', 'Cascade systems with different sample rates for inner and outer loops'], answer: 'Periodic (multirate) systems and intersample behavior using a lifted state-space representation', explanation: 'Lifting: converts a periodic (multirate) time-varying system to an equivalent LTI system over one full period — enables standard LTI analysis.' },
+      { id: 'digital_l3_9', type: 'tf', q: 'A multirate digital control system with the inner loop running faster than the outer loop (different sample times) requires careful synchronization to avoid aliasing effects.', answer: 'True', explanation: 'Multirate cascade: inner runs at Ts_inner (fast), outer at Ts_outer (slow). Synchronization ensures outer uses current inner state, not stale data.' },
+      { id: 'digital_l3_10', type: 'mcq', q: 'The "delta operator" (δ = (q-1)/Ts where q is the shift operator) has what numerical advantage over the z-operator for fast sampling?', options: ['Better numerical conditioning at small Ts — δ-domain polynomials remain numerically distinct as Ts→0, unlike z-domain which clusters near z=1', 'Faster computation in the PLC CPU', 'Direct correspondence to physical units', 'Simpler anti-windup implementation'], answer: 'Better numerical conditioning at small Ts — δ-domain polynomials remain numerically distinct as Ts→0, unlike z-domain which clusters near z=1', explanation: 'As Ts→0, z-domain poles cluster near z=1 (ill-conditioned). δ-domain: poles near δ≈s (well-separated) — better finite-word-length arithmetic.' },
+      { id: 'digital_l3_11', type: 'mcq', q: 'In IEC 61511 digital safety systems (SIS), what is the maximum acceptable response time for a digital PID SIF (safety instrumented function)?', options: ['The process safety time divided by 3 — the SIF must respond in < 1/3 of the process safety time to allow for multiple verifications', 'Exactly 1 second always', 'Less than the PLC scan time', 'No time requirement — just accuracy'], answer: 'The process safety time divided by 3 — the SIF must respond in < 1/3 of the process safety time to allow for multiple verifications', explanation: 'IEC 61511: SIF response time < process safety time / 3. Ensures detection, actuation, and confirmation before process reaches dangerous state.' },
+      { id: 'digital_l3_12', type: 'tf', q: 'In Structured Text (ST) per IEC 61131-3, a PID can be implemented as a manually coded function block with explicit integration and derivative calculations.', answer: 'True', explanation: 'ST PID: FB with VAR (e, integral, prev_error, CO, Kp, Ki, Kd, Ts) computing CO:=Kp*e + Ki*integral + Kd*(e-prev_error)/Ts each scan.' },
+      { id: 'digital_l3_13', type: 'mcq', q: 'What is the "finite word length effect" in fixed-point digital PID implementation, and how does it manifest?', options: ['Quantization of coefficients and states causes limit cycles, bias, and coefficient sensitivity — may cause integral drift', 'The PID loop has a finite maximum scan count', 'Floating-point overflow in the output register', 'Fixed output resolution only'], answer: 'Quantization of coefficients and states causes limit cycles, bias, and coefficient sensitivity — may cause integral drift', explanation: 'Fixed-point PID: coefficient quantization rounds Ki, Kp, Kd; state rounding causes accumulated bias; may produce limit cycles at steady state.' },
+      { id: 'digital_l3_14', type: 'mcq', q: 'The "direct form II" implementation of the PID in difference equations is preferred over "direct form I" in fixed-point arithmetic because:', options: ['Direct form II minimizes the number of delay registers (lower memory), reducing quantization error accumulation paths', 'Direct form II is faster to compute', 'Direct form I cannot implement derivative filtering', 'Direct form II avoids all stability issues'], answer: 'Direct form II minimizes the number of delay registers (lower memory), reducing quantization error accumulation paths', explanation: 'Direct form II: canonical form with minimum state variables = order of filter. Fewer states → fewer quantization error accumulation points.' },
+      { id: 'digital_l3_15', type: 'tf', q: 'Model-based predictive digital PID (e.g., integrating FOPDT model into the PID update law) can outperform standard fixed-parameter PID on processes with significant time delays.', answer: 'True', explanation: 'Predictive PID (Smith-predictor type): incorporates model to predict ahead θ — effectively removes dead time from the inner feedback loop, improving performance.' },
+      { id: 'digital_l3_16', type: 'mcq', q: 'In Ethernet-based process control (PROFINET, EtherNet/IP), what is the main cybersecurity concern for PID control systems?', options: ['Unauthorized modification of PID setpoints, parameters, or control mode via network access', 'Excessive bandwidth usage by PID data', 'PID timing jitter from network congestion', 'Encryption overhead slowing the PID scan rate'], answer: 'Unauthorized modification of PID setpoints, parameters, or control mode via network access', explanation: 'IACS cybersecurity (IEC 62443): unauthorized access to PLC/DCS can change SP, CO, Kp — potentially causing process upsets or unsafe conditions.' },
+      { id: 'digital_l3_17', type: 'mcq', q: 'What is the "NAMUR NE 107" standard and its relevance to digital instrument signals in PID loops?', options: ['Defines four status signals (Good, Uncertain, Bad, Maintenance) for process instruments; PID must handle bad/uncertain PV appropriately', 'Defines 4-20 mA signal ranges for instruments', 'Defines PROFIBUS PA message formats', 'Defines PID parameter data types'], answer: 'Defines four status signals (Good, Uncertain, Bad, Uncertain) for process instruments; PID must handle bad/uncertain PV appropriately', explanation: 'NAMUR NE 107: instrument status (Good/Uncertain/Bad/Maintenance). DCS PID must switch to manual or use a fallback if PV status is Bad.' },
+      { id: 'digital_l3_18', type: 'tf', q: 'The "Advanced Process Control" (APC) layer in a plant hierarchy runs above the PID regulatory control layer, setting optimized setpoints for the base PID loops.', answer: 'True', explanation: 'APC layer: MPC, optimizer, or expert system computes optimal SPs for regulatory PID loops — APC in DCS typically runs every 1–5 minutes.' },
+      { id: 'digital_l3_19', type: 'mcq', q: 'What is the "control loop performance index" calculated in digital historian systems (e.g., OSIsoft PI ProcessBook) based on?', options: ['Statistical measures from archived PV, SP, CO data: variance, oscillation index, setpoint tracking error, time in manual', 'The PID scan rate performance only', 'Controller parameter changes over time', 'Number of alarm trips per loop per day'], answer: 'Statistical measures from archived PV, SP, CO data: variance, oscillation index, setpoint tracking error, time in manual', explanation: 'Loop performance analytics: historical data → compute oscillation (FFT), normalized variance, time in auto/manual, setpoint adherence — identifies poorly performing loops.' },
+      { id: 'digital_l3_20', type: 'mcq', q: 'In a cybersecurity-hardened digital PID system per ISA/IEC 62443, which measure prevents unauthorized SP changes from a network?', options: ['Role-based access control (RBAC) with authenticated sessions and network segmentation (DMZ between SCADA and PLC network)', 'Disabling all network access to PLCs', 'Using read-only OPC tags for PID parameters', 'Running PID on an isolated standalone PLC with no network'], answer: 'Role-based access control (RBAC) with authenticated sessions and network segmentation (DMZ between SCADA and PLC network)', explanation: 'ISA 62443: defense-in-depth with RBAC, network zones/conduits, authentication — allows necessary access while preventing unauthorized control.' },
+    ],
+  },
+  plc: {
+    level1: [
+      { id: 'plc_l1_1', type: 'mcq', q: 'What does PLC stand for in industrial automation?', options: ['Programmable Logic Controller', 'Process Loop Control', 'Proportional Logic Computer', 'Plant Level Controller'], answer: 'Programmable Logic Controller', explanation: 'PLC: ruggedized industrial computer that runs control programs (ladder logic, function blocks) to control machinery and processes.' },
+      { id: 'plc_l1_2', type: 'tf', q: 'PLCs are designed for harsh industrial environments and are more robust than standard office computers.', answer: 'True', explanation: 'PLCs: designed for temperature extremes, vibration, EMI, and 24/7 operation with high MTBF — unsuitable conditions for standard PCs.' },
+      { id: 'plc_l1_3', type: 'mcq', q: 'What is the primary programming language standard for PLCs?', options: ['IEC 61131-3 (defining Ladder Diagram, FBD, ST, IL, SFC)', 'C++ only', 'BASIC', 'Python'], answer: 'IEC 61131-3 (defining Ladder Diagram, FBD, ST, IL, SFC)', explanation: 'IEC 61131-3: international PLC programming standard defining 5 languages (LD, FBD, ST, IL, SFC) supported by most PLC vendors.' },
+      { id: 'plc_l1_4', type: 'mcq', q: 'In a PLC-based PID loop, the analog input card performs what function?', options: ['Converts 4-20 mA sensor signal to digital counts for the PID calculation', 'Generates the setpoint signal', 'Drives the control valve directly', 'Provides the sampling clock'], answer: 'Converts 4-20 mA sensor signal to digital counts for the PID calculation', explanation: 'AI card: ADC converts 4-20 mA to digital engineering units — provides the PV to the PID function block.' },
+      { id: 'plc_l1_5', type: 'tf', q: 'Ladder Diagram (LD) is the most widely used PLC programming language due to its resemblance to electrical relay diagrams.', answer: 'True', explanation: 'LD uses contact (coil) notation familiar to electricians — historically the dominant PLC language, still most common.' },
+      { id: 'plc_l1_6', type: 'mcq', q: 'Which PLC programming language is best suited for implementing complex PID algorithms with mathematical expressions?', options: ['Structured Text (ST)', 'Ladder Diagram (LD)', 'Sequential Function Chart (SFC)', 'Instruction List (IL)'], answer: 'Structured Text (ST)', explanation: 'ST (similar to Pascal/C): mathematical expressions, loops, IF-THEN-ELSE — best for complex algorithms like custom PID.' },
+      { id: 'plc_l1_7', type: 'mcq', q: 'What does the PLC "scan cycle" consist of?', options: ['Read inputs → Execute program → Write outputs (repeated continuously)', 'Write outputs → Read inputs → Execute program', 'Execute program only → outputs updated every second', 'Event-triggered input read, program, output'], answer: 'Read inputs → Execute program → Write outputs (repeated continuously)', explanation: 'PLC scan: I/O read (latches inputs), program execution (solves logic/PID), I/O write (updates outputs) — repeats continuously.' },
+      { id: 'plc_l1_8', type: 'tf', q: 'The PLC scan time directly affects PID performance — a longer scan = longer Ts = potential control degradation.', answer: 'True', explanation: 'Longer scan time = longer PID Ts; for fast processes, this degrades performance. Match scan time to process speed requirements.' },
+      { id: 'plc_l1_9', type: 'mcq', q: 'What is a "function block" in IEC 61131-3 programming?', options: ['A reusable software module with inputs, outputs, and internal state (memory) — like a PID or math block', 'A hardware I/O module', 'A PLC power supply module', 'A sensor with digital output'], answer: 'A reusable software module with inputs, outputs, and internal state (memory) — like a PID or math block', explanation: 'Function block (FB): encapsulated code with persistent state — PID FB maintains integral, derivative state between scans.' },
+      { id: 'plc_l1_10', type: 'mcq', q: 'In Rockwell ControlLogix architecture, what type of memory holds the controller tags (process data) during normal operation?', options: ['SRAM (controller memory) backed by battery or capacitor', 'Hard disk (permanent storage)', 'Flash memory only', 'EEPROM (read-only during run)'], answer: 'SRAM (controller memory) backed by battery or capacitor', explanation: 'ControlLogix: tag data in SRAM (fast access for scan); program and configuration saved to flash. Battery maintains SRAM on power loss.' },
+      { id: 'plc_l1_11', type: 'tf', q: 'A PLC can control both discrete (on/off) and analog (continuous) process variables.', answer: 'True', explanation: 'PLCs handle discrete I/O (motors on/off, valves open/close) and analog I/O (4-20 mA sensors, 0-10 V) for continuous PID control.' },
+      { id: 'plc_l1_12', type: 'mcq', q: 'What is the purpose of a "safety PLC" (SIL-rated) vs a standard PLC for process control?', options: ['Safety PLC: IEC 61508/61511 certified with redundant processors and diverse software to meet SIL 1–3 requirements', 'Safety PLC: faster scan rate only', 'Safety PLC: more I/O channels', 'Safety PLC: higher resolution A/D converters'], answer: 'Safety PLC: IEC 61508/61511 certified with redundant processors and diverse software to meet SIL 1–3 requirements', explanation: 'Safety PLC (Siemens F-CPU, Rockwell GuardLogix): certified for safety functions — redundant execution, self-testing, fail-safe outputs.' },
+      { id: 'plc_l1_13', type: 'mcq', q: 'What is "PLC redundancy" and when is it used?', options: ['Two PLCs running in parallel; one takes over immediately if the primary fails — used for critical continuous processes', 'Two PLCs controlling independent loops', 'A PLC with a backup power supply', 'A PLC with duplicate I/O only'], answer: 'Two PLCs running in parallel; one takes over immediately if the primary fails — used for critical continuous processes', explanation: 'Redundant PLC: primary and hot-standby synchronize state continuously; failover is bumpless (< 1 scan). Used for refinery, power plant, pipeline control.' },
+      { id: 'plc_l1_14', type: 'tf', q: 'EtherNet/IP is a common industrial Ethernet protocol used to connect PLCs, HMIs, and drives in Rockwell Automation systems.', answer: 'True', explanation: 'EtherNet/IP: CIP protocol over standard Ethernet — Rockwell standard for PLC-to-HMI, PLC-to-drive, and PLC-to-PLC communication.' },
+      { id: 'plc_l1_15', type: 'mcq', q: 'In a PLC PID function block, what input typically provides the "auto/manual" mode control?', options: ['A digital input tag (bit) or operator command from HMI — sets A/M mode parameter', 'A hardwired analog voltage signal', 'A dedicated serial port command', 'A fixed configuration parameter only'], answer: 'A digital input tag (bit) or operator command from HMI — sets A/M mode parameter', explanation: 'Mode control: HMI writes to a mode bit/word in the PID FB via EtherNet/IP or Modbus — operator switches loop between A/M on screen.' },
+      { id: 'plc_l1_16', type: 'mcq', q: 'What is "Modbus RTU" and how is it used in PLC process control?', options: ['A serial communication protocol for reading/writing PLC registers from SCADA or field devices', 'A PLC programming language', 'A safety protocol for emergency stops', 'A 4-20 mA analog extension protocol'], answer: 'A serial communication protocol for reading/writing PLC registers from SCADA or field devices', explanation: 'Modbus RTU: RS-485 serial protocol (master-slave) for reading PLC tags from SCADA, HMI, or connecting field devices (transmitters with Modbus output).' },
+      { id: 'plc_l1_17', type: 'tf', q: 'A PLC program can be password-protected to prevent unauthorized modification.', answer: 'True', explanation: 'PLC security: password protection for program access, read protection, source code encryption — prevents unauthorized modification.' },
+      { id: 'plc_l1_18', type: 'mcq', q: 'In Studio 5000 (Rockwell), a "Periodic Task" is used for PID loops because:', options: ['It executes at a fixed time interval regardless of other tasks, ensuring consistent PID sample time', 'It uses less CPU than continuous tasks', 'It is only executed when a setpoint changes', 'It automatically adjusts scan rate based on process speed'], answer: 'It executes at a fixed time interval regardless of other tasks, ensuring consistent PID sample time', explanation: 'Periodic task: configured with a period (e.g., 100 ms); guarantees consistent Ts for integral and derivative accuracy in PID.' },
+      { id: 'plc_l1_19', type: 'mcq', q: 'What is "online editing" in a PLC and when should it be used with caution?', options: ['Modifying running PLC program without stopping — caution: changes take effect immediately, risking process upsets', 'Editing HMI screens while process runs (safe always)', 'Modifying PID tuning parameters only', 'Remote diagnosis without program changes'], answer: 'Modifying running PLC program without stopping — caution: changes take effect immediately, risking process upsets', explanation: 'Online edit: dangerous if done without reviewing the impact on running process — manage of operations before structural program changes.' },
+      { id: 'plc_l1_20', type: 'tf', q: 'A PLC\'s "retentive" tags maintain their values through a power cycle.', answer: 'True', explanation: 'Retentive tags: stored in battery-backed SRAM or NVRAM — survive power loss. Used for accumulated production counts, PID integral state backup, etc.' },
+    ],
+    level2: [
+      { id: 'plc_l2_1', type: 'mcq', q: 'In IEC 61131-3 Function Block Diagram, a PID function block connected to an analog input AI and analog output AO correctly implements:', options: ['PV from AI (sensor) → PID FB → CO to AO (valve) with SP from HMI and mode from operator', 'AI and AO connected in reverse (output to input)', 'PID connected before the AI in the signal chain', 'AO connected directly to AI for feedback only'], answer: 'PV from AI (sensor) → PID FB → CO to AO (valve) with SP from HMI and mode from operator', explanation: 'FBD PID: AI → PID.PV, PID.SP from HMI, PID.CO → AO → valve. Mode input from operator HMI. Wired correctly for closed-loop control.' },
+      { id: 'plc_l2_2', type: 'mcq', q: 'In a Siemens S7-1200 with PID_Compact, how is the PID sample time configured?', options: ['Set the "Cycle" input to the calling OB cycle time or use a time-triggered OB (e.g., OB30)', 'Set in the hardware configuration module', 'Automatically set to 100 ms always', 'Set via PROFIBUS DP parameter'], answer: 'Set the "Cycle" input to the calling OB cycle time or use a time-triggered OB (e.g., OB30)', explanation: 'S7 PID_Compact: called from a cyclic OB (OB30/OB32). Cycle time of OB = PID sample time. "Cycle" input can receive actual measured time.' },
+      { id: 'plc_l2_3', type: 'tf', q: 'ControlLogix PIDE instruction in Studio 5000 has built-in anti-windup using a "WindupHighLimit" and "WindupLowLimit" parameter.', answer: 'True', explanation: 'PIDE: CVHLimit and CVLLimit define output limits; separate MaxI/MinI for integral limits. Anti-windup stops integral when output saturates.' },
+      { id: 'plc_l2_4', type: 'mcq', q: 'The Siemens PID_Compact "Pretuning" (pre-optimization) mode performs what automatic action?', options: ['Applies a relay or step test to identify process parameters and compute initial PID gains', 'Sets all gains to 0 and waits for operator input', 'Reads historical data to compute gains', 'Applies maximum gain to find the oscillation frequency'], answer: 'Applies a relay or step test to identify process parameters and compute initial PID gains', explanation: 'PID_Compact Pretuning: automatic step test with process identification → computes Kp, Ti, Td as starting point for fine tuning.' },
+      { id: 'plc_l2_5', type: 'mcq', q: 'In a ControlLogix PIDE, the "FF" (feedforward) input is used to:', options: ['Add a measured disturbance compensation signal directly to the controller output', 'Provide fast forward scan priority', 'Set the future setpoint trajectory', 'Enable the force function on outputs'], answer: 'Add a measured disturbance compensation signal directly to the controller output', explanation: 'PIDE FF: a feedforward signal (e.g., measured load disturbance) added to CO — improves disturbance rejection speed before PID corrects.' },
+      { id: 'plc_l2_6', type: 'tf', q: 'In Studio 5000, the PIDE "Cascade/Ratio" mode allows the PIDE to receive its setpoint from another PIDE output, implementing hardware-independent software cascade.', answer: 'True', explanation: 'PIDE Cascade/Ratio mode: SP is driven by another PIDE\'s output (outer CO → inner SP) — implements cascade entirely in software tags.' },
+      { id: 'plc_l2_7', type: 'mcq', q: 'A PLC-based PID for a flow loop should typically use which scan rate?', options: ['10–100 ms (fast scan for fast flow dynamics)', '1–10 s (slow scan is sufficient)', '1–5 min (only for very slow processes)', '1 hour (flow changes slowly)'], answer: '10–100 ms (fast scan for fast flow dynamics)', explanation: 'Flow loops: time constants 0.1–2 s. PID scan should be 10–100 ms (1/10 of time constant). Slower scan degrades flow control significantly.' },
+      { id: 'plc_l2_8', type: 'mcq', q: 'What is the difference between "Program Scan" and "Periodic Task" PID execution in ControlLogix?', options: ['Program scan: continuous (variable timing, jitter possible). Periodic task: fixed interval, more consistent Ts for PID', 'Program scan is for PID; periodic for logic only', 'Periodic task is slower than program scan always', 'No functional difference — both give identical Ts'], answer: 'Program scan: continuous (variable timing, jitter possible). Periodic task: fixed interval, more consistent Ts for PID', explanation: 'Periodic task ensures consistent Ts critical for PID integral accuracy. Continuous task has variable cycle time causing jitter in Ts.' },
+      { id: 'plc_l2_9', type: 'tf', q: 'Structured Text code for a PID should use floating-point (REAL) variables rather than integer variables to avoid quantization in the integral accumulation.', answer: 'True', explanation: 'Integer accumulation: Ki·Ts·e truncated to integer → integral error accumulates. REAL (32-bit float) provides sufficient precision for most process PID.' },
+      { id: 'plc_l2_10', type: 'mcq', q: 'A PLC\'s "High Speed Counter" (HSC) is relevant to PID when controlling:', options: ['Variable frequency drives via pulse/frequency feedback (e.g., flow from a turbine meter)', 'Slow temperature loops', 'Pressure control only', 'Analog 4-20 mA valve control'], answer: 'Variable frequency drives via pulse/frequency feedback (e.g., flow from a turbine meter)', explanation: 'HSC: captures high-frequency pulse trains from turbine meters or encoder feedback — converts to flow/speed for PID feedback.' },
+      { id: 'plc_l2_11', type: 'mcq', q: 'In a PLC-SCADA architecture, which protocol is commonly used to transmit PID PV, SP, and CO values from PLC to SCADA?', options: ['OPC (OPC DA/UA), Modbus TCP, or EtherNet/IP depending on vendor', 'Only RS-232 serial', 'Only PROFIBUS DP', 'Only Foundation Fieldbus'], answer: 'OPC (OPC DA/UA), Modbus TCP, or EtherNet/IP depending on vendor', explanation: 'SCADA-PLC: OPC DA (classic), OPC UA (modern, secure), Modbus TCP, or native protocols (EtherNet/IP, S7 communication) — vendor and system dependent.' },
+      { id: 'plc_l2_12', type: 'tf', q: 'A "motion controller" PLC running servo drives uses PID internally for position and velocity control at much faster rates than process PID loops.', answer: 'True', explanation: 'Motion PID: servo control runs at 1–4 kHz (250–1 ms). Process PID: 100 ms to seconds. Motion control requires much faster execution for precision.' },
+      { id: 'plc_l2_13', type: 'mcq', q: 'What is "tag database" in a DCS/PLC system and why is it important for PID loops?', options: ['Centralized database of all process variable tags (PV, SP, CO, alarms) enabling HMI, historian, and alarm management to access PID data', 'Physical I/O wiring database', 'PLC program source code repository', 'Instrument calibration records database'], answer: 'Centralized database of all process variable tags (PV, SP, CO, alarms) enabling HMI, historian, and alarm management to access PID data', explanation: 'Tag database: single source of truth for all process values. HMI reads PID PV/SP/CO, historian archives them, alarm manager monitors them.' },
+      { id: 'plc_l2_14', type: 'mcq', q: 'For a redundant PLC controlling a critical temperature loop, what happens to the PID state (integral value) on failover?', options: ['The hot-standby PLC has synchronized PID state (integral, derivative) — failover is bumpless', 'PID resets to 0 — causing a bump in output', 'The standby PLC starts from last saved state — some bump possible', 'The operator must manually reinitialize PID after failover'], answer: 'The hot-standby PLC has synchronized PID state (integral, derivative) — failover is bumpless', explanation: 'Hot-standby: state tables (including PID integral, CO, mode) are continuously synchronized. Failover is transparent to the process.' },
+      { id: 'plc_l2_15', type: 'tf', q: 'A PLC can implement feedforward control by reading a measured disturbance variable (e.g., feed flow) and adding it to the PID output.', answer: 'True', explanation: 'PLC feedforward: AI reads disturbance (e.g., feed flow FT-101); scaled FF signal added to PIDE.FF input or manually added to CO — implemented in ladder or ST.' },
+      { id: 'plc_l2_16', type: 'mcq', q: 'What is a "valve signature test" in PLC diagnostics for a control valve?', options: ['Logging valve position vs control signal to detect hysteresis, stiction, and mechanical wear', 'Testing valve actuator power supply', 'Verifying valve fail-safe position on signal loss', 'Calibrating the valve positioner trim'], answer: 'Logging valve position vs control signal to detect hysteresis, stiction, and mechanical wear', explanation: 'Valve signature: ramp CO from 0-100% and back, log actual position vs CO — plots reveal stiction (flat spots), hysteresis (loop), and friction.' },
+      { id: 'plc_l2_17', type: 'mcq', q: 'In IEC 61511 process safety, when a PLC-based PID control loop fails, what is the required response?', options: ['Fail-safe output drives the actuator to a safe state (fail-open or fail-closed based on process hazard analysis)', 'Hold the last output value indefinitely', 'Switch to open-loop operation at 50% output', 'Alarm the operator and wait for manual action with no output change'], answer: 'Fail-safe output drives the actuator to a safe state (fail-open or fail-closed based on process hazard analysis)', explanation: 'Fail-safe design: on PLC fault, analog output de-energizes → 4 mA (or 0 V) → actuator goes to defined safe position per HAZOP analysis.' },
+      { id: 'plc_l2_18', type: 'tf', q: 'Allen-Bradley PIDE uses engineering units (EU) for PV and SP rather than percentages, unlike older Allen-Bradley PID instructions.', answer: 'True', explanation: 'PIDE EU mode: operates on actual engineering units (°C, bar, L/min) — more intuitive. Old PID instruction used 0-16383 integer counts scaled to 0-100%.' },
+      { id: 'plc_l2_19', type: 'mcq', q: 'What PLC diagnostic is most useful for identifying why a PID loop is hunting (oscillating)?', options: ['Trending PV, SP, CO, and output over time at scan rate — identifies oscillation frequency and magnitude', 'PLC fault log only', 'Alarm history only', 'I/O status LEDs'], answer: 'Trending PV, SP, CO, and output over time at scan rate — identifies oscillation frequency and magnitude', explanation: 'Trend: PV vs CO at full scan rate reveals oscillation frequency → diagnose if it is process resonance, valve stiction, or gain/Ti problems.' },
+      { id: 'plc_l2_20', type: 'mcq', q: 'A Siemens S7-1500 with F-CPU running a SIL 2 safety PID loop requires which programming environment?', options: ['TIA Portal Safety (F-programming) with SIL-rated function blocks and formal safety verification', 'Standard TIA Portal ST programming only', 'STEP 7 Classic for S7-300', 'Any IEC 61131-3 language without special certification'], answer: 'TIA Portal Safety (F-programming) with SIL-rated function blocks and formal safety verification', explanation: 'Safety programs (F-programs) must use TIA Portal Safety Advanced — only certified safety FBs allowed; F-program is compiled with safety checks.' },
+    ],
+    level3: [
+      { id: 'plc_l3_1', type: 'mcq', q: 'In the IEC 61131-3 standard, the execution order of Function Block Diagram (FBD) networks is determined by:', options: ['Topological sort of data flow — blocks with no upstream dependencies execute first, then dependent blocks in dependency order', 'Left-to-right, top-to-bottom always', 'Alphabetical order of block names', 'Random order — compiler optimizes'], answer: 'Topological sort of data flow — blocks with no upstream dependencies execute first, then dependent blocks in dependency order', explanation: 'FBD execution: topological sort ensures data is computed before it is consumed. Cyclic dependencies require breaking the loop with a delay (z^-1).' },
+      { id: 'plc_l3_2', type: 'mcq', q: 'What is the "Program Organization Unit" (POU) hierarchy in IEC 61131-3?', options: ['Programs contain Function Blocks and Functions; Programs are assigned to Tasks which define execution timing', 'Programs are standalone; no hierarchy', 'Function Blocks contain Programs; Tasks contain Functions', 'Resources → Programs → Tasks → POUs'], answer: 'Programs contain Function Blocks and Functions; Programs are assigned to Tasks which define execution timing', explanation: 'IEC 61131-3 hierarchy: Configuration → Resource → Task → Program → FBs/Functions. Tasks define execution rate and priority for PID.' },
+      { id: 'plc_l3_3', type: 'tf', q: 'In IEC 61131-3, a Function (not Function Block) has no persistent state — it is a pure computation that returns a value based only on its inputs.', answer: 'True', explanation: 'Functions: stateless (no VAR_IN_OUT or static memory). FBs: stateful (retain state between calls — needed for PID integral accumulation).' },
+      { id: 'plc_l3_4', type: 'mcq', q: 'In a Rockwell ControlLogix redundant system, what is the "CST" (Coordinated System Time) used for?', options: ['Synchronized timestamping of I/O data and events across the redundant chassis and remote racks for data integrity', 'Setting the PLC scan rate', 'Coordinating PID gains between primary and standby', 'Setting the SCADA polling interval'], answer: 'Synchronized timestamping of I/O data and events across the redundant chassis and remote racks for data integrity', explanation: 'CST: high-resolution hardware clock synchronized across all ControlLogix chassis — enables timestamped I/O, sequence of events (SOE) recording.' },
+      { id: 'plc_l3_5', type: 'mcq', q: 'In PLC program analysis, what is "data coupling" between PID function blocks, and why should it be minimized?', options: ['Sharing global tags between PID FBs — creates implicit dependencies that can cause race conditions or logic errors in multi-task programs', 'Sharing physical I/O addresses between tasks', 'Using the same Kp value in multiple PID loops', 'Connecting PID outputs directly via analog wiring'], answer: 'Sharing global tags between PID FBs — creates implicit dependencies that can cause race conditions or logic errors in multi-task programs', explanation: 'Global tag sharing: if PID A reads a global written by PID B, execution order matters — task interaction can cause read-before-write errors.' },
+      { id: 'plc_l3_6', type: 'tf', q: 'The IEC 61508 standard requires that safety-related PLC software be developed using a V-model development process with systematic testing at each level.', answer: 'True', explanation: 'IEC 61508 SIL: V-model (requirements → design → code → unit test → integration test → validation → operation) with systematic evidence at each step.' },
+      { id: 'plc_l3_7', type: 'mcq', q: 'What is "determinism" in PLC execution and why is it critical for PID control?', options: ['The guarantee that the PLC scan executes in a fixed, bounded time — ensures consistent PID Ts for accurate integral computation', 'The guarantee that all PLC programs eventually terminate', 'The guarantee that outputs match inputs without error', 'The guarantee that the PLC has no bugs'], answer: 'The guarantee that the PLC scan executes in a fixed, bounded time — ensures consistent PID Ts for accurate integral computation', explanation: 'PLC determinism: scan time is bounded and predictable (RTOS). Inconsistent scan → variable Ts → PID integral and derivative errors → control degradation.' },
+      { id: 'plc_l3_8', type: 'mcq', q: 'In a safety PLC (e.g., Siemens F-CPU), what is the "F-monitoring time" and its role in SIL verification?', options: ['Maximum time between safety response and confirmed safe state — must be < process safety time / 3 for SIL adequacy', 'The time between F-CPU self-test cycles', 'The watchdog timeout duration', 'The minimum time the safety output must hold before actuating'], answer: 'Maximum time between safety response and confirmed safe state — must be < process safety time / 3 for SIL adequacy', explanation: 'F-monitoring time: total response time from hazard detection to safe state = sensor response + PLC scan + F-CPU processing + actuator response.' },
+      { id: 'plc_l3_9', type: 'tf', q: 'Software diversity (using two different implementations of the same PID algorithm in a 1oo2 safety architecture) is required for SIL 3.', answer: 'False', explanation: 'Software diversity is one option for reducing common-cause failures, but not strictly required for SIL 3 — hardware redundancy and rigorous V&V process are alternatives.' },
+      { id: 'plc_l3_10', type: 'mcq', q: 'The OMAC PackML state machine standard is used in what context, and how does PID control interact with it?', options: ['Machine control states (Idle, Execute, Complete, etc.); PID loops are enabled/disabled based on PackML state transitions', 'A PLC communication protocol', 'A DCS alarming standard', 'A PID tuning methodology for packaging machines'], answer: 'Machine control states (Idle, Execute, Complete, etc.); PID loops are enabled/disabled based on PackML state transitions', explanation: 'PackML: ISA/OMAC standard for machine state management in packaging/batch. PID runs in Execute state, holds in Suspended/Stopped — state-dependent PID enable.' },
+      { id: 'plc_l3_11', type: 'mcq', q: 'What is "state feedback control" implemented in a PLC, and how does it differ from PID?', options: ['Uses full state vector (all system states from observer/Kalman) to compute control; not limited to one output (PV) — can control internal states', 'Same as PID but with state variables as additional derivative terms', 'Uses historical states for integral calculation', 'A PID mode that uses state machines for mode transitions'], answer: 'Uses full state vector (all system states from observer/Kalman) to compute control; not limited to one output (PV) — can control internal states', explanation: 'State feedback: u = −K·x̂ where x̂ = estimated full state. PID only uses y (output = one measurement). State feedback uses complete system information.' },
+      { id: 'plc_l3_12', type: 'tf', q: 'The "Add-On Instruction" (AOI) in ControlLogix allows developers to create reusable, encapsulated PID code modules similar to IEC 61131-3 Function Blocks.', answer: 'True', explanation: 'AOI: Rockwell Studio 5000 proprietary reusable instruction module. Encapsulates PID + mode logic + feedforward as a single parameterized instruction.' },
+      { id: 'plc_l3_13', type: 'mcq', q: 'In a PLC controlling a fed-batch fermentation process, how should the PID be implemented to handle the highly time-varying process gain?', options: ['Adaptive or scheduled-gain PID that adjusts Kp, Ti based on fermentation phase (batch age, substrate concentration)', 'Fixed-gain PID tuned at one operating point', 'P-only control to avoid windup', 'Open-loop profile with no PID during batch'], answer: 'Adaptive or scheduled-gain PID that adjusts Kp, Ti based on fermentation phase (batch age, substrate concentration)', explanation: 'Batch fermentation: process gain changes drastically as substrate is consumed. Adaptive or gain-scheduled PID maintains consistent performance across the batch.' },
+      { id: 'plc_l3_14', type: 'mcq', q: 'What is "proof test interval" (PTI) in IEC 61511 for a PLC-based safety loop, and what PID-related action is required?', options: ['Periodic functional test of the safety SIF (typically 1–5 years) — includes verifying PID parameters and valve stroke test', 'Annual recalibration of all analog inputs', 'Monthly setpoint verification by operator', 'Daily self-test of the PLC F-CPU only'], answer: 'Periodic functional test of the safety SIF (typically 1–5 years) — includes verifying PID parameters and valve stroke test', explanation: 'PTI: full functional test (valve stroke, sensor check, logic verification, PID output test) at the proof test interval to maintain SIL assurance.' },
+      { id: 'plc_l3_15', type: 'tf', q: 'The "Controller-to-IO" scan time (EtherNet/IP RPI) and the PLC task period are separate parameters that both affect the effective PID sample time.', answer: 'True', explanation: 'Effective Ts = max(RPI, task period). If EtherNet/IP I/O updates every 10 ms but PID task is 100 ms, effective Ts = 100 ms (PID can\'t use fresher data than task execution).' },
+      { id: 'plc_l3_16', type: 'mcq', q: 'In OPC UA Pub/Sub model used for Industry 4.0 process integration, PID data is published from PLC to cloud/historian. What security mechanism is required by IEC 62443?', options: ['Message signing and encryption (e.g., AES-256 for payload, ECDSA for authentication) with certificate-based access control', 'Username/password only', 'No security needed for read-only PID data', 'Security is only required for SP writes, not PV reads'], answer: 'Message signing and encryption (e.g., AES-256 for payload, ECDSA for authentication) with certificate-based access control', explanation: 'IEC 62443 / OPC UA security: signed and encrypted messages with certificate authentication. Prevents spoofing PID data or unauthorized SP modification.' },
+      { id: 'plc_l3_17', type: 'mcq', q: 'What is the "ISA-101 HMI philosophy" and how does it affect how PID loop status is displayed?', options: ['Recommends high-performance, abnormal situation-focused displays with muted backgrounds and colored deviations — PID loops shown with SP, PV, CO deviation bars', 'Requires bright colored backgrounds for all PID displays', 'Limits PID displays to numeric values only', 'Requires 3D graphics for all process displays'], answer: 'Recommends high-performance, abnormal situation-focused displays with muted backgrounds and colored deviations — PID loops shown with SP, PV, CO deviation bars', explanation: 'ISA 101 / ASM high-performance HMI: gray backgrounds, color for abnormal only, deviation bars for SP-PV — operators focus on deviations, not normal operation.' },
+      { id: 'plc_l3_18', type: 'tf', q: 'The ANSI/ISA 18.2 alarm management standard requires that PID-related alarms be rationalized (justified and documented) in an alarm philosophy.', answer: 'True', explanation: 'ISA 18.2: all alarms (including PID deviation, output high/low) must be rationalized — cause, consequence, response action documented. Reduces nuisance alarms.' },
+      { id: 'plc_l3_19', type: 'mcq', q: 'In a PLC implementing a Smith Predictor for dead-time compensation, what additional computation is required compared to standard PID?', options: ['A process model simulation (K, τ, θ) running inside the PLC to predict PV θ seconds ahead and subtract from feedback', 'A higher-order integrator only', 'A frequency-domain filter running online', 'No additional computation — Smith Predictor is built into PIDE automatically'], answer: 'A process model simulation (K, τ, θ) running inside the PLC to predict PV θ seconds ahead and subtract from feedback', explanation: 'Smith Predictor PLC: simulate model output Gm(s) and delayed model Gm(s)e^(−θs); subtract difference from PV — PID sees predictor error without dead time delay.' },
+      { id: 'plc_l3_20', type: 'mcq', q: 'What is the "security zone" concept per ISA/IEC 62443 for a PLC running critical PID control, and which zone would it typically be in?', options: ['Zone 3 or 4 (highest security): Control Network separated from Business Network by firewall/DMZ; PLC in Zone 3 (or 4 for SIS)', 'Zone 1: same network as business IT systems', 'No zone — PLCs do not require security zoning', 'Zone 5: internet-accessible for remote monitoring'], answer: 'Zone 3 or 4 (highest security): Control Network separated from Business Network by firewall/DMZ; PLC in Zone 3 (or 4 for SIS)', explanation: 'ISA 62443 zones: Business IT = Zone 1/2; Control Network (PLC/DCS) = Zone 3; Safety SIS = Zone 4. Conduits (firewalls) separate zones — PLCs in Zone 3.' },
+    ],
+  },
+  troubleshoot: {
+    level1: [
+      { id: 'troubleshoot_l1_1', type: 'mcq', q: 'What is the first step in troubleshooting a PID control loop that is not performing well?', options: ['Put the loop in manual and verify the sensor reading and valve response', 'Immediately change PID tuning parameters', 'Replace the sensor', 'Call the vendor'], answer: 'Put the loop in manual and verify the sensor reading and valve response', explanation: 'First: isolate the problem by removing automatic control. Verify PV (sensor accurate?), CO (valve responding?), and then diagnose further.' },
+      { id: 'troubleshoot_l1_2', type: 'tf', q: 'A PID loop that oscillates continuously is most often caused by excessive controller gain (Kp or Ki too large).', answer: 'True', explanation: 'Continuous oscillation: most common cause is over-aggressive tuning. Reduce Kp first; then Ti if oscillation period is long.' },
+      { id: 'troubleshoot_l1_3', type: 'mcq', q: 'What is the most common cause of a PID loop that has a large, persistent offset from setpoint (never reaches SP)?', options: ['Wrong action (direct vs reverse) or integral term disabled/too slow', 'Excessive proportional gain', 'Too much derivative action', 'Incorrect sensor range'], answer: 'Wrong action (direct vs reverse) or integral term disabled/too slow', explanation: 'Persistent offset: proportional-only has inherent offset; check integral is enabled and active. Also verify direct/reverse action is correct.' },
+      { id: 'troubleshoot_l1_4', type: 'mcq', q: 'A PID loop shows no response to setpoint changes. What is the FIRST thing to check?', options: ['Is the controller in AUTO mode? Is the PID function block enabled and executing?', 'Are the PID gains correct?', 'Is there integral windup?', 'Is the derivative filter active?'], answer: 'Is the controller in AUTO mode? Is the PID function block enabled and executing?', explanation: 'No response: check mode (manual = no auto response), task enabled, function block not bypassed, PLC scan running normally.' },
+      { id: 'troubleshoot_l1_5', type: 'tf', q: 'If the process variable reads a fixed (non-changing) value while the controller output changes, there is likely a sensor or signal wiring problem.', answer: 'True', explanation: 'Frozen PV despite CO changes: suspect broken sensor, open 4-20 mA loop, disconnected AI terminal, or transmitter fault.' },
+      { id: 'troubleshoot_l1_6', type: 'mcq', q: 'A control valve that sticks and only moves when CO exceeds a threshold causes what control behavior?', options: ['Limit cycle (oscillation) around setpoint as PID pushes CO past stiction threshold then overcorrects', 'Stable control with slight offset', 'Integral windup', 'Dead-time increase only'], answer: 'Limit cycle (oscillation) around setpoint as PID pushes CO past stiction threshold then overcorrects', explanation: 'Valve stiction: creates a dead band in valve movement; PID integral pushes output until valve jumps → PV overshoots → oscillation cycle.' },
+      { id: 'troubleshoot_l1_7', type: 'mcq', q: 'What tool would you use to verify that a 4-20 mA sensor transmitter is working correctly in the field?', options: ['A handheld HART communicator or a process calibrator (mA meter)', 'A PLC programming terminal only', 'A multimeter set to voltage only', 'An oscilloscope'], answer: 'A handheld HART communicator or a process calibrator (mA meter)', explanation: 'Field instrument check: HART communicator reads transmitter diagnostics digitally; calibrator measures mA output vs reference to verify calibration.' },
+      { id: 'troubleshoot_l1_8', type: 'tf', q: 'Integral windup can cause a very slow return to setpoint after a large disturbance is corrected.', answer: 'True', explanation: 'Windup: integral accumulated a large value during saturation; the controller must wait for it to drain before normal action resumes — slow recovery.' },
+      { id: 'troubleshoot_l1_9', type: 'mcq', q: 'A PID loop oscillates at a very high frequency (faster than the process time constant). What is the most likely cause?', options: ['Derivative action amplifying sensor noise', 'Integral time too large', 'Proportional gain too low', 'Dead time too large'], answer: 'Derivative action amplifying sensor noise', explanation: 'High-frequency oscillation: classic derivative + noise problem. Fix: reduce Td, add derivative filter, or filter the PV signal.' },
+      { id: 'troubleshoot_l1_10', type: 'mcq', q: 'A valve is always fully open or fully closed despite CO being at intermediate values. What is the most likely problem?', options: ['Valve positioner not connected, miscalibrated, or malfunctioning — CO signal not reaching actuator correctly', 'PID integral windup', 'Incorrect sensor reading', 'PLC scan rate too slow'], answer: 'Valve positioner not connected, miscalibrated, or malfunctioning — CO signal not reaching actuator correctly', explanation: 'Full open/closed at intermediate CO: positioner not receiving signal, wrong calibration (wrong mA range), or positioner failure.' },
+      { id: 'troubleshoot_l1_11', type: 'tf', q: 'Trending the PV, SP, and CO together over time is the most useful first step in diagnosing a PID control problem.', answer: 'True', explanation: 'Trend analysis: seeing how PV responds to CO changes reveals if the problem is in the process, valve, sensor, or PID tuning.' },
+      { id: 'troubleshoot_l1_12', type: 'mcq', q: 'What does it mean when the PID output (CO) is at 100% but the process variable is still far below the setpoint?', options: ['The actuator cannot provide enough energy (undersized valve/heater), or there is a process constraint', 'The integral time is too short', 'The proportional gain is too high', 'Derivative kick is preventing the output from working'], answer: 'The actuator cannot provide enough energy (undersized valve/heater), or there is a process constraint', explanation: 'CO at limit with PV still far from SP: undersized valve, blocked line, lost utility supply, or process has changed beyond design capacity.' },
+      { id: 'troubleshoot_l1_13', type: 'mcq', q: 'How would you diagnose if a PID control problem is caused by a valve vs a sensor vs tuning?', options: ['Step test in manual: apply CO step and observe PV response to isolate valve/sensor. Then evaluate response shape for tuning issues', 'Only change one PID parameter at a time', 'Replace all components and see if it improves', 'Check only the PLC scan rate'], answer: 'Step test in manual: apply CO step and observe PV response to isolate valve/sensor. Then evaluate response shape for tuning issues', explanation: 'Systematic isolation: manual step test reveals valve behavior (does PV change?) and process dynamics (shape of PV response) before adjusting tuning.' },
+      { id: 'troubleshoot_l1_14', type: 'tf', q: 'Changing from "direct" to "reverse" controller action can cause a PID loop to go from stable control to runaway.', answer: 'True', explanation: 'Wrong action: if loop is direct-acting process with a reverse-acting controller → positive feedback → runaway/fully open output.' },
+      { id: 'troubleshoot_l1_15', type: 'mcq', q: 'A PID loop that works well under normal conditions but shows poor performance during plant startup or shutdown is most likely affected by:', options: ['Process nonlinearity — different gains, dynamics, or constraints at startup conditions vs normal operation', 'Software bugs in PLC', 'Incorrect setpoint only', 'Analog input wiring error'], answer: 'Process nonlinearity — different gains, dynamics, or constraints at startup conditions vs normal operation', explanation: 'Startup conditions often have different process gain, dead time, or time constants (different flows, temperatures) — tuning for normal may not work at startup.' },
+      { id: 'troubleshoot_l1_16', type: 'mcq', q: 'An operator reports that a temperature control loop "never reaches setpoint on cold mornings." What should you investigate?', options: ['Heating capacity may be insufficient at low ambient temperature — check if valve is fully open and if setpoint is achievable', 'Only the PID integral time', 'The PLC power supply', 'Whether the HMI display is correctly scaled'], answer: 'Heating capacity may be insufficient at low ambient temperature — check if valve is fully open and if setpoint is achievable', explanation: 'Seasonal effect: cold ambient increases heat loss, reducing effective heating capacity. Check if CO=100% (control at limit) vs process disturbance.' },
+      { id: 'troubleshoot_l1_17', type: 'tf', q: 'A sudden change in process gain (e.g., due to a feed composition change) can cause a previously stable loop to oscillate.', answer: 'True', explanation: 'Process gain change: if K doubles, loop gain (Kp·K) exceeds stability boundary → oscillation. Re-tune or use adaptive/gain-scheduled PID.' },
+      { id: 'troubleshoot_l1_18', type: 'mcq', q: 'What does "hunting" mean in process control terminology?', options: ['The PID loop oscillates continuously around the setpoint — neither converging nor diverging', 'The PID is searching for the correct setpoint', 'The loop is in manual mode and operator is adjusting', 'The setpoint is changing rapidly'], answer: 'The PID loop oscillates continuously around the setpoint — neither converging nor diverging', explanation: 'Hunting: sustained oscillation due to valve stiction, over-tuning, or process interaction — loop cannot settle at SP.' },
+      { id: 'troubleshoot_l1_19', type: 'mcq', q: 'Why might a flow control loop oscillate even with correct PID tuning?', options: ['Valve cavitation, upstream pressure fluctuations, or valve oversizing causing flow instability', 'Incorrect sensor calibration only', 'Wrong derivative time constant', 'Too slow PLC scan rate'], answer: 'Valve cavitation, upstream pressure fluctuations, or valve oversizing causing flow instability', explanation: 'Flow oscillation: physical causes (cavitation, flashing, upstream pressure pulsation, oversized valve) can prevent stable control regardless of tuning.' },
+      { id: 'troubleshoot_l1_20', type: 'tf', q: 'Documenting the symptoms, investigation steps, root cause, and corrective action is essential for effective PID troubleshooting.', answer: 'True', explanation: 'Documentation: without records, the same problem reappears. Loop sheets, maintenance logs, and alarm histories are essential for systematic troubleshooting.' },
+    ],
+    level2: [
+      { id: 'troubleshoot_l2_1', type: 'mcq', q: 'Using a step test in manual mode for a temperature loop shows the PV rises for 5 minutes with no change (θ = 5 min), then rises to 63.2% of final value in 20 minutes. What are K, τ, θ if the CO step was 10%?', options: ['K = ΔPV_final/ΔCO; τ = 20 min after dead time; θ = 5 min — need ΔPV_final to compute K', 'K = 0.5; τ = 25 min; θ = 5 min', 'K = 1.0; τ = 5 min; θ = 20 min', 'K = 5; τ = 20 min; θ = 0'], answer: 'K = ΔPV_final/ΔCO; τ = 20 min after dead time; θ = 5 min — need ΔPV_final to compute K', explanation: 'Step test: θ = 5 min (dead time); τ = 20 min (time to 63.2% after dead time); K = ΔPV_ss/ΔCO — need final PV change to compute K.' },
+      { id: 'troubleshoot_l2_2', type: 'mcq', q: 'A control loop oscillates with a long period (>5× the process time constant). Which term is most likely causing this?', options: ['Integral time too short (Ki too large) — integral oscillation signature', 'Proportional gain too high — P oscillation would be faster', 'Derivative gain too high — would cause high-frequency oscillation', 'Dead time too large'], answer: 'Integral time too short (Ki too large) — integral oscillation signature', explanation: 'Long-period oscillation: characteristic of excessive integral action. Signature: slowly growing/sustained sinusoidal PV around SP with period >> τ.' },
+      { id: 'troubleshoot_l2_3', type: 'tf', q: 'The "oscillation index" (OI) computed from PV autocorrelation data can quantify how oscillatory a loop is without manual inspection.', answer: 'True', explanation: 'OI: first zero-crossing of the normalized autocorrelation function; OI > 0 indicates oscillation. Used in automated loop performance monitoring.' },
+      { id: 'troubleshoot_l2_4', type: 'mcq', q: 'A flow loop oscillates with a period of ~4 seconds. Valve stiction is suspected. How do you confirm?', options: ['Plot CO vs PV position (valve signature) — stiction shows a "C-shaped" hysteresis loop or stepped response', 'Measure the process time constant', 'Check the PID derivative setting', 'Measure the sensor accuracy'], answer: 'Plot CO vs PV position (valve signature) — stiction shows a "C-shaped" hysteresis loop or stepped response', explanation: 'Valve signature: plot CO vs valve position feedback. Stiction: CO ramps while position stays fixed, then jumps — characteristic "stick-slip" pattern.' },
+      { id: 'troubleshoot_l2_5', type: 'mcq', q: 'In the "stiction triangle" diagnostic, the three manifestations of valve stiction are:', options: ['Deadband (no movement in CO), stick (build-up of force), slip (sudden movement) — visible in CO-PV plots', 'Hysteresis, backlash, and friction — same symptoms', 'Open-loop, closed-loop, and limit cycle — same root cause', 'Fouling, wear, and packing friction — maintenance causes only'], answer: 'Deadband (no movement in CO), stick (build-up of force), slip (sudden movement) — visible in CO-PV plots', explanation: 'Stiction: deadband (CO changes without valve moving), stick (static friction holds valve), slip (valve jumps suddenly) → limit cycle in closed loop.' },
+      { id: 'troubleshoot_l2_6', type: 'tf', q: 'Adding a "dither" signal (small high-frequency oscillation) to the valve CO can reduce the effect of stiction by continuously exercising the valve packing.', answer: 'True', explanation: 'Dither: small sinusoidal signal superimposed on CO keeps valve packing from sticking — reduces effective deadband at cost of slight valve wear.' },
+      { id: 'troubleshoot_l2_7', type: 'mcq', q: 'A pressure control loop on a gas compressor shows intermittent high-frequency oscillation that correlates with compressor loading. What is the likely cause?', options: ['Compressor surge or pressure pulsations from the compressor interacting with the control valve and loop dynamics', 'Integral windup during surge events', 'Faulty pressure transmitter', 'Wrong controller action'], answer: 'Compressor surge or pressure pulsations from the compressor interacting with the control valve and loop dynamics', explanation: 'Compressor interactions: pressure pulsations (valve unsteadiness) can drive loop oscillation. Anti-surge control or pulsation dampeners may be needed.' },
+      { id: 'troubleshoot_l2_8', type: 'mcq', q: 'How do you determine if a PID oscillation is caused by loop tuning vs valve mechanical problems?', options: ['Switch to manual, observe if PV settles (tuning) or still oscillates (process/valve). Then stroke valve manually to test stiction', 'Only change integral time and observe', 'Replace the valve immediately', 'Reduce proportional gain to zero and observe'], answer: 'Switch to manual, observe if PV settles (tuning) or still oscillates (process/valve). Then stroke valve manually to test stiction', explanation: 'Diagnostic: manual mode removes the controller — if oscillation stops, it is tuning. If PV still varies, process or valve is causing it.' },
+      { id: 'troubleshoot_l2_9', type: 'tf', q: 'A suddenly increased process dead time (θ) without retuning will cause a previously stable PID loop to oscillate.', answer: 'True', explanation: 'Increased θ reduces stability margins; existing Kp may become too high → oscillation. Re-tune for new θ or reduce Kp temporarily.' },
+      { id: 'troubleshoot_l2_10', type: 'mcq', q: 'What is the "cross-talk" problem in multi-loop control systems and how is it diagnosed?', options: ['One loop\'s output affects another loop\'s PV — diagnosed by watching PV2 response to CO1 changes with loop 2 in manual', 'Two sensors reading each other\'s signal electromagnetically', 'Two PID loops with the same setpoint', 'A PLC program bug causing wrong output addresses'], answer: 'One loop\'s output affects another loop\'s PV — diagnosed by watching PV2 response to CO1 changes with loop 2 in manual', explanation: 'Cross-talk: open-loop step test on loop 1 while loop 2 is in manual — observe PV2 response. Cross-gain = ΔPV2/ΔCO1 at steady state.' },
+      { id: 'troubleshoot_l2_11', type: 'mcq', q: 'A temperature PID loop shows good control during day but poor control at night. After investigation, the process gain has changed. What is the most likely physical cause?', options: ['Ambient temperature change affects cooling losses, changing effective process gain and dynamics', 'PLC clock error affecting Ts', 'Operator SP changes at shift change', 'Valve actuator thermal expansion at night'], answer: 'Ambient temperature change affects cooling losses, changing effective process gain and dynamics', explanation: 'Day/night: ambient temperature affects heat losses and effective heating gain — process gain and time constant change with ambient. Gain scheduling needed.' },
+      { id: 'troubleshoot_l2_12', type: 'tf', q: 'Using OSIsoft PI or similar historian data, it is possible to identify the root cause of a control upset that occurred 3 months ago.', answer: 'True', explanation: 'Historian: archives PV, SP, CO, alarms with timestamps — can reconstruct the sequence of events to identify the root cause of past upsets.' },
+      { id: 'troubleshoot_l2_13', type: 'mcq', q: 'A pH control loop oscillates even after retuning. The process is known to have highly nonlinear gain. What is the best next step?', options: ['Implement gain scheduling based on measured pH range — different Kp for different pH bands', 'Continue reducing Kp indefinitely', 'Switch to P-only control', 'Increase pH setpoint to avoid nonlinear region'], answer: 'Implement gain scheduling based on measured pH range — different Kp for different pH bands', explanation: 'Nonlinear pH: process gain changes orders of magnitude with pH. Gain scheduling (or nonlinear control) compensates — linear PID alone cannot handle this range.' },
+      { id: 'troubleshoot_l2_14', type: 'mcq', q: 'What is the "bumping test" for verifying a cascade loop is configured correctly?', options: ['Change inner SP manually and verify inner PV responds; then switch to cascade and verify outer CO drives inner SP correctly', 'Apply a step to the outer SP and measure response', 'Simultaneously bump both inner and outer CO', 'Apply maximum CO and check safety trip'], answer: 'Change inner SP manually and verify inner PV responds; then switch to cascade and verify outer CO drives inner SP correctly', explanation: 'Cascade verification: confirm inner loop works independently first (correct sensor/valve), then verify outer-to-inner SP connection functions correctly.' },
+      { id: 'troubleshoot_l2_15', type: 'tf', q: 'A PID loop that oscillates intermittently (not continuously) may be caused by a process disturbance rather than a tuning problem.', answer: 'True', explanation: 'Intermittent oscillation: if it correlates with specific events (feed change, upstream upset), the cause is a disturbance. Continuous oscillation suggests tuning.' },
+      { id: 'troubleshoot_l2_16', type: 'mcq', q: 'When commissioning a new PID loop, what is the correct sequence of steps?', options: ['Verify instrument calibration → Verify valve stroke → Manual step test → Identify K,τ,θ → Calculate initial PID gains → Test in auto → Fine tune', 'Set PID gains from design calculations → Put in auto immediately → Fix problems as they arise', 'Copy gains from a similar loop → Put in auto → Adjust if needed', 'Put in auto with Kp=1, Ti=1, Td=0 → Increase gain until oscillation → Back off'], answer: 'Verify instrument calibration → Verify valve stroke → Manual step test → Identify K,τ,θ → Calculate initial PID gains → Test in auto → Fine tune', explanation: 'Commissioning sequence: verify hardware before tuning. Never put in auto with unknown process behavior — risk of process upset or equipment damage.' },
+      { id: 'troubleshoot_l2_17', type: 'mcq', q: 'A process operates near its maximum capacity and the PID output is frequently saturated at 95-100%. What control improvement would help?', options: ['Implement feedforward or cascade to reduce the load on the PID — or address the capacity constraint operationally', 'Only reduce the proportional gain', 'Increase the setpoint to give more margin', 'Disable the integral term to prevent windup'], answer: 'Implement feedforward or cascade to reduce the load on the PID — or address the capacity constraint operationally', explanation: 'Near-saturation: PID operating at its limit cannot reject disturbances. Feedforward anticipates load changes; addressing the capacity limitation is the root fix.' },
+      { id: 'troubleshoot_l2_18', type: 'tf', q: 'After process equipment modifications (e.g., replacing a valve with a different Cv or changing piping), PID retuning is always required.', answer: 'True', explanation: 'Equipment changes affect process gain (K), dynamics (τ, θ). Previously tuned gains may be wrong — must re-identify and retune.' },
+      { id: 'troubleshoot_l2_19', type: 'mcq', q: 'What is the "30-30 rule" (or similar) for evaluating PID loop performance from a step test?', options: ['A loop is considered well-tuned if it reaches 90% of SP in less than 3× the sum of dead time + time constant with < 30% overshoot', 'A loop is over-tuned if it has more than 30% overshoot and under-tuned if it takes more than 30 minutes', 'Reduce gain by 30% if loop oscillates 3 times', 'Integral time should be 30× the derivative time'], answer: 'A loop is considered well-tuned if it reaches 90% of SP in less than 3× the sum of dead time + time constant with < 30% overshoot', explanation: 'Performance criteria vary; a common target: 5-10% overshoot, settling within 3-5× (θ+τ). More than 30% overshoot or very slow settling indicates retuning needed.' },
+      { id: 'troubleshoot_l2_20', type: 'mcq', q: 'An operator reports the loop is "slow." Trending shows the loop settles to within 1°C of SP, but takes 30 minutes. The process τ=5 min, θ=1 min. Is this a tuning problem?', options: ['Yes — settling should take ~15-25 min (3-5×(θ+τ)=18-30 min total); 30 min is borderline over-conservative', 'No — 30 min settling is appropriate for any process', 'Yes — settling should occur within 1 minute for this fast process', 'No — can\'t determine without knowing the disturbance type'], answer: 'Yes — settling should take ~15-25 min (3-5×(θ+τ)=18-30 min total); 30 min is borderline over-conservative', explanation: 'Expected settling: 3–5×(τ+θ) = 3–5×6 = 18–30 min. 30 min is at the conservative edge — more aggressive tuning (reduce Ti or increase Kp) may help.' },
+    ],
+    level3: [
+      { id: 'troubleshoot_l3_1', type: 'mcq', q: 'The "Harris index" for a control loop computed from closed-loop operating data is 0.15. What does this indicate and what action is warranted?', options: ['Loop achieves only 15% of minimum variance performance — significant improvement possible; investigate root cause (valve, tuning, noise)', 'Loop is performing at 15% above minimum variance — acceptable', 'Loop variance is 15% of setpoint — normal performance', 'Harris index = 0.15 is the best possible for this process'], answer: 'Loop achieves only 15% of minimum variance performance — significant improvement possible; investigate root cause (valve, tuning, noise)', explanation: 'Harris index = σ²_mv/σ²_actual. Low value (< 0.3) indicates the loop performs far worse than the best achievable — priority for improvement.' },
+      { id: 'troubleshoot_l3_2', type: 'mcq', q: 'An FFT (Fast Fourier Transform) of the PV signal shows a dominant frequency at 0.05 Hz (period = 20 s). The valve actuator has a known positioner response time of 5 s. What does this suggest?', options: ['Limit cycle driven by valve stiction — period ≈ 4× actuator time constant is characteristic of stiction limit cycles', 'Integral oscillation — period too short for Ti-based oscillation', 'Process resonance at natural frequency', 'White noise at 0.05 Hz — no specific cause'], answer: 'Limit cycle driven by valve stiction — period ≈ 4× actuator time constant is characteristic of stiction limit cycles', explanation: 'Stiction limit cycles: period ≈ 4 × (stiction deadband / process response rate). FFT peak at stiction frequency with harmonics is diagnostic.' },
+      { id: 'troubleshoot_l3_3', type: 'tf', q: 'The "Hägglund" method identifies stiction from the cross-correlation between the error signal and the controller output — stiction causes a phase shift between error and CO.', answer: 'True', explanation: 'Hägglund stiction index: compares error-CO cross-correlation with what is expected for pure process dynamics — stiction introduces a characteristic phase lag.' },
+      { id: 'troubleshoot_l3_4', type: 'mcq', q: 'In a model-plant mismatch situation where the actual θ is 3× the design value, how does this affect stability with the original PID tuning?', options: ['PM is severely reduced — effective dead time triples phase lag, likely causing oscillation or instability; detune significantly', 'No effect on stability — only affects setpoint tracking speed', 'Integral windup occurs but stability is maintained', 'Only the derivative term is affected'], answer: 'PM is severely reduced — effective dead time triples phase lag, likely causing oscillation or instability; detune significantly', explanation: 'Dead time sensitivity: PM ≈ PM_design − ωc·Δθ·(180/π). Tripling θ subtracts ~ωc·2θ·(180/π) degrees from PM — may drive PM to 0° or negative.' },
+      { id: 'troubleshoot_l3_5', type: 'mcq', q: 'What is the "closed-loop sensitivity function" S(jω) = 1/(1+L(jω)), and how is its peak Ms used for troubleshooting?', options: ['|S(jω)|_max = Ms; Ms > 3 (9.5 dB) indicates poor robustness and likely oscillatory behavior even without explicit oscillation', 'Ms is the maximum step overshoot percentage', 'Ms is the closed-loop gain at DC', 'Ms > 1 always indicates instability'], answer: '|S(jω)|_max = Ms; Ms > 3 (9.5 dB) indicates poor robustness and likely oscillatory behavior even without explicit oscillation', explanation: 'Peak sensitivity Ms: computed from closed-loop data via spectral analysis. Ms > 2 (6 dB) = poor robustness; Ms > 3 = oscillation risk or disturbance sensitivity.' },
+      { id: 'troubleshoot_l3_6', type: 'tf', q: 'A non-stationary process (slowly varying gain or dynamics) makes traditional loop performance monitoring based on a fixed process model unreliable over long periods.', answer: 'True', explanation: 'Non-stationary: process changes over time (catalyst deactivation, fouling, wear) — performance metrics computed with old model are inaccurate; adaptive monitoring needed.' },
+      { id: 'troubleshoot_l3_7', type: 'mcq', q: 'What is the "CUSUM" (Cumulative Sum) technique used for in control loop performance monitoring?', options: ['Detecting small persistent shifts in the mean of a process variable or performance metric over time', 'Computing the cumulative sum of the integral term', 'Calculating the total error since loop commissioning', 'Summing all alarm events over a time period'], answer: 'Detecting small persistent shifts in the mean of a process variable or performance metric over time', explanation: 'CUSUM: statistical process control chart that detects small systematic shifts (drift) that ordinary control charts (Shewhart) miss — used for fouling detection, detuning.' },
+      { id: 'troubleshoot_l3_8', type: 'mcq', q: 'In a refinery crude unit, the temperature control loop performance has degraded over several months. Historian data shows K has increased by 40% and τ has decreased by 30%. What is the likely cause?', options: ['Fouling of the heat exchanger has reduced the thermal mass (τ) and increased sensitivity (K) — clean or replace exchanger', 'Valve wear has increased K and reduced τ', 'Sensor calibration drift', 'PID gain increase by operator'], answer: 'Fouling of the heat exchanger has reduced the thermal mass (τ) and increased sensitivity (K) — clean or replace exchanger', explanation: 'Fouling: reduced heat transfer area concentrates heating on less fluid mass → faster but less buffered response (smaller τ) and higher K. Clean exchanger restores dynamics.' },
+      { id: 'troubleshoot_l3_9', type: 'tf', q: 'The "Bode plot" of the closed-loop loop C(jω)·G(jω) computed from plant data can confirm whether the actual PM is within specification.', answer: 'True', explanation: 'Closed-loop Bode: from operating data (PRBS excitation or natural variation), estimate L(jω) → compute PM and GM. Compare with specification to diagnose robustness.' },
+      { id: 'troubleshoot_l3_10', type: 'mcq', q: 'What is the "multivariable interaction" troubleshooting approach for a two-loop system where both loops oscillate?', options: ['Compute cross-gains, check RGA, determine if interaction is the cause; decouple or detune one loop at a time while the other is manual', 'Retune both loops simultaneously with higher gains', 'Disable derivative on both loops', 'Put both loops in manual permanently'], answer: 'Compute cross-gains, check RGA, determine if interaction is the cause; decouple or detune one loop at a time while the other is manual', explanation: 'MIMO troubleshooting: put loop 2 in manual, check if loop 1 stabilizes. If yes: interaction is the cause. Compute RGA to assess pairing and interaction strength.' },
+      { id: 'troubleshoot_l3_11', type: 'mcq', q: 'A model-based controller (MPC or Smith Predictor) shows degraded performance after a process change. What is the diagnostic and corrective procedure?', options: ['Re-identify the process model (new step test or recursive estimation), update model parameters, recompute controller', 'Retune PID gains only', 'Replace the controller with standard PID', 'Disable model and switch to manual'], answer: 'Re-identify the process model (new step test or recursive estimation), update model parameters, recompute controller', explanation: 'Model-based controller degradation: model-plant mismatch. Re-identify → update K, τ, θ → recompute controller gains or MPC model matrix.' },
+      { id: 'troubleshoot_l3_12', type: 'tf', q: 'The "process fault detection" using a Kalman filter compares estimated state (from model) with measured state; large residuals indicate model-plant mismatch or sensor fault.', answer: 'True', explanation: 'Kalman residual analysis: residual = measurement − model prediction. Under normal conditions, residuals are white noise. Large residuals = fault (sensor, actuator, or process change).' },
+      { id: 'troubleshoot_l3_13', type: 'mcq', q: 'For a runaway (open-loop unstable) exothermic reactor controlled by PID, what is the consequence of a controller communication failure (CO frozen)?', options: ['Reactor temperature will run away to its high steady state or beyond — potentially catastrophic without SIS protection', 'Reactor stabilizes at its current temperature', 'Temperature drops as reaction stops', 'Integral action maintains the last computed output'], answer: 'Reactor temperature will run away to its high steady state or beyond — potentially catastrophic without SIS protection', explanation: 'Runaway reactor: without the stabilizing PID action (CO frozen), the positive feedback takes over → thermal runaway → potential explosion without SIS trip.' },
+      { id: 'troubleshoot_l3_14', type: 'mcq', q: 'What is the root cause when a PID loop\'s performance monitor shows high "idle index" (PV rarely deviates from SP) but operators report the loop is "fighting" the process?', options: ['The deadband may be too wide — small deviations not acted on accumulate into larger upsets; or operators manually intervene frequently', 'High idle index always indicates good control', 'The setpoint is fluctuating, keeping PV at SP', 'The integral has wound up keeping PV at SP by luck'], answer: 'The deadband may be too wide — small deviations not acted on accumulate into larger upsets; or operators manually intervene frequently', explanation: 'High idle with poor perceived performance: wide deadband suppresses small errors → larger upsets. Or operator interventions mask poor automatic performance — check %time in auto.' },
+      { id: 'troubleshoot_l3_15', type: 'tf', q: 'Using "model predictive control monitoring" (MPC performance monitoring), a sudden increase in move suppression weight λ (controller less aggressive) signals model-plant mismatch detected by the MPC online optimizer.', answer: 'True', explanation: 'MPC monitors: if prediction errors grow, the optimizer increases move suppression (λ) to maintain stability with model uncertainty — a diagnostic signal of model degradation.' },
+      { id: 'troubleshoot_l3_16', type: 'mcq', q: 'In a distillation column control troubleshooting scenario, both top and bottom composition loops are oscillating at the same frequency. What does this suggest?', options: ['Strong loop interaction at that frequency — the MIMO system is oscillating as a coupled pair, not two independent loops', 'Both sensors have failed simultaneously', 'The reboiler duty is oscillating', 'Both loops need higher integral time simultaneously'], answer: 'Strong loop interaction at that frequency — the MIMO system is oscillating as a coupled pair, not two independent loops', explanation: 'Same-frequency oscillation in interacting loops: coupling is driving a MIMO limit cycle or resonance — decouple or detune one loop to break the interaction.' },
+      { id: 'troubleshoot_l3_17', type: 'mcq', q: 'What is the "subspace identification" (N4SID) method and when is it useful for PID troubleshooting?', options: ['A state-space identification method from closed-loop data without explicit input excitation — useful when process cannot be disturbed', 'A step-test method for substation equipment', 'A safety interlock analysis method', 'A method for identifying instrument calibration errors'], answer: 'A state-space identification method from closed-loop data without explicit input excitation — useful when process cannot be disturbed', explanation: 'N4SID: identifies state-space model from output data alone using subspace methods — useful for critical processes where manual excitation (step test) is not permitted.' },
+      { id: 'troubleshoot_l3_18', type: 'tf', q: 'The "variance contribution analysis" decomposes closed-loop PV variance into portions attributable to process disturbances, measurement noise, and control performance, enabling targeted improvement.', answer: 'True', explanation: 'Variance decomposition: separates PV variance into disturbance-driven (can only be reduced by better control), noise-driven (reduce by filtering), and control-driven (reducible by tuning).' },
+      { id: 'troubleshoot_l3_19', type: 'mcq', q: 'For a dead-time dominant process (θ/τ = 3), what is the expected performance limitation of a well-tuned PID compared to minimum variance control?', options: ['PID can achieve close to minimum variance only for processes with θ/τ < 0.5; for θ/τ = 3, PID Harris index may be 0.1–0.3 — significant gap', 'No limitation — PID achieves minimum variance for any θ/τ ratio', 'Harris index = 1 always for well-tuned PID', 'θ/τ ratio does not affect PID achievable variance'], answer: 'PID can achieve close to minimum variance only for processes with θ/τ < 0.5; for θ/τ = 3, PID Harris index may be 0.1–0.3 — significant gap', explanation: 'Dead-time dominant: PID fundamentally limited by dead time. Harris benchmark computed from θ shows maximum achievable; high θ/τ makes PID far from MVC.' },
+      { id: 'troubleshoot_l3_20', type: 'mcq', q: 'What is the industrial "control loop audit" process, and what deliverables does it produce?', options: ['Systematic performance assessment of all loops: categorize each as Good/Acceptable/Poor, identify root causes (tuning/valve/sensor), and prioritize corrective actions by economic impact', 'An annual PLC program backup procedure', 'A regulatory compliance report for environmental controls only', 'A documentation review of P&IDs without performance analysis'], answer: 'Systematic performance assessment of all loops: categorize each as Good/Acceptable/Poor, identify root causes (tuning/valve/sensor), and prioritize corrective actions by economic impact', explanation: 'Loop audit: uses historian data + performance indices (Harris, oscillation index, % manual, % saturated) → prioritizes loops by economic value of improvement → ROI-focused corrective plan.' },
+    ],
+  },
+  lab: {
+    level1: [
+      { id: 'lab_l1_1', type: 'mcq', q: 'In a laboratory PID experiment using a simulated tank level, which action should you take FIRST when starting the experiment?', options: ['Set the controller to manual and verify the level reading is correct before switching to auto', 'Set Kp to maximum and switch to auto', 'Apply a setpoint step immediately in auto mode', 'Disable the integral term and start'], answer: 'Set the controller to manual and verify the level reading is correct before switching to auto', explanation: 'Lab safety: always verify sensor reading in manual first. Putting an untested loop in auto with unknown process behavior risks overflow or equipment damage.' },
+      { id: 'lab_l1_2', type: 'tf', q: 'Recording the PV, SP, and CO data at each step of a PID lab experiment helps analyze what went wrong and validate tuning changes.', answer: 'True', explanation: 'Data recording: comparing trends before and after parameter changes is essential for understanding PID behavior and validating improvements.' },
+      { id: 'lab_l1_3', type: 'mcq', q: 'In a PID lab on a simulated temperature process, you apply a CO step of 20% in manual mode and observe PV rises 8°C at steady state. What is the process gain K?', options: ['0.4 °C/%', '0.2 °C/%', '2.5 °C/%', '8 °C/%'], answer: '0.4 °C/%', explanation: 'K = ΔPV/ΔCO = 8°C / 20% = 0.4 °C/%. Used to calculate starting PID gains.' },
+      { id: 'lab_l1_4', type: 'mcq', q: 'In a simulated flow control lab, you increase Kp from 0.5 to 2.0. The loop starts oscillating. What is the correct next action?', options: ['Reduce Kp back toward 0.5 (try 1.0), then add small amounts of integral', 'Increase Kp further to overcome oscillation', 'Set Ti to 0 to remove integral', 'Switch to manual and restart the lab'], answer: 'Reduce Kp back toward 0.5 (try 1.0), then add small amounts of integral', explanation: 'Oscillation means too much gain — reduce Kp. Then gradually add integral (reduce Ti) to eliminate offset. Build up gain cautiously.' },
+      { id: 'lab_l1_5', type: 'tf', q: 'In a PID simulation, the "integral windup" effect can be demonstrated by applying a large disturbance that saturates the controller output for an extended period.', answer: 'True', explanation: 'Windup demonstration: saturate output (e.g., put large SP step, wait for output to saturate at 100%), then remove disturbance — observe the slow recovery from accumulated integral.' },
+      { id: 'lab_l1_6', type: 'mcq', q: 'You are tuning a PID for a simulated level process. With P-only control at Kp=2, the loop has a 5% steady-state offset. What should you do next?', options: ['Add integral action (set Ti to about 5× the loop settling time)', 'Increase Kp to 4 to reduce offset to 2.5%', 'Add derivative action', 'Accept the offset as normal for level control'], answer: 'Add integral action (set Ti to about 5× the loop settling time)', explanation: 'P-only offset is expected and eliminated by adding integral. Set Ti as a starting point relative to settling time; refine based on response.' },
+      { id: 'lab_l1_7', type: 'mcq', q: 'In a PID lab using Python-based simulation, which library provides PID control and step response analysis capabilities?', options: ['python-control, scipy.signal, or custom implementation', 'numpy only', 'pandas for PID control', 'matplotlib (plotting only, no control)'], answer: 'python-control, scipy.signal, or custom implementation', explanation: 'Python: python-control library provides transfer functions, step response, Bode plots. scipy.signal for simulation. Custom ST-coded PID for educational purposes.' },
+      { id: 'lab_l1_8', type: 'tf', q: 'A "bump test" can damage equipment if performed with too large a CO step on a real process — lab simulations allow larger steps safely.', answer: 'True', explanation: 'Real plant: large CO steps may cause process upsets, safety trips, or equipment damage. Simulation: unlimited step sizes for educational purposes without risk.' },
+      { id: 'lab_l1_9', type: 'mcq', q: 'When comparing PI vs PID tuning in a lab, what is the most useful observation to make?', options: ['Compare overshoot, settling time, and noise sensitivity for both — PID typically settles faster but may amplify noise', 'Only compare the final steady-state value', 'Compare the CO maximum value only', 'Compare only the oscillation frequency'], answer: 'Compare overshoot, settling time, and noise sensitivity for both — PID typically settles faster but may amplify noise', explanation: 'PI vs PID comparison: PI: slower but quieter CO. PID: faster, less overshoot, but CO more active. Quantify: settling time, overshoot%, CO standard deviation.' },
+      { id: 'lab_l1_10', type: 'mcq', q: 'In a lab exercise implementing PID in Structured Text, what variable must be accumulated between PLC scans for the integral term?', options: ['The running sum of error × Ts (integral accumulator, updated each scan)', 'The current error only', 'The setpoint value', 'The derivative of PV'], answer: 'The running sum of error × Ts (integral accumulator, updated each scan)', explanation: 'Integral in ST: I_sum := I_sum + Ki * Ts * error; (accumulated in a retentive/static variable). Reset only on mode change or explicit reset.' },
+      { id: 'lab_l1_11', type: 'tf', q: 'In a PID lab experiment, making one change at a time and observing the effect is essential for understanding what each term does.', answer: 'True', explanation: 'Scientific method: change only one parameter, observe, understand. Changing multiple parameters simultaneously makes it impossible to attribute cause and effect.' },
+      { id: 'lab_l1_12', type: 'mcq', q: 'A lab simulation shows the loop oscillating with a 30-second period. What is the "ultimate period" Tu and how do you calculate Ku?', options: ['Tu = 30 s; find the Kp at which the P-only loop oscillates at this frequency to determine Ku', 'Tu = 60 s; Ku = current Kp', 'Tu = 15 s (half the period); Ku = 2×Kp', 'Tu = 30 s; Ku = 1/Kp at oscillation'], answer: 'Tu = 30 s; find the Kp at which the P-only loop oscillates at this frequency to determine Ku', explanation: 'Ultimate period Tu is the oscillation period at Ku (P-only at the stability limit). Find Ku by increasing Kp with P-only until sustained oscillation, noting the period.' },
+      { id: 'lab_l1_13', type: 'mcq', q: 'In a PID lab using MATLAB Simulink, which block represents the process (plant)?', options: ['Transfer Function block (or State-Space block) parameterized with K, τ, θ', 'PID Controller block', 'Scope block', 'Signal Generator block'], answer: 'Transfer Function block (or State-Space block) parameterized with K, τ, θ', explanation: 'Simulink: Transfer Fcn block with G(s) = K·e^(−θs)/(τs+1) represents the process. Dead time from Transport Delay block. PID from PID Controller block.' },
+      { id: 'lab_l1_14', type: 'tf', q: 'Documenting your PID lab results in a standard format (parameters tested, data collected, observations, conclusions) prepares you for industrial commissioning reports.', answer: 'True', explanation: 'Documentation practice: lab reports mirror industrial documentation (loop sheet updates, tuning records, commissioning reports) — same engineering rigor required.' },
+      { id: 'lab_l1_15', type: 'mcq', q: 'What is the learning objective of a "split-range" PID lab exercise?', options: ['Demonstrate how one PID output controls two actuators (heating and cooling) over different output ranges', 'Learn to split the PID into P and ID parts', 'Demonstrate how two PIDs share one output', 'Learn cascade control with split timing'], answer: 'Demonstrate how one PID output controls two actuators (heating and cooling) over different output ranges', explanation: 'Split-range lab: configure output 0-50% → heater valve, 50-100% → cooler valve. Observe transition behavior and interaction at the split point.' },
+      { id: 'lab_l1_16', type: 'mcq', q: 'In a PLC-based PID lab (e.g., using Siemens PLCSIM or RSLogix Emulate), what is the advantage over hardware-based labs?', options: ['Free to experiment without risk to physical equipment; repeatable scenarios; fast scan simulation', 'More accurate than real hardware', 'No programming required', 'Provides real 4-20 mA signals for practice'], answer: 'Free to experiment without risk to physical equipment; repeatable scenarios; fast scan simulation', explanation: 'Simulation advantages: no hardware damage risk, unlimited parameter exploration, repeatable scenarios for comparison, available remotely — ideal for learning.' },
+      { id: 'lab_l1_17', type: 'tf', q: 'A comparison lab between Ziegler-Nichols and IMC (Lambda) tuning on the same process model will typically show that Z-N gives faster but more oscillatory response.', answer: 'True', explanation: 'Z-N is aggressive (designed for quarter-decay ratio); IMC/lambda can be made more conservative. Direct comparison reveals the performance-robustness tradeoff visually.' },
+      { id: 'lab_l1_18', type: 'mcq', q: 'In a lab exercise on PID anti-windup, you demonstrate windup by:', options: ['Setting SP far beyond achievable range so CO saturates at 100%, waiting, then returning SP to achievable range and observing slow recovery', 'Setting Ti very large', 'Setting the output limit to 50%', 'Disabling the proportional term'], answer: 'Setting SP far beyond achievable range so CO saturates at 100%, waiting, then returning SP to achievable range and observing slow recovery', explanation: 'Windup demo: SP=200°C for a 100°C max process → CO=100% for minutes → integral accumulates → return SP to 80°C → observe overshoot/slow recovery from windup.' },
+      { id: 'lab_l1_19', type: 'mcq', q: 'What is the purpose of a "cascade lab exercise" where inner and outer loops are built and tested sequentially?', options: ['Understand how inner loop speed affects outer loop performance and how to tune cascade systems properly', 'Practice building two independent PID loops', 'Learn to run two controllers simultaneously without interaction', 'Compare P-only inner with PID outer control'], answer: 'Understand how inner loop speed affects outer loop performance and how to tune cascade systems properly', explanation: 'Cascade lab: demonstrates cascade benefit (inner loop rejects disturbances faster), proper tuning sequence (inner first), and bumpless transfer procedures.' },
+      { id: 'lab_l1_20', type: 'tf', q: 'Completing hands-on PID lab exercises improves understanding of process control concepts compared to theory alone.', answer: 'True', explanation: 'Labs: provide intuition about how each PID term affects response — you see and feel what "too much integral" means in a way equations alone cannot provide.' },
+    ],
+    level2: [
+      { id: 'lab_l2_1', type: 'mcq', q: 'In a PID lab using Python with a simulated FOPDT process G(s) = 2e^{-3s}/(10s+1), what IMC-lambda tuning with λ=3 gives for Kp?', options: ['Kp = τ/(K·(λ+θ)) = 10/(2·(3+3)) = 0.833', 'Kp = τ/(K·λ) = 10/(2·3) = 1.67', 'Kp = K·τ/(λ+θ) = 2·10/6 = 3.33', 'Kp = 1/(K·(λ+θ)) = 1/(2·6) = 0.083'], answer: 'Kp = τ/(K·(λ+θ)) = 10/(2·(3+3)) = 0.833', explanation: 'IMC-PID: Kp = τ/(K·(λ+θ)) = 10/(2·6) = 10/12 ≈ 0.833. Ti = τ = 10 min. Td = θ/2 = 1.5 min.' },
+      { id: 'lab_l2_2', type: 'mcq', q: 'In a Simulink PID lab, you add noise (band-limited white noise, σ=0.5°C) to the PV. What change in response do you observe when comparing PID with and without derivative?', options: ['PID with D: noisy, chattering CO. PID without D (PI): smoother CO but slower settling', 'No difference — derivative does not amplify noise', 'PID with D: smoother PV. PI: noisier PV', 'Both show identical CO noise levels'], answer: 'PID with D: noisy, chattering CO. PID without D (PI): smoother CO but slower settling', explanation: 'Noise lab: D term amplifies PV noise into CO — chattering valve. PI smoother CO at cost of speed. Quantify: measure CO standard deviation for PI vs PID.' },
+      { id: 'lab_l2_3', type: 'tf', q: 'In a hardware-in-the-loop (HIL) PID lab, the real PLC runs the PID while the plant process is simulated in a real-time simulation computer (e.g., dSPACE or Speedgoat).', answer: 'True', explanation: 'HIL: real PLC → real I/O → real-time simulator (emulates plant) → real I/O → real PLC. Tests the actual PLC code and hardware without a physical plant.' },
+      { id: 'lab_l2_4', type: 'mcq', q: 'In a Studio 5000 (ControlLogix) PIDE lab, you observe the PIDE is not achieving zero steady-state error. You check and find Ti=0 in the PIDE configuration. What does Ti=0 mean in the Rockwell system?', options: ['Ti=0 in PIDE disables integral action — resulting in P-only control with inherent offset', 'Ti=0 means maximum integral (fastest action)', 'Ti=0 means error = 0 (no offset)', 'Ti=0 means auto-tuning is active'], answer: 'Ti=0 in PIDE disables integral action — resulting in P-only control with inherent offset', explanation: 'PIDE: when Ti (Integral Time) = 0, the integral contribution is zero — pure proportional control, which has offset. Set Ti to a positive value to enable integral.' },
+      { id: 'lab_l2_5', type: 'mcq', q: 'In a Siemens TIA Portal PID_Compact lab, after "Pretuning" completes, the block reports Kp=1.2, Ti=45 s, Td=8 s. The loop shows 25% overshoot in fine-tuning. What parameter should you adjust first?', options: ['Reduce Kp (try 0.8) to reduce overshoot while keeping Ti and Td initially the same', 'Increase Ti to 90 s', 'Increase Kp further to 2.0', 'Disable Td entirely'], answer: 'Reduce Kp (try 0.8) to reduce overshoot while keeping Ti and Td initially the same', explanation: 'Overshoot reduction: first reduce Kp by 20-30%. If overshoot persists, also increase Ti slightly (more integral dampens oscillation at the cost of speed).' },
+      { id: 'lab_l2_6', type: 'tf', q: 'In a Modbus TCP lab, you can read and write PID SP and CO tags from a Python script using the pymodbus library.', answer: 'True', explanation: 'Modbus TCP + Python: import pymodbus → connect to PLC → read holding registers (PV, SP) → write registers (SP, mode) → implement supervisory control scripts.' },
+      { id: 'lab_l2_7', type: 'mcq', q: 'In a cascade control lab with inner flow and outer temperature, you disable the inner loop anti-windup while the inner SP is limited. What do you observe?', options: ['Inner loop winds up with large integral; when limit is removed, inner PV overshoots significantly before recovering', 'No change — cascade anti-windup is not needed', 'The outer loop compensates for inner windup automatically', 'Inner loop oscillates at twice the normal frequency'], answer: 'Inner loop winds up with large integral; when limit is removed, inner PV overshoots significantly before recovering', explanation: 'Cascade windup lab: disable anti-windup → run inner SP at limit → release → observe large overshoot from accumulated integral. Then enable anti-windup and repeat for comparison.' },
+      { id: 'lab_l2_8', type: 'mcq', q: 'In a MATLAB lab computing the Bode plot of an experimentally identified process, the phase plot shows -180° at ω = 0.3 rad/s. If |L(0.3j)| = 0.5 (-6 dB), what is the gain margin?', options: ['GM = 1/|L(jω_pc)| = 1/0.5 = 2 (6 dB)', 'GM = 0.5 (-6 dB)', 'GM = 2·|L| = 1.0 (0 dB)', 'GM cannot be determined from this data'], answer: 'GM = 1/|L(jω_pc)| = 1/0.5 = 2 (6 dB)', explanation: 'GM = 1/|L(jω_pc)| where ω_pc is the phase crossover frequency (∠L = -180°). GM = 1/0.5 = 2 = 6 dB. Good (> 6 dB is the target).' },
+      { id: 'lab_l2_9', type: 'tf', q: 'In a Python PID lab using the "simple-pid" library, the integral anti-windup can be configured by setting output_limits on the PID object.', answer: 'True', explanation: 'simple-pid: PID(Kp, Ki, Kd, output_limits=(0,100)) automatically applies back-calculation anti-windup when output hits the limits.' },
+      { id: 'lab_l2_10', type: 'mcq', q: 'In a lab exercise comparing positional vs velocity PID algorithms in Python, what difference in bumpless transfer behavior do you observe?', options: ['Velocity form: naturally bumpless (ΔCO starts from current actuator state). Positional: must explicitly initialize integral to match current CO', 'Positional form is always bumpless; velocity form requires initialization', 'No difference in bumpless transfer behavior', 'Velocity form always starts from 0% output'], answer: 'Velocity form: naturally bumpless (ΔCO starts from current actuator state). Positional: must explicitly initialize integral to match current CO', explanation: 'Velocity: CO = CO_prev + ΔCO each scan — naturally continues from current state. Positional: CO = Kp·e + I + D — must set initial I to match current CO for bumpless switch to auto.' },
+      { id: 'lab_l2_11', type: 'mcq', q: 'In an interactive Jupyter notebook PID lab, students vary λ in IMC-PID tuning and plot the closed-loop step response. What trend do they observe?', options: ['Larger λ → slower response, less overshoot, more robust; smaller λ → faster, more overshoot, less robust', 'Larger λ → faster response, more overshoot', 'λ has no effect on response speed — only on steady state', 'Smaller λ → always unstable'], answer: 'Larger λ → slower response, less overshoot, more robust; smaller λ → faster, more overshoot, less robust', explanation: 'IMC-PID λ sweep: direct visualization of performance-robustness tradeoff. Students see Pareto frontier: you can\'t have fast AND robust without a better model.' },
+      { id: 'lab_l2_12', type: 'tf', q: 'A lab exercise where students implement Smith Predictor in Simulink demonstrates that dead-time compensation significantly improves performance for dead-time-dominant processes.', answer: 'True', explanation: 'Smith Predictor lab: compare standard PID vs Smith Predictor for θ/τ = 2. Students observe dramatic improvement (faster, less oscillatory) demonstrating dead-time compensation value.' },
+      { id: 'lab_l2_13', type: 'mcq', q: 'In a PID tuning competition lab (compare tuning methods for best ISE), which tuning method typically wins for a FOPDT process?', options: ['SIMC or IMC-PID with λ=θ typically achieves near-optimal ISE with good robustness', 'Ziegler-Nichols (best aggressive performance)', 'P-only control (no overshoot)', 'Random gain selection'], answer: 'SIMC or IMC-PID with λ=θ typically achieves near-optimal ISE with good robustness', explanation: 'SIMC λ=θ: near-ITAE optimal for servo; good ISE balance. Z-N may win ISE if process is forgiving, but sacrifices robustness — SIMC balances both.' },
+      { id: 'lab_l2_14', type: 'mcq', q: 'In a SCADA-PLC integration lab using OPC UA, students connect a Python OPC UA client to a PLCSIM PLC. What PID-related tags would they read/write?', options: ['PV (read), SP (read/write), CO (read), Mode (read/write), Kp/Ti/Td (read/write for remote tuning)', 'Only the PLC program source code', 'Only alarm tags', 'Only discrete I/O tags'], answer: 'PV (read), SP (read/write), CO (read), Mode (read/write), Kp/Ti/Td (read/write for remote tuning)', explanation: 'OPC UA lab: clients read PV (measurement), write SP (setpoint change), read CO (observe action), write mode (auto/manual), write PID gains for remote tuning.' },
+      { id: 'lab_l2_15', type: 'tf', q: 'A gain scheduling lab exercise using a nonlinear pH process demonstrates that a single linear PID with gains tuned at neutral pH will oscillate when the pH moves away from neutral.', answer: 'True', explanation: 'pH gain scheduling lab: pH=7 tuning: Kp correct at neutral (steep gain), but pH=4 or 10 (low gain region) makes loop oscillate or be too sluggish — demonstrates need for scheduling.' },
+      { id: 'lab_l2_16', type: 'mcq', q: 'In a batch process PID lab simulating a batch reactor, students observe that the PID gains tuned at the start of batch give poor performance at the end. Why?', options: ['Process gain and dynamics change as reactant is consumed over the batch — fixed-gain PID cannot adapt', 'The batch always has the same dynamics', 'Integral windup is the only batch-specific issue', 'Batch processes do not need PID control'], answer: 'Process gain and dynamics change as reactant is consumed over the batch — fixed-gain PID cannot adapt', explanation: 'Batch dynamics lab: shows why adaptive or time-varying gain scheduled PID is needed for batch. Fixed gains → good at start, poor at end as process changes.' },
+      { id: 'lab_l2_17', type: 'mcq', q: 'In a PID security lab, students attempt to modify SP via unauthorized OPC UA connection (no certificate). The expected result with proper security is:', options: ['Connection rejected with BadSecurityModeRejected or BadIdentityTokenInvalid — SP cannot be modified', 'SP is modified successfully — demonstrates vulnerability', 'OPC UA server crashes', 'SP changes but PID ignores it'], answer: 'Connection rejected with BadSecurityModeRejected or BadIdentityTokenInvalid — SP cannot be modified', explanation: 'OPC UA security lab: without proper certificate, the server rejects the connection — demonstrates that properly secured OPC UA prevents unauthorized SP modification.' },
+      { id: 'lab_l2_18', type: 'tf', q: 'In a capstone PID lab, students design and implement a complete control system (sensor selection, valve sizing, PID tuning, HMI design) mirroring industrial project workflows.', answer: 'True', explanation: 'Capstone project: end-to-end design — from process requirements to working control system — mimics real engineering project. Best preparation for industrial practice.' },
+      { id: 'lab_l2_19', type: 'mcq', q: 'In a multi-loop PID interaction lab with two coupled tanks, students observe that detuning loop 1 (increasing λ1) reduces oscillation in loop 2 even though loop 2 tuning was unchanged. Why?', options: ['Less aggressive loop 1 transmits less disturbance to loop 2 via process coupling — reduced interaction effect', 'Detuning loop 1 corrects loop 2 tuning automatically', 'Loop 1 and 2 are decoupled when λ increases', 'This effect is not physically possible'], answer: 'Less aggressive loop 1 transmits less disturbance to loop 2 via process coupling — reduced interaction effect', explanation: 'Interaction lab: detuning reduces the frequency and magnitude of CO1 changes → less cross-channel excitation on PV2 via process coupling → loop 2 calms down.' },
+      { id: 'lab_l2_20', type: 'mcq', q: 'What is the learning outcome of a "process audit lab" where students analyze 20 control loops from historian data and classify them as Good/Acceptable/Poor?', options: ['Experience applying performance indices (variance, oscillation index, % manual, % saturated) to identify improvement priorities in a real plant dataset', 'Learning PID parameter optimization only', 'Learning instrument calibration procedures', 'Learning HMI design best practices'], answer: 'Experience applying performance indices (variance, oscillation index, % manual, % saturated) to identify improvement priorities in a real plant dataset', explanation: 'Audit lab: industrial-scale assessment experience — compute and interpret performance metrics from real (or realistic) historian data → prioritize improvements by economic value.' },
+    ],
+    level3: [
+      { id: 'lab_l3_1', type: 'mcq', q: 'In a research lab using MATLAB\'s System Identification Toolbox, you estimate a FOPDT model from closed-loop data using an ARX structure with an external excitation (PRBS). The identified model has K_hat=1.8 vs true K=2.0, τ_hat=12 min vs true τ=10 min. Compute the model uncertainty band.', options: ['Gain error: 10%; τ error: 20% — significant model-plant mismatch; retune or design for robustness with this uncertainty', 'K error: 0.2 (absolute); no percentage needed', 'Both within 5% — no issue', 'θ error dominates — K and τ errors are irrelevant'], answer: 'Gain error: 10%; τ error: 20% — significant model-plant mismatch; retune or design for robustness with this uncertainty', explanation: 'Model error: ΔK/K = (2.0-1.8)/2.0 = 10%; Δτ/τ = (12-10)/10 = 20%. These errors must be bounded to ensure robust PID performance with the estimated model.' },
+      { id: 'lab_l3_2', type: 'mcq', q: 'In a graduate PID lab, students implement H2-optimal PID design using the frequency-weighted LQR approach. The cost function is J = ∫(e²·We + u²·Wu)dt. What happens to Kp when Wu is doubled?', options: ['Kp decreases — higher control effort penalty → less aggressive control → reduced gain', 'Kp increases — more weight on error drives higher gain', 'Kp is unchanged — Wu only affects Ti', 'Kp becomes imaginary'], answer: 'Kp decreases — higher control effort penalty → less aggressive control → reduced gain', explanation: 'LQR: doubling Wu → controller minimizes input energy → reduces all gains including Kp. Tradeoff: better actuator protection at cost of slower response.' },
+      { id: 'lab_l3_3', type: 'tf', q: 'In a research lab implementing an adaptive PID using MRAC (Model Reference Adaptive Control), the adaptive law drives PID gains to minimize the error between the actual system response and the reference model response.', answer: 'True', explanation: 'MRAC: adjusts Kp, Ti, Td using a gradient or Lyapunov-based update law so closed-loop behaves like a chosen reference model — online adaptation without explicit identification.' },
+      { id: 'lab_l3_4', type: 'mcq', q: 'In a Simulink lab implementing a Smith Predictor for G(s) = 2e^(-5s)/(10s+1), what are the three model components inside the predictor?', options: ['G_model(s) = 2/(10s+1) (no delay), G_model_delay(s) = 2e^(-5s)/(10s+1) (with delay), PID on (PV - G_model_delay·U + G_model·U) = PV corrected', 'PID, delay block, and feedforward only', 'Three PIDs: one for each model parameter', 'Dead time model only — no lag model needed'], answer: 'G_model(s) = 2/(10s+1) (no delay), G_model_delay(s) = 2e^(-5s)/(10s+1) (with delay), PID on (PV - G_model_delay·U + G_model·U) = PV corrected', explanation: 'Smith Predictor: PID sees PV + Gm·U - Gm_delay·U = PV + Gm·U·(1-e^{-θs}). Model has delay-free part and delayed part; PID effectively sees a delay-free process.' },
+      { id: 'lab_l3_5', type: 'mcq', q: 'In a process control lab using the "Tennessee Eastman" benchmark process, why is this a challenging multivariable PID control problem?', options: ['It has 12 manipulated variables, 41 measurements, strong nonlinearities, and a runaway open-loop unstable reactor — must be stabilized and optimized simultaneously', 'It has simple linear dynamics with one PID loop', 'It is a level control problem with two tanks', 'It has only dead-time dominant dynamics'], answer: 'It has 12 manipulated variables, 41 measurements, strong nonlinearities, and a runaway open-loop unstable reactor — must be stabilized and optimized simultaneously', explanation: 'Tennessee Eastman: industrially realistic benchmark (Downs & Vogel 1993) with MIMO interaction, nonlinearities, unstable reactor, and multiple constraints — tests full control strategy.' },
+      { id: 'lab_l3_6', type: 'tf', q: 'In a lab implementing digital PID on an Arduino/Raspberry Pi, fixed-point arithmetic (16-bit integers) can cause integral drift due to quantization, demonstrable by comparing with double-precision floating point implementation.', answer: 'True', explanation: 'Fixed-point PID lab: 16-bit integer: Ki·Ts·e truncates to nearest integer → error accumulates in integral → drift. Double float: negligible quantization. Demonstrable difference at low error magnitudes.' },
+      { id: 'lab_l3_7', type: 'mcq', q: 'A capstone research project implementing a PID loop audit tool calculates the "normalized Harris index" from closed-loop data. What is the computational procedure?', options: ['1. Estimate process dead time n (samples); 2. Compute minimum variance σ²_mv from last n+1 PV samples (minimum achievable) using spectral factorization; 3. Compute actual variance σ²_actual; 4. η = σ²_mv/σ²_actual', 'Compute average PV deviation from SP over 1 hour', 'Divide maximum PV by minimum PV and subtract 1', 'Count number of oscillation cycles per hour'], answer: '1. Estimate process dead time n (samples); 2. Compute minimum variance σ²_mv from last n+1 PV samples (minimum achievable) using spectral factorization; 3. Compute actual variance σ²_actual; 4. η = σ²_mv/σ²_actual', explanation: 'Harris index computation: spectral factorization of the closed-loop PV spectrum to find the minimum achievable variance based on dead time — computationally requiring ARIMA fitting.' },
+      { id: 'lab_l3_8', type: 'mcq', q: 'In a graduate PID lab using the Simulink Control Design toolbox, the "pidtune" function is given G(s) = 2e^(-3s)/(10s+1) and target PM=60°. What PID parameters does it compute?', options: ['It uses IMC-based or loop shaping internally to compute Kp, Ti, Td achieving PM≈60° — results depend on algorithm; typically Kp≈0.8, Ti≈10, Td≈1.5 for this process', 'Kp = PM/180 = 0.33; Ti = τ; Td = 0', 'Kp = 2.0; Ti = 5; Td = 3 always for this PM', 'pidtune cannot handle dead time'], answer: 'It uses IMC-based or loop shaping internally to compute Kp, Ti, Td achieving PM≈60° — results depend on algorithm; typically Kp≈0.8, Ti≈10, Td≈1.5 for this process', explanation: 'MATLAB pidtune: internally uses loop shaping or IMC-based methods; PM specification is met via automatic bandwidth selection. Verify with margin() command.' },
+      { id: 'lab_l3_9', type: 'tf', q: 'In a lab implementing real-time machine learning (online reinforcement learning) for adaptive PID gain tuning, the agent receives the closed-loop IAE as a reward signal.', answer: 'True', explanation: 'RL-based adaptive PID: reward = −IAE (or similar performance measure); agent adjusts Kp, Ti, Td actions to maximize cumulative reward = minimize IAE over time.' },
+      { id: 'lab_l3_10', type: 'mcq', q: 'In a Modelica/Dymola-based process control lab, what advantage does Modelica offer over transfer function simulation for PID design?', options: ['Physics-based object-oriented modeling — naturally represents nonlinear, multi-domain processes (thermal, fluid, electrical) for realistic PID evaluation', 'Faster simulation than Simulink always', 'Only linear transfer functions — same as MATLAB', 'Modelica cannot simulate PID controllers'], answer: 'Physics-based object-oriented modeling — naturally represents nonlinear, multi-domain processes (thermal, fluid, electrical) for realistic PID evaluation', explanation: 'Modelica: equation-based, multi-domain physical modeling (Modelica.Fluid, HeatTransfer libraries). PID on realistic nonlinear plant models — much more realistic than FOPDT.' },
+      { id: 'lab_l3_11', type: 'mcq', q: 'In a cybersecurity PID lab, students use Wireshark to capture PROFINET IO traffic. They observe PID CO values in plaintext. What vulnerability does this demonstrate and what is the mitigation?', options: ['Eavesdropping on process data (CO values reveal process operating state); mitigate with network segmentation and PROFINET security (RSA-PSK or MACsec)', 'PROFINET is always encrypted — no vulnerability', 'Only SCADA traffic is vulnerable, not PROFINET', 'The vulnerability is in the PID algorithm, not the network'], answer: 'Eavesdropping on process data (CO values reveal process operating state); mitigate with network segmentation and PROFINET security (RSA-PSK or MACsec)', explanation: 'PROFINET lab: standard PROFINET has no encryption — CO, PV visible on network. Mitigation: physical network isolation (no shared Ethernet), or PROFINET Security (MACsec for RT/IRT).' },
+      { id: 'lab_l3_12', type: 'tf', q: 'In a Model Predictive Control comparison lab, students demonstrate that an MPC tuned for the same FOPDT process achieves lower IAE for multi-step setpoint changes (ramp) compared to PID, because MPC can predict and pre-act.', answer: 'True', explanation: 'MPC vs PID ramp tracking: MPC predicts the ramp and begins control action ahead of time — lower tracking error (IAE) especially for known future setpoint trajectories.' },
+      { id: 'lab_l3_13', type: 'mcq', q: 'In a nonlinear process control lab using a CSTR with input multiplicity (two stable steady states), a PID attempting to hold the unstable middle steady state will:', options: ['Require the PID gain to be within a narrow stability band (above lower bound to stabilize, below upper bound to prevent instability at other frequency)', 'Work normally with standard tuning — any gain stabilizes the unstable SS', 'Be unable to stabilize the middle SS regardless of tuning', 'Only work if derivative action is disabled'], answer: 'Require the PID gain to be within a narrow stability band (above lower bound to stabilize, below upper bound to prevent instability at other frequency)', explanation: 'Unstable CSTR: PID must have Kp > Kp_min (to overcome instability) but Kp < Kp_max (to avoid high-frequency instability) — the "stabilizing" gain band. Not all gains work.' },
+      { id: 'lab_l3_14', type: 'mcq', q: 'In an economic MPC lab (EMPC) compared to setpoint-tracking MPC, what is the fundamental difference in the objective function?', options: ['EMPC maximizes economic objective (e.g., profit = revenue − cost) directly; setpoint MPC minimizes deviation from a setpoint reference', 'EMPC uses faster sampling; setpoint MPC uses slower sampling', 'EMPC has no constraint handling; setpoint MPC does', 'No practical difference — both minimize the same quadratic cost'], answer: 'EMPC maximizes economic objective (e.g., profit = revenue − cost) directly; setpoint MPC minimizes deviation from a setpoint reference', explanation: 'EMPC: directly optimizes the plant economics without an intermediate setpoint. May drive the plant to operate away from a setpoint (e.g., at constraint) for maximum profit.' },
+      { id: 'lab_l3_15', type: 'tf', q: 'A lab implementing digital PID in a PLC for a real physical process (temperature or level control rig) is more valuable than pure simulation because it exposes students to real hardware issues (noise, valve behavior, signal wiring).', answer: 'True', explanation: 'Physical lab rig: exposes real noise, valve stiction, thermowell lag, wiring issues, sensor drift — none fully captured in simulation. Critical for practical engineering skills.' },
+      { id: 'lab_l3_16', type: 'mcq', q: 'In a research project on "learning-based PID tuning" using Bayesian optimization, the acquisition function guides the next set of PID parameters to evaluate. Which acquisition function is best for minimizing the number of experiments?', options: ['Expected Improvement (EI) — explores uncertainty efficiently and exploits known good regions, balancing exploration-exploitation', 'Random search — no prior knowledge needed', 'Grid search — systematic coverage of parameter space', 'Upper Confidence Bound (UCB) — maximizes exploration always'], answer: 'Expected Improvement (EI) — explores uncertainty efficiently and exploits known good regions, balancing exploration-exploitation', explanation: 'Bayesian optimization with EI: intelligently selects next Kp/Ti/Td combination most likely to improve IAE → minimizes physical experiments on plant. UCB more exploratory, EI more focused.' },
+      { id: 'lab_l3_17', type: 'mcq', q: 'In a distributed control lab using IEC 61499 Function Blocks (as opposed to IEC 61131-3), how is the PID execution model different?', options: ['IEC 61499: event-driven, distributed FBs that execute on events (EI/EO) — PID runs on "sampling" event rather than periodic task', 'IEC 61499: same as 61131-3 but with different syntax', 'IEC 61499 cannot implement PID control', 'IEC 61499 uses continuous-time execution like analog controllers'], answer: 'IEC 61499: event-driven, distributed FBs that execute on events (EI/EO) — PID runs on "sampling" event rather than periodic task', explanation: 'IEC 61499: event-driven architecture. PID FB: triggered by SAMPLE event from timer FB → computes → triggers output event. Distributed across multiple devices in a network.' },
+      { id: 'lab_l3_18', type: 'tf', q: 'In an IIoT (Industrial Internet of Things) PID lab using MQTT protocol, students can subscribe to PV topics and publish SP topics to control a simulated or real process from a cloud dashboard.', answer: 'True', explanation: 'IIoT PID lab: MQTT broker (e.g., Mosquitto) bridges PLC/simulator ↔ cloud (Node-RED, Grafana). Students subscribe to PV feed, publish SP changes — demonstrates IIoT SCADA architecture.' },
+      { id: 'lab_l3_19', type: 'mcq', q: 'In a Cyber-Physical Systems (CPS) lab, students demonstrate a PID process control attack where a false PV is injected via a compromised AI card. What is the control consequence?', options: ['Controller receives false PV → computes incorrect error → drives CO to wrong position → process drifts from setpoint or becomes unstable', 'Controller detects false data and switches to manual automatically', 'Attack has no effect because PID output is limited', 'Attack only affects the HMI display, not actual control'], answer: 'Controller receives false PV → computes incorrect error → drives CO to wrong position → process drifts from setpoint or becomes unstable', explanation: 'PV injection attack: controller trusts its sensors — false PV = false error = wrong CO = unintended process state. Demonstrates why sensor authentication and anomaly detection matter.' },
+      { id: 'lab_l3_20', type: 'mcq', q: 'After completing all PID lab exercises, which skill is MOST directly applicable to industrial process control engineering work?', options: ['Performing open-loop step tests, identifying FOPDT parameters, computing robust PID tuning, and verifying performance with closed-loop tests — a complete commissioning workflow', 'Implementing PID in assembly language', 'Deriving Z-transform tables by hand', 'Memorizing Z-N tuning coefficients without understanding'], answer: 'Performing open-loop step tests, identifying FOPDT parameters, computing robust PID tuning, and verifying performance with closed-loop tests — a complete commissioning workflow', explanation: 'Complete commissioning workflow: step test → identify K,τ,θ → compute gains (SIMC/IMC) → verify PM/GM → commission → fine-tune. This sequence is used daily in industrial practice.' },
+    ],
+  },
 }
