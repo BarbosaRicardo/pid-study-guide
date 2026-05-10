@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import { Menu, X, Activity, BookOpen } from 'lucide-react'
+import { Menu, X, Zap, BookOpen } from 'lucide-react'
 import { CHAPTERS } from '../data/chapters'
 import { useProgress } from '../hooks/useProgress'
 
@@ -36,12 +36,12 @@ export default function Sidebar() {
       <div className="p-5" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{ background: 'linear-gradient(135deg, #f43f5e, #e11d48)', boxShadow: '0 0 20px rgba(244,63,94,0.5)' }}>
-            <Activity size={18} className="text-white" />
+            style={{ background: 'linear-gradient(135deg, #7c3aed, #a855f7)', boxShadow: '0 0 20px rgba(168,85,247,0.45)' }}>
+            <Zap size={18} className="text-white" />
           </div>
           <div>
-            <div className="font-black text-white text-sm tracking-wide leading-tight">PID Control</div>
-            <div className="text-xs font-medium" style={{ color: '#60a5fa' }}>Study Guide</div>
+            <div className="font-black text-white text-sm tracking-wide leading-tight">PID</div>
+            <div className="text-xs font-medium" style={{ color: '#a855f7' }}>Study Guide</div>
           </div>
         </div>
 
@@ -49,7 +49,7 @@ export default function Sidebar() {
         <div className="mt-4">
           <div className="flex justify-between text-xs mb-1.5">
             <span className="text-slate-500">Overall Progress</span>
-            <span className="font-bold" style={{ color: '#60a5fa' }}>{prog.pct}%</span>
+            <span className="font-bold" style={{ color: '#a855f7' }}>{prog.pct}%</span>
           </div>
           <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
             <div className="progress-bar h-full" style={{ width: `${prog.pct}%` }} />
@@ -79,17 +79,17 @@ export default function Sidebar() {
           rel="noopener noreferrer"
           className="flex items-center justify-center gap-2 w-full px-3 py-2.5 rounded-xl text-xs font-bold transition-all hover:scale-105"
           style={{
-            background: 'linear-gradient(135deg, rgba(59,130,246,0.2), rgba(139,92,246,0.2))',
-            border: '1px solid rgba(59,130,246,0.35)',
-            color: '#93c5fd',
-            boxShadow: '0 0 12px rgba(59,130,246,0.15)',
+            background: 'linear-gradient(135deg, rgba(168,85,247,0.18), rgba(124,58,237,0.12))',
+            border: '1px solid rgba(168,85,247,0.35)',
+            color: '#a855f7',
+            boxShadow: '0 0 12px rgba(168,85,247,0.15)',
           }}
         >
           <BookOpen size={13} />
           Download Study Guide PDF
         </a>
         <p className="text-xs text-slate-600 text-center">
-          SCADA Automation Engineering · PID Control · May 2026
+          SCADA Automation Engineering · PID Controllers · May 2026
         </p>
       </div>
     </div>
@@ -100,7 +100,7 @@ export default function Sidebar() {
       <button
         onClick={() => setOpen(!open)}
         className="lg:hidden fixed top-4 left-4 z-50 w-10 h-10 text-white rounded-xl flex items-center justify-center shadow-lg"
-        style={{ background: 'linear-gradient(135deg, #f43f5e, #e11d48)' }}
+        style={{ background: 'linear-gradient(135deg, #7c3aed, #a855f7)' }}
       >
         {open ? <X size={20} /> : <Menu size={20} />}
       </button>

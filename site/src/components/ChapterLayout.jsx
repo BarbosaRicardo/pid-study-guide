@@ -25,7 +25,7 @@ export default function ChapterLayout({ chapterId, title, emoji, children, prev,
     >
       {/* Chapter header */}
       <div className="mb-8">
-        <div className="flex items-center gap-2 text-sm font-medium mb-3" style={{ color: 'rgba(96,165,250,0.7)' }}>
+        <div className="flex items-center gap-2 text-sm font-medium mb-3" style={{ color: 'rgba(168,85,247,0.75)' }}>
           <span>SCADA Training</span>
           <span className="text-slate-600">›</span>
           <span className="text-slate-500">{title}</span>
@@ -34,7 +34,7 @@ export default function ChapterLayout({ chapterId, title, emoji, children, prev,
           <span className="text-5xl drop-shadow-lg">{emoji}</span>
           <h1 className="text-3xl font-black text-white leading-tight tracking-tight">{title}</h1>
         </div>
-        <div className="mt-4 h-px" style={{ background: 'linear-gradient(90deg, rgba(59,130,246,0.6), rgba(139,92,246,0.4), transparent)' }} />
+        <div className="mt-4 h-px" style={{ background: 'linear-gradient(90deg, rgba(168,85,247,0.8), rgba(124,58,237,0.4), transparent)' }} />
       </div>
 
       {/* Content */}
@@ -47,7 +47,10 @@ export default function ChapterLayout({ chapterId, title, emoji, children, prev,
         {prevChapter ? (
           <Link
             to={prevChapter.path}
-            className="flex items-center gap-2 text-sm text-slate-500 hover:text-blue-400 transition-colors group"
+            className="flex items-center gap-2 text-sm text-slate-500 transition-colors group"
+            style={{ '--hover-color': '#a855f7' }}
+            onMouseEnter={e => e.currentTarget.style.color = '#a855f7'}
+            onMouseLeave={e => e.currentTarget.style.color = ''}
           >
             <ChevronLeft size={18} className="group-hover:-translate-x-0.5 transition-transform" />
             <div>
@@ -60,7 +63,9 @@ export default function ChapterLayout({ chapterId, title, emoji, children, prev,
         {nextChapter ? (
           <Link
             to={nextChapter.path}
-            className="flex items-center gap-2 text-sm text-slate-500 hover:text-blue-400 transition-colors text-right group"
+            className="flex items-center gap-2 text-sm text-slate-500 transition-colors text-right group"
+            onMouseEnter={e => e.currentTarget.style.color = '#a855f7'}
+            onMouseLeave={e => e.currentTarget.style.color = ''}
           >
             <div>
               <div className="text-xs text-slate-600">Next Up</div>
