@@ -74,6 +74,75 @@ for (let i = 0; i < 5; i++) {
   pv += out * 0.3; // fake process response
   console.log(\`Step \${i+1}: PV=\${pv.toFixed(2)}, Output=\${out.toFixed(2)}\`);
 }`,
+    starterPy: `class PIDController(object):
+    """Discrete position-form PID controller with anti-windup."""
+
+    def __init__(self, Kp, Ki, Kd, out_min=0.0, out_max=100.0):
+        self.Kp = Kp
+        self.Ki = Ki
+        self.Kd = Kd
+        self.out_min = out_min
+        self.out_max = out_max
+        self.integral = 0.0
+        self.last_error = 0.0
+
+    def compute(self, setpoint, pv, dt):
+        error = setpoint - pv
+        P = self.Kp * error
+        self.integral += self.Ki * error * dt
+        self.integral = max(self.out_min, min(self.out_max, self.integral))
+        D = self.Kd * (error - self.last_error) / dt if dt > 0 else 0.0
+        self.last_error = error
+        output = P + self.integral + D
+        return max(self.out_min, min(self.out_max, output))
+
+    def reset(self):
+        self.integral = 0.0
+        self.last_error = 0.0
+
+solution = PIDController
+
+pid = PIDController(2.0, 0.5, 0.1)
+pv = 0.0
+sp = 50.0
+for i in range(5):
+    out = pid.compute(sp, pv, 1.0)
+    pv += out * 0.3
+    print('Step {}: PV={:.2f}, Output={:.2f}'.format(i+1, pv, out))`,
+    starterJython: `class PIDController(object):
+    """Discrete PID controller. Jython 2.7."""
+
+    def __init__(self, Kp, Ki, Kd, out_min=0.0, out_max=100.0):
+        self.Kp = Kp
+        self.Ki = Ki
+        self.Kd = Kd
+        self.out_min = out_min
+        self.out_max = out_max
+        self.integral = 0.0
+        self.last_error = 0.0
+
+    def compute(self, setpoint, pv, dt):
+        error = setpoint - pv
+        P = self.Kp * error
+        self.integral += self.Ki * error * dt
+        self.integral = max(self.out_min, min(self.out_max, self.integral))
+        D = self.Kd * (error - self.last_error) / dt if dt > 0 else 0.0
+        self.last_error = error
+        output = P + self.integral + D
+        return max(self.out_min, min(self.out_max, output))
+
+    def reset(self):
+        self.integral = 0.0
+        self.last_error = 0.0
+
+solution = PIDController
+
+pid = PIDController(2.0, 0.5, 0.1)
+pv = 0.0
+for i in range(5):
+    out = pid.compute(50.0, pv, 1.0)
+    pv += out * 0.3
+    print('Step %d: PV=%.2f, Out=%.2f' % (i+1, pv, out))`,
     tests: [
       { description: 'Large error (SP=100, PV=0) → output at or near outMax (100)' },
       { description: 'At setpoint (SP=PV=50) → P=0, derivative=0, output from integral only' },
@@ -169,6 +238,60 @@ const solution = znTuning;
 console.log(znTuning(2.0, 30, 'PID'));
 // Kp=1.2, Ki=0.08, Kd=4.5
 console.log(znTuning(2.0, 30, 'PI'));`,
+    starterPy: `def zn_tuning(Ku, Tu, mode='PID'):
+    """Ziegler-Nichols PID tuning calculator."""
+    if mode == 'PID':
+        Kp = 0.6 * Ku
+        Ki = 1.2 * Ku / Tu
+        Kd = 0.075 * Ku * Tu
+    elif mode == 'PI':
+        Kp = 0.45 * Ku
+        Ki = 0.54 * Ku / Tu
+        Kd = 0.0
+    elif mode == 'P':
+        Kp = 0.5 * Ku
+        Ki = 0.0
+        Kd = 0.0
+    else:
+        return None
+
+    return {
+        'Kp': round(Kp, 4),
+        'Ki': round(Ki, 4),
+        'Kd': round(Kd, 4),
+    }
+
+solution = zn_tuning
+
+print(zn_tuning(2.0, 30, 'PID'))  # Kp=1.2, Ki=0.08, Kd=4.5
+print(zn_tuning(2.0, 30, 'PI'))
+print(zn_tuning(2.0, 30, 'bad'))  # None`,
+    starterJython: `def zn_tuning(Ku, Tu, mode='PID'):
+    """Ziegler-Nichols PID tuning. Jython 2.7."""
+    if mode == 'PID':
+        Kp = 0.6 * Ku
+        Ki = 1.2 * Ku / Tu
+        Kd = 0.075 * Ku * Tu
+    elif mode == 'PI':
+        Kp = 0.45 * Ku
+        Ki = 0.54 * Ku / Tu
+        Kd = 0.0
+    elif mode == 'P':
+        Kp = 0.5 * Ku
+        Ki = 0.0
+        Kd = 0.0
+    else:
+        return None
+    return {
+        'Kp': round(Kp, 4),
+        'Ki': round(Ki, 4),
+        'Kd': round(Kd, 4),
+    }
+
+solution = zn_tuning
+
+print(zn_tuning(2.0, 30, 'PID'))
+print(zn_tuning(1.5, 20, 'PI'))`,
     tests: [
       { description: 'znTuning(2.0, 30, "PID") → {Kp:1.2, Ki:0.08, Kd:4.5}' },
       { description: 'znTuning(1.5, 20, "PI")  → {Kp:0.675, Ki:0.0405, Kd:0}' },
@@ -276,6 +399,88 @@ for (let t = 0; t <= 120; t += 2) {
 }
 console.log('FOPDT at t=40:', fopdt(1.0, 30, 10, 1.0, 40).toFixed(4)); // ≈0.6321 at t=θ+τ
 console.log('Identified:', identifyFOPDT(data));`,
+    starterPy: `import math
+
+def fopdt(K, tau, theta, delta_u, t):
+    """FOPDT step response: K*dU*(1 - e^(-(t-theta)/tau)) for t >= theta."""
+    if t < theta:
+        return 0.0
+    return K * delta_u * (1.0 - math.exp(-(t - theta) / tau))
+
+def identify_fopdt(step_data):
+    """Identify FOPDT parameters from step response using 28.3%/63.2% method."""
+    if not step_data or len(step_data) < 3:
+        return None
+    final_pv = step_data[-1]['pv']
+    initial_pv = step_data[0]['pv']
+    delta_pv = final_pv - initial_pv
+    if abs(delta_pv) < 0.001:
+        return None
+
+    target_283 = initial_pv + 0.283 * delta_pv
+    target_632 = initial_pv + 0.632 * delta_pv
+    t1, t2 = None, None
+
+    for i in range(1, len(step_data)):
+        prev, curr = step_data[i-1], step_data[i]
+        if t1 is None and curr['pv'] >= target_283:
+            frac = (target_283 - prev['pv']) / (curr['pv'] - prev['pv'])
+            t1 = prev['t'] + frac * (curr['t'] - prev['t'])
+        if t2 is None and curr['pv'] >= target_632:
+            frac = (target_632 - prev['pv']) / (curr['pv'] - prev['pv'])
+            t2 = prev['t'] + frac * (curr['t'] - prev['t'])
+
+    if t1 is None or t2 is None:
+        return None
+
+    tau = 1.5 * (t2 - t1)
+    theta = t2 - tau
+    return {
+        'K': round(delta_pv, 3),
+        'tau': round(tau, 2),
+        'theta': round(theta, 2),
+    }
+
+solution = {'fopdt': fopdt, 'identifyFOPDT': identify_fopdt}
+
+data = [{'t': t, 'pv': fopdt(1.0, 30, 10, 1.0, t)} for t in range(0, 121, 2)]
+print('At t=40:', round(fopdt(1.0, 30, 10, 1.0, 40), 4))
+print('Identified:', identify_fopdt(data))`,
+    starterJython: `import math
+
+def fopdt(K, tau, theta, delta_u, t):
+    """FOPDT step response. Jython 2.7."""
+    if t < theta:
+        return 0.0
+    return K * delta_u * (1.0 - math.exp(-(t - theta) / tau))
+
+def identify_fopdt(step_data):
+    """Identify FOPDT parameters from step data. Jython 2.7."""
+    if not step_data or len(step_data) < 3:
+        return None
+    final_pv = step_data[-1]['pv']
+    initial_pv = step_data[0]['pv']
+    delta_pv = final_pv - initial_pv
+    if abs(delta_pv) < 0.001:
+        return None
+    target_283 = initial_pv + 0.283 * delta_pv
+    target_632 = initial_pv + 0.632 * delta_pv
+    t1, t2 = None, None
+    for i in range(1, len(step_data)):
+        prev, curr = step_data[i-1], step_data[i]
+        if t1 is None and curr['pv'] >= target_283:
+            frac = (target_283 - prev['pv']) / (curr['pv'] - prev['pv'])
+            t1 = prev['t'] + frac * (curr['t'] - prev['t'])
+        if t2 is None and curr['pv'] >= target_632:
+            frac = (target_632 - prev['pv']) / (curr['pv'] - prev['pv'])
+            t2 = prev['t'] + frac * (curr['t'] - prev['t'])
+    if t1 is None or t2 is None:
+        return None
+    tau = 1.5 * (t2 - t1)
+    theta = t2 - tau
+    return {'K': round(delta_pv, 3), 'tau': round(tau, 2), 'theta': round(theta, 2)}
+
+solution = {'fopdt': fopdt, 'identifyFOPDT': identify_fopdt}`,
     tests: [
       { description: 'fopdt(K=1, τ=30, θ=10, ΔU=1, t=10) → 0 (dead time)' },
       { description: 'fopdt(K=1, τ=30, θ=10, ΔU=1, t=40) → ≈0.6321 (one time constant)' },
@@ -380,6 +585,65 @@ const sp = 50;
 const pvHistory = Array.from({ length: 60 }, (_, i) => sp + 5 * Math.sin(i * Math.PI / 5));
 console.log(detectOscillation(pvHistory, sp, 2.0, 1.0));
 // Expected: oscillating=true, crossings>4`,
+    starterPy: `import math
+
+def detect_oscillation(pv_history, sp, threshold=0.5, dt_seconds=1.0):
+    """Detect PID loop oscillation from PV history."""
+    if not pv_history or len(pv_history) < 10:
+        return {'oscillating': False, 'crossings': 0, 'amplitude': 0, 'period': None}
+
+    window = pv_history[-50:]
+    errors = [pv - sp for pv in window]
+
+    crossings = 0
+    for i in range(1, len(errors)):
+        if errors[i-1] * errors[i] < 0:
+            crossings += 1
+
+    amplitude = max(window) - min(window)
+    period = None
+    if crossings >= 2:
+        period = round((len(window) * dt_seconds * 2) / crossings, 1)
+
+    oscillating = crossings >= 4 and amplitude >= threshold
+
+    return {
+        'oscillating': oscillating,
+        'crossings': crossings,
+        'amplitude': round(amplitude, 2),
+        'period': period,
+    }
+
+solution = detect_oscillation
+
+sp = 50.0
+pv_history = [sp + 5.0 * math.sin(i * math.pi / 5) for i in range(60)]
+print(detect_oscillation(pv_history, sp, 2.0, 1.0))`,
+    starterJython: `import math
+
+def detect_oscillation(pv_history, sp, threshold=0.5, dt_seconds=1.0):
+    """Detect PID loop oscillation. Jython 2.7."""
+    if not pv_history or len(pv_history) < 10:
+        return {'oscillating': False, 'crossings': 0, 'amplitude': 0, 'period': None}
+    window = pv_history[-50:]
+    errors = [pv - sp for pv in window]
+    crossings = 0
+    for i in range(1, len(errors)):
+        if errors[i-1] * errors[i] < 0:
+            crossings += 1
+    amplitude = max(window) - min(window)
+    period = None
+    if crossings >= 2:
+        period = round((len(window) * dt_seconds * 2) / crossings, 1)
+    oscillating = crossings >= 4 and amplitude >= threshold
+    return {
+        'oscillating': oscillating,
+        'crossings': crossings,
+        'amplitude': round(amplitude, 2),
+        'period': period,
+    }
+
+solution = detect_oscillation`,
     tests: [
       { description: 'Sine wave PV around SP → oscillating:true, crossings>=4' },
       { description: 'Flat PV at SP → oscillating:false, amplitude≈0' },
@@ -541,6 +805,127 @@ for (let i = 0; i < 5; i++) {
   primaryPV += secondaryPV * 0.05;          // temperature responds to flow
   console.log(\`Step \${i+1}: TempPV=\${primaryPV.toFixed(1)}, Flow=\${secondaryPV.toFixed(1)}, FlowSP=\${r.secondarySP.toFixed(1)}\`);
 }`,
+    starterPy: `class CascadeController(object):
+    """Cascade PID controller: primary output feeds secondary setpoint."""
+
+    def __init__(self, primary_gains, secondary_gains, sec_out_min=0.0, sec_out_max=100.0):
+        self.sec_out_min = sec_out_min
+        self.sec_out_max = sec_out_max
+        self.mode = 'cascade'
+        self.p_gains = primary_gains
+        self.p_integral = 0.0
+        self.p_last_error = 0.0
+        self.s_gains = secondary_gains
+        self.s_integral = 0.0
+        self.s_last_error = 0.0
+        self.last_secondary_output = 0.0
+        self.last_secondary_sp = 0.0
+
+    def _clamp(self, v):
+        return max(self.sec_out_min, min(self.sec_out_max, v))
+
+    def _pid(self, gains, sp, pv, dt, integral, last_error):
+        error = sp - pv
+        P = gains['Kp'] * error
+        integral = self._clamp(integral + gains['Ki'] * error * dt)
+        D = gains['Kd'] * (error - last_error) / dt if dt > 0 else 0.0
+        last_error = error
+        return self._clamp(P + integral + D), integral, last_error
+
+    def compute(self, primary_sp, primary_pv, secondary_pv, dt):
+        if self.mode == 'manual':
+            return {
+                'primaryOutput': self.last_secondary_sp,
+                'secondaryOutput': self.last_secondary_output,
+                'secondarySP': self.last_secondary_sp,
+            }
+        secondary_sp, self.p_integral, self.p_last_error = self._pid(
+            self.p_gains, primary_sp, primary_pv, dt, self.p_integral, self.p_last_error)
+        self.last_secondary_sp = secondary_sp
+
+        if self.mode == 'auto':
+            return {
+                'primaryOutput': secondary_sp,
+                'secondaryOutput': self.last_secondary_output,
+                'secondarySP': secondary_sp,
+            }
+
+        secondary_out, self.s_integral, self.s_last_error = self._pid(
+            self.s_gains, secondary_sp, secondary_pv, dt, self.s_integral, self.s_last_error)
+        self.last_secondary_output = secondary_out
+        return {
+            'primaryOutput': secondary_sp,
+            'secondaryOutput': secondary_out,
+            'secondarySP': secondary_sp,
+        }
+
+    def set_mode(self, mode):
+        self.mode = mode
+
+    def setMode(self, mode):
+        self.mode = mode
+
+    def get_mode(self):
+        return self.mode
+
+    def getMode(self):
+        return self.mode
+
+solution = CascadeController
+
+cascade = CascadeController(
+    {'Kp': 5, 'Ki': 0.1, 'Kd': 0},
+    {'Kp': 2, 'Ki': 0.5, 'Kd': 0.1},
+)
+primary_pv = 20.0
+secondary_pv = 0.0
+for i in range(5):
+    r = cascade.compute(100, primary_pv, secondary_pv, 1.0)
+    secondary_pv += r['secondaryOutput'] * 0.1
+    primary_pv += secondary_pv * 0.05
+    print('Step {}: TempPV={:.1f}, Flow={:.1f}'.format(i+1, primary_pv, secondary_pv))`,
+    starterJython: `class CascadeController(object):
+    """Cascade PID controller. Jython 2.7."""
+
+    def __init__(self, primary_gains, secondary_gains, sec_out_min=0.0, sec_out_max=100.0):
+        self.sec_out_min = sec_out_min
+        self.sec_out_max = sec_out_max
+        self.mode = 'cascade'
+        self.p_gains = primary_gains
+        self.p_integral = 0.0
+        self.p_last_error = 0.0
+        self.s_gains = secondary_gains
+        self.s_integral = 0.0
+        self.s_last_error = 0.0
+        self.last_secondary_output = 0.0
+        self.last_secondary_sp = 0.0
+
+    def _clamp(self, v):
+        return max(self.sec_out_min, min(self.sec_out_max, v))
+
+    def _pid(self, gains, sp, pv, dt, integral, last_error):
+        error = sp - pv
+        P = gains['Kp'] * error
+        integral = self._clamp(integral + gains['Ki'] * error * dt)
+        D = gains['Kd'] * (error - last_error) / dt if dt > 0 else 0.0
+        last_error = error
+        return self._clamp(P + integral + D), integral, last_error
+
+    def compute(self, primary_sp, primary_pv, secondary_pv, dt):
+        if self.mode == 'manual':
+            return {'primaryOutput': self.last_secondary_sp, 'secondaryOutput': self.last_secondary_output, 'secondarySP': self.last_secondary_sp}
+        secondary_sp, self.p_integral, self.p_last_error = self._pid(self.p_gains, primary_sp, primary_pv, dt, self.p_integral, self.p_last_error)
+        self.last_secondary_sp = secondary_sp
+        if self.mode == 'auto':
+            return {'primaryOutput': secondary_sp, 'secondaryOutput': self.last_secondary_output, 'secondarySP': secondary_sp}
+        secondary_out, self.s_integral, self.s_last_error = self._pid(self.s_gains, secondary_sp, secondary_pv, dt, self.s_integral, self.s_last_error)
+        self.last_secondary_output = secondary_out
+        return {'primaryOutput': secondary_sp, 'secondaryOutput': secondary_out, 'secondarySP': secondary_sp}
+
+    def setMode(self, mode): self.mode = mode
+    def getMode(self): return self.mode
+
+solution = CascadeController`,
     tests: [
       { description: 'Cascade mode: secondaryOutput responds to primary error (not zero when PV≠SP)' },
       { description: 'Manual mode: all outputs frozen, no computation' },
@@ -645,6 +1030,57 @@ console.log('Lambda tuning:', lambdaTuning(1.2, 15, 3, lam));
 // Compare with Z-N aggressive tuning:
 // Z-N would give Kp≈0.6Ku which often produces 30-50% overshoot
 // Lambda gives controlled response with user-defined speed`,
+    starterPy: `def lambda_tuning(K, tau, theta, lam):
+    """IMC/Lambda PID tuning for a FOPDT process."""
+    if K == 0 or tau == 0:
+        return None
+    if lam <= 0:
+        return None
+    denominator = K * (lam + theta / 2.0)
+    Kp = tau / denominator
+    Ki = Kp / tau
+    Kd = Kp * theta / 2.0
+    return {
+        'Kp': round(Kp, 4),
+        'Ki': round(Ki, 4),
+        'Kd': round(Kd, 4),
+        'lambda': lam,
+    }
+
+def lambda_recommend(tau, theta):
+    """Minimum recommended lambda: max(tau/3, theta)."""
+    return max(tau / 3.0, theta)
+
+solution = {'lambdaTuning': lambda_tuning, 'lambdaRecommend': lambda_recommend}
+
+lam = lambda_recommend(15, 3)  # max(5, 3) = 5
+print('Recommended lambda:', lam)
+print('Lambda tuning:', lambda_tuning(1.2, 15, 3, lam))
+print('Invalid K=0:', lambda_tuning(0, 15, 3, 5))`,
+    starterJython: `def lambda_tuning(K, tau, theta, lam):
+    """IMC/Lambda PID tuning. Jython 2.7."""
+    if K == 0 or tau == 0:
+        return None
+    if lam <= 0:
+        return None
+    denominator = K * (lam + theta / 2.0)
+    Kp = tau / denominator
+    Ki = Kp / tau
+    Kd = Kp * theta / 2.0
+    return {
+        'Kp': round(Kp, 4),
+        'Ki': round(Ki, 4),
+        'Kd': round(Kd, 4),
+        'lambda': lam,
+    }
+
+def lambda_recommend(tau, theta):
+    return max(tau / 3.0, theta)
+
+solution = {'lambdaTuning': lambda_tuning, 'lambdaRecommend': lambda_recommend}
+
+print(lambda_tuning(1.2, 15, 3, 5))
+print(lambda_recommend(15, 3))`,
     tests: [
       { description: 'lambdaTuning(K=1.2, τ=15, θ=3, λ=5) → Kp≈1.923, Ki≈0.1282, Kd≈0.2885' },
       { description: 'lambdaRecommend(τ=15, θ=3) → 5 (τ/3=5 > θ=3)' },
