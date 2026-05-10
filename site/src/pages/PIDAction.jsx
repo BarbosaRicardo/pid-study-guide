@@ -4,8 +4,10 @@ import Callout from '../components/Callout'
 import FunFact from '../components/FunFact'
 import GifCard from '../components/GifCard'
 import Quiz from '../components/Quiz'
+import ChapterExercise from '../components/ChapterExercise'
 import { QUIZZES } from '../data/quizzes'
 import { ANALOGIES } from '../data/chapters'
+import { PID_CHAPTER_EXERCISES } from '../data/chapterExercises'
 
 export default function PIDAction() {
   const analogy = ANALOGIES.pid
@@ -146,6 +148,7 @@ export default function PIDAction() {
       {QUIZZES.pid && QUIZZES.pid.length > 0 && (
         <Quiz chapterId="pid" questions={QUIZZES.pid} level={1} />
       )}
+      <ChapterExercise exercise={PID_CHAPTER_EXERCISES.pid} />
     </ChapterLayout>
   )
 }

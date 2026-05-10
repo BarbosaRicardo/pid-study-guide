@@ -4,8 +4,10 @@ import Callout from '../components/Callout'
 import FunFact from '../components/FunFact'
 import GifCard from '../components/GifCard'
 import Quiz from '../components/Quiz'
+import ChapterExercise from '../components/ChapterExercise'
 import { QUIZZES } from '../data/quizzes'
 import { ANALOGIES } from '../data/chapters'
+import { PID_CHAPTER_EXERCISES } from '../data/chapterExercises'
 
 export default function Tuning() {
   const analogy = ANALOGIES.tuning
@@ -195,6 +197,7 @@ export default function Tuning() {
       {QUIZZES.tuning && QUIZZES.tuning.length > 0 && (
         <Quiz chapterId="tuning" questions={QUIZZES.tuning} level={1} />
       )}
+      <ChapterExercise exercise={PID_CHAPTER_EXERCISES.tuning} />
     </ChapterLayout>
   )
 }

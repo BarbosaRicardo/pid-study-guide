@@ -4,8 +4,10 @@ import Callout from '../components/Callout'
 import FunFact from '../components/FunFact'
 import GifCard from '../components/GifCard'
 import Quiz from '../components/Quiz'
+import ChapterExercise from '../components/ChapterExercise'
 import { QUIZZES } from '../data/quizzes'
 import { ANALOGIES } from '../data/chapters'
+import { PID_CHAPTER_EXERCISES } from '../data/chapterExercises'
 
 export default function PLCImplementation() {
   const analogy = ANALOGIES.plc
@@ -178,6 +180,7 @@ export default function PLCImplementation() {
       {QUIZZES.plc && QUIZZES.plc.length > 0 && (
         <Quiz chapterId="plc" questions={QUIZZES.plc} level={1} />
       )}
+      <ChapterExercise exercise={PID_CHAPTER_EXERCISES.plc} />
     </ChapterLayout>
   )
 }

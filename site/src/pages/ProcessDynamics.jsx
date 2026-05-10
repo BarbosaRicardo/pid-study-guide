@@ -4,8 +4,10 @@ import Callout from '../components/Callout'
 import FunFact from '../components/FunFact'
 import GifCard from '../components/GifCard'
 import Quiz from '../components/Quiz'
+import ChapterExercise from '../components/ChapterExercise'
 import { QUIZZES } from '../data/quizzes'
 import { ANALOGIES } from '../data/chapters'
+import { PID_CHAPTER_EXERCISES } from '../data/chapterExercises'
 
 export default function ProcessDynamics() {
   const analogy = ANALOGIES.process
@@ -142,6 +144,7 @@ export default function ProcessDynamics() {
       {QUIZZES.process && QUIZZES.process.length > 0 && (
         <Quiz chapterId="process" questions={QUIZZES.process} level={1} />
       )}
+      <ChapterExercise exercise={PID_CHAPTER_EXERCISES.process} />
     </ChapterLayout>
   )
 }

@@ -4,8 +4,10 @@ import Callout from '../components/Callout'
 import FunFact from '../components/FunFact'
 import GifCard from '../components/GifCard'
 import Quiz from '../components/Quiz'
+import ChapterExercise from '../components/ChapterExercise'
 import { QUIZZES } from '../data/quizzes'
 import { ANALOGIES } from '../data/chapters'
+import { PID_CHAPTER_EXERCISES } from '../data/chapterExercises'
 
 export default function LoopFundamentals() {
   const analogy = ANALOGIES.loop
@@ -189,6 +191,7 @@ SP ──►[Σ]──► PID Controller ──► Valve ──► Process ─�
       {QUIZZES.loop && QUIZZES.loop.length > 0 && (
         <Quiz chapterId="loop" questions={QUIZZES.loop} level={1} />
       )}
+      <ChapterExercise exercise={PID_CHAPTER_EXERCISES.loop} />
     </ChapterLayout>
   )
 }
