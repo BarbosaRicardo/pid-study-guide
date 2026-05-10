@@ -1,14 +1,14 @@
 export const CHAPTERS = [
-  { id: 'intro', title: 'What Is Closed-Loop Control?', emoji: '🔄', next: 'loop' },
-  { id: 'loop', title: 'Control Loop Fundamentals', emoji: '⚙️', prev: 'intro', next: 'pid' },
-  { id: 'pid', title: 'P, I, and D — What Each Does', emoji: '📊', prev: 'loop', next: 'tuning' },
-  { id: 'tuning', title: 'Tuning Methods', emoji: '🎛️', prev: 'pid', next: 'process' },
-  { id: 'process', title: 'Process Dynamics', emoji: '📈', prev: 'tuning', next: 'cascade' },
-  { id: 'cascade', title: 'Cascade & Advanced Control', emoji: '🔗', prev: 'process', next: 'digital' },
-  { id: 'digital', title: 'Digital PID Implementation', emoji: '💻', prev: 'cascade', next: 'plc' },
-  { id: 'plc', title: 'PID in PLCs & SCADA', emoji: '🏭', prev: 'digital', next: 'troubleshoot' },
-  { id: 'troubleshoot', title: 'Troubleshooting Control Loops', emoji: '🔍', prev: 'plc', next: 'lab' },
-  { id: 'lab', title: 'Simulation Lab', emoji: '🧪', prev: 'troubleshoot' },
+  { id: 'intro', label: 'Ch 1: Closed-Loop Control', title: 'What Is Closed-Loop Control?', path: '/', emoji: '🔄', next: 'loop' },
+  { id: 'loop', label: 'Ch 2: Loop Fundamentals', title: 'Control Loop Fundamentals', path: '/loop', emoji: '⚙️', prev: 'intro', next: 'pid' },
+  { id: 'pid', label: 'Ch 3: P, I, and D Action', title: 'P, I, and D — What Each Does', path: '/pid', emoji: '📊', prev: 'loop', next: 'tuning' },
+  { id: 'tuning', label: 'Ch 4: Tuning Methods', title: 'Tuning Methods', path: '/tuning', emoji: '🎛️', prev: 'pid', next: 'process' },
+  { id: 'process', label: 'Ch 5: Process Dynamics', title: 'Process Dynamics', path: '/process', emoji: '📈', prev: 'tuning', next: 'cascade' },
+  { id: 'cascade', label: 'Ch 6: Cascade & Advanced', title: 'Cascade & Advanced Control', path: '/cascade', emoji: '🔗', prev: 'process', next: 'digital' },
+  { id: 'digital', label: 'Ch 7: Digital PID', title: 'Digital PID Implementation', path: '/digital', emoji: '💻', prev: 'cascade', next: 'plc' },
+  { id: 'plc', label: 'Ch 8: PID in PLCs & SCADA', title: 'PID in PLCs & SCADA', path: '/plc', emoji: '🏭', prev: 'digital', next: 'troubleshoot' },
+  { id: 'troubleshoot', label: 'Ch 9: Troubleshooting', title: 'Troubleshooting Control Loops', path: '/troubleshoot', emoji: '🔍', prev: 'plc', next: 'lab' },
+  { id: 'lab', label: 'Ch 10: Simulation Lab', title: 'Simulation Lab', path: '/lab', emoji: '🧪', prev: 'troubleshoot' },
 ]
 
 export const ANALOGIES = {
