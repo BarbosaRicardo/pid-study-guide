@@ -92,6 +92,27 @@ const LANG_TABS = [
   { key: 'jython', label: 'Jython', monacoLang: 'python' },
 ]
 
+// Prepended to every Jython starter — orients Python devs to Jython differences
+const JYTHON_HEADER = `# ─── Jython 2.7 — Python 2 on the JVM ───────────────────────────────────────
+# You know Python 3. Here is what changes in Jython 2.7:
+#
+#   Syntax differences:
+#   • No f-strings          → use "Hello {}".format(name)
+#   • Integer division      → 5 / 2 == 2  (not 2.5) — use float(5) / 2
+#   • No walrus :=          → use a regular assignment on the line before
+#   • No type hints         → def fn(x):  not  def fn(x: int) -> str:
+#   • No match/case         → use if/elif chains
+#
+#   In Ignition specifically:
+#   • system.tag.readBlocking(["[default]path"])  → returns list of QualifiedValues
+#   • system.db.runNamedQuery("Name", {"param": val})  → returns dataset
+#   • system.util.getLogger("MyScript").info("msg")  → Gateway/Designer logs
+#   • Java types available: from java.util import ArrayList, HashMap
+#
+# ─────────────────────────────────────────────────────────────────────────────
+
+`
+
 // ─── TestResult ──────────────────────────────────────────────────────────────
 function TestResult({ test, result }) {
   const passed = result?.passed
@@ -121,9 +142,9 @@ function TestResult({ test, result }) {
 function ExerciseCard({ ex, locked }) {
   const [lang, setLang] = useState('js')
   const [codeByLang, setCodeByLang] = useState({
-    js:     ex.starter     || '// No JS starter',
-    python: ex.starterPy   || '# Python starter not yet available for this exercise\n\n# def solution():\n#     pass\n\nsolution = None',
-    jython: ex.starterJython || ex.starterPy || '# Jython starter not yet available for this exercise\n\nsolution = None',
+    js:     ex.starter   || '// No JS starter',
+    python: ex.starterPy || '# TODO: implement the solution function\n\ndef solution():\n    pass\n',
+    jython: JYTHON_HEADER + (ex.starterJython || ex.starterPy || '# TODO: implement the solution function\n\ndef solution():\n    pass\n'),
   })
   const [output, setOutput] = useState(null)
   const [open, setOpen] = useState(false)
@@ -154,9 +175,9 @@ function ExerciseCard({ ex, locked }) {
 
   const reset = () => {
     const defaults = {
-      js:     ex.starter     || '',
-      python: ex.starterPy   || '',
-      jython: ex.starterJython || ex.starterPy || '',
+      js:     ex.starter   || '',
+      python: ex.starterPy || '',
+      jython: JYTHON_HEADER + (ex.starterJython || ex.starterPy || ''),
     }
     setCodeByLang(defaults)
     setOutput(null)

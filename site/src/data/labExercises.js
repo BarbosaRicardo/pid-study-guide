@@ -34,32 +34,24 @@ Real SCADA DCS controllers (Honeywell, Emerson, Rockwell) are all variations of 
     this.Kd = Kd;
     this.outMin = outMin;
     this.outMax = outMax;
-    this.integral = 0;
-    this.lastError = 0;
+    // TODO: initialize integral accumulator and lastError to 0
   }
 
   compute(setpoint, pv, dt) {
-    const error = setpoint - pv;
-
-    // Proportional
-    const P = this.Kp * error;
-
-    // Integral (with anti-windup clamp)
-    this.integral += this.Ki * error * dt;
-    this.integral = Math.max(this.outMin, Math.min(this.outMax, this.integral));
-
-    // Derivative
-    const D = this.Kd * (error - this.lastError) / dt;
-    this.lastError = error;
-
-    // Sum and clamp output
-    const output = P + this.integral + D;
-    return Math.max(this.outMin, Math.min(this.outMax, output));
+    // Step 1: error = setpoint - pv
+    // Step 2: P term = Kp * error
+    // Step 3: I term — accumulate: this.integral += Ki * error * dt
+    //         Clamp integral to [outMin, outMax] to prevent windup
+    // Step 4: D term = Kd * (error - this.lastError) / dt
+    //         Save current error as this.lastError
+    // Step 5: output = P + this.integral + D
+    //         Clamp output to [outMin, outMax] and return it
+    // TODO: implement the above steps
+    return this.outMin; // placeholder
   }
 
   reset() {
-    this.integral = 0;
-    this.lastError = 0;
+    // TODO: reset integral and lastError to 0
   }
 }
 
@@ -83,22 +75,23 @@ for (let i = 0; i < 5; i++) {
         self.Kd = Kd
         self.out_min = out_min
         self.out_max = out_max
-        self.integral = 0.0
-        self.last_error = 0.0
+        # TODO: initialize self.integral and self.last_error to 0.0
 
     def compute(self, setpoint, pv, dt):
-        error = setpoint - pv
-        P = self.Kp * error
-        self.integral += self.Ki * error * dt
-        self.integral = max(self.out_min, min(self.out_max, self.integral))
-        D = self.Kd * (error - self.last_error) / dt if dt > 0 else 0.0
-        self.last_error = error
-        output = P + self.integral + D
-        return max(self.out_min, min(self.out_max, output))
+        # Step 1: error = setpoint - pv
+        # Step 2: P = self.Kp * error
+        # Step 3: I — accumulate: self.integral += self.Ki * error * dt
+        #         Clamp self.integral to [out_min, out_max]
+        # Step 4: D = self.Kd * (error - self.last_error) / dt  (guard: if dt > 0 else 0.0)
+        #         Save error as self.last_error
+        # Step 5: output = P + self.integral + D
+        #         Clamp output to [out_min, out_max] and return it
+        # TODO: implement the above steps
+        return self.out_min  # placeholder
 
     def reset(self):
-        self.integral = 0.0
-        self.last_error = 0.0
+        # TODO: reset self.integral and self.last_error to 0.0
+        pass
 
 solution = PIDController
 
@@ -118,22 +111,23 @@ for i in range(5):
         self.Kd = Kd
         self.out_min = out_min
         self.out_max = out_max
-        self.integral = 0.0
-        self.last_error = 0.0
+        # TODO: initialize self.integral and self.last_error to 0.0
 
     def compute(self, setpoint, pv, dt):
-        error = setpoint - pv
-        P = self.Kp * error
-        self.integral += self.Ki * error * dt
-        self.integral = max(self.out_min, min(self.out_max, self.integral))
-        D = self.Kd * (error - self.last_error) / dt if dt > 0 else 0.0
-        self.last_error = error
-        output = P + self.integral + D
-        return max(self.out_min, min(self.out_max, output))
+        # Step 1: error = setpoint - pv
+        # Step 2: P = self.Kp * error
+        # Step 3: I — accumulate: self.integral += self.Ki * error * dt
+        #         Clamp self.integral to [out_min, out_max]
+        # Step 4: D = self.Kd * (error - self.last_error) / dt  (guard: if dt > 0 else 0.0)
+        #         Save error as self.last_error
+        # Step 5: output = P + self.integral + D
+        #         Clamp output to [out_min, out_max] and return it
+        # TODO: implement the above steps
+        return self.out_min  # placeholder
 
     def reset(self):
-        self.integral = 0.0
-        self.last_error = 0.0
+        # TODO: reset self.integral and self.last_error to 0.0
+        pass
 
 solution = PIDController
 
@@ -207,29 +201,21 @@ Important context: Z-N tends to produce aggressive tuning. In practice, engineer
 a detuning factor of 0.5-0.7× on the calculated gains as a starting point.`,
     hint: 'This is straightforward math — focus on getting the formulas exactly right. Real commissioning starts with these numbers, then fine-tunes on the actual process.',
     starter: `function znTuning(Ku, Tu, mode = 'PID') {
+  // Step 1: For each mode, compute Kp, Ki, Kd using Z-N formulas:
+  //   'PID': Kp=0.6*Ku,  Ki=1.2*Ku/Tu,  Kd=0.075*Ku*Tu
+  //   'PI':  Kp=0.45*Ku, Ki=0.54*Ku/Tu, Kd=0
+  //   'P':   Kp=0.5*Ku,  Ki=0,           Kd=0
+  //   other: return null
+  // Step 2: Return { Kp, Ki, Kd } with each value rounded to 4 decimal places
+  //         Use: Math.round(value * 10000) / 10000
+
   let Kp, Ki, Kd;
 
-  if (mode === 'PID') {
-    Kp = 0.6 * Ku;
-    Ki = 1.2 * Ku / Tu;
-    Kd = 0.075 * Ku * Tu;
-  } else if (mode === 'PI') {
-    Kp = 0.45 * Ku;
-    Ki = 0.54 * Ku / Tu;
-    Kd = 0;
-  } else if (mode === 'P') {
-    Kp = 0.5 * Ku;
-    Ki = 0;
-    Kd = 0;
-  } else {
-    return null;
-  }
+  // TODO: Step 1 — implement mode logic
 
-  return {
-    Kp: Math.round(Kp * 10000) / 10000,
-    Ki: Math.round(Ki * 10000) / 10000,
-    Kd: Math.round(Kd * 10000) / 10000,
-  };
+  // TODO: Step 2 — return rounded result (or null for unknown mode)
+
+  return null; // placeholder
 }
 
 const solution = znTuning;
@@ -240,26 +226,16 @@ console.log(znTuning(2.0, 30, 'PID'));
 console.log(znTuning(2.0, 30, 'PI'));`,
     starterPy: `def zn_tuning(Ku, Tu, mode='PID'):
     """Ziegler-Nichols PID tuning calculator."""
-    if mode == 'PID':
-        Kp = 0.6 * Ku
-        Ki = 1.2 * Ku / Tu
-        Kd = 0.075 * Ku * Tu
-    elif mode == 'PI':
-        Kp = 0.45 * Ku
-        Ki = 0.54 * Ku / Tu
-        Kd = 0.0
-    elif mode == 'P':
-        Kp = 0.5 * Ku
-        Ki = 0.0
-        Kd = 0.0
-    else:
-        return None
+    # Step 1: For each mode, compute Kp, Ki, Kd using Z-N formulas:
+    #   'PID': Kp=0.6*Ku,  Ki=1.2*Ku/Tu,  Kd=0.075*Ku*Tu
+    #   'PI':  Kp=0.45*Ku, Ki=0.54*Ku/Tu, Kd=0.0
+    #   'P':   Kp=0.5*Ku,  Ki=0.0,         Kd=0.0
+    #   other: return None
+    # Step 2: Return {'Kp': round(Kp,4), 'Ki': round(Ki,4), 'Kd': round(Kd,4)}
 
-    return {
-        'Kp': round(Kp, 4),
-        'Ki': round(Ki, 4),
-        'Kd': round(Kd, 4),
-    }
+    # TODO: implement mode logic and return the result
+
+    return None  # placeholder
 
 solution = zn_tuning
 
@@ -268,25 +244,16 @@ print(zn_tuning(2.0, 30, 'PI'))
 print(zn_tuning(2.0, 30, 'bad'))  # None`,
     starterJython: `def zn_tuning(Ku, Tu, mode='PID'):
     """Ziegler-Nichols PID tuning. Jython 2.7."""
-    if mode == 'PID':
-        Kp = 0.6 * Ku
-        Ki = 1.2 * Ku / Tu
-        Kd = 0.075 * Ku * Tu
-    elif mode == 'PI':
-        Kp = 0.45 * Ku
-        Ki = 0.54 * Ku / Tu
-        Kd = 0.0
-    elif mode == 'P':
-        Kp = 0.5 * Ku
-        Ki = 0.0
-        Kd = 0.0
-    else:
-        return None
-    return {
-        'Kp': round(Kp, 4),
-        'Ki': round(Ki, 4),
-        'Kd': round(Kd, 4),
-    }
+    # Step 1: For each mode, compute Kp, Ki, Kd using Z-N formulas:
+    #   'PID': Kp=0.6*Ku,  Ki=1.2*Ku/Tu,  Kd=0.075*Ku*Tu
+    #   'PI':  Kp=0.45*Ku, Ki=0.54*Ku/Tu, Kd=0.0
+    #   'P':   Kp=0.5*Ku,  Ki=0.0,         Kd=0.0
+    #   other: return None
+    # Step 2: Return {'Kp': round(Kp,4), 'Ki': round(Ki,4), 'Kd': round(Kd,4)}
+
+    # TODO: implement mode logic and return the result
+
+    return None  # placeholder
 
 solution = zn_tuning
 
@@ -344,50 +311,32 @@ Use the 28.3%/63.2% method:
   - θ = t2 - τ`,
     hint: 'For identifyFOPDT, interpolate between data points to find exact t1 and t2. The 28.3% point is key: at t=θ+0.33τ, PV=28.3% of final value.',
     starter: `function fopdt(K, tau, theta, deltaU, t) {
-  if (t < theta) return 0;
-  return K * deltaU * (1 - Math.exp(-(t - theta) / tau));
+  // If t < theta: dead time — return 0
+  // Else: return K * deltaU * (1 - Math.exp(-(t - theta) / tau))
+
+  // TODO: implement
+  return 0; // placeholder
 }
 
 function identifyFOPDT(stepData) {
-  if (!stepData || stepData.length < 3) return null;
+  // Step 1: Guard — return null if stepData is falsy or has fewer than 3 points
+  // Step 2: Extract finalPV (last point), initialPV (first point), deltaPV = finalPV - initialPV
+  //         Return null if |deltaPV| < 0.001
+  // Step 3: Compute target values:
+  //   target283 = initialPV + 0.283 * deltaPV
+  //   target632 = initialPV + 0.632 * deltaPV
+  // Step 4: Scan stepData to find t1 (first crossing of target283) and t2 (first crossing of target632)
+  //         Interpolate between adjacent points for precision:
+  //           frac = (target - prev.pv) / (curr.pv - prev.pv)
+  //           t_crossing = prev.t + frac * (curr.t - prev.t)
+  // Step 5: Return null if t1 or t2 not found
+  // Step 6: tau = 1.5 * (t2 - t1)
+  //         theta = t2 - tau
+  //         K = deltaPV  (normalized for deltaU=1)
+  //         Return { K, tau, theta } rounded to 3/2/2 decimal places
 
-  // Find final steady-state PV (use last few points)
-  const finalPV = stepData[stepData.length - 1].pv;
-  const initialPV = stepData[0].pv;
-  const deltaPV = finalPV - initialPV;
-
-  if (Math.abs(deltaPV) < 0.001) return null;
-
-  const target283 = initialPV + 0.283 * deltaPV;
-  const target632 = initialPV + 0.632 * deltaPV;
-
-  // Find t1 (28.3%) and t2 (63.2%) by scanning data
-  let t1 = null, t2 = null;
-
-  for (let i = 1; i < stepData.length; i++) {
-    const prev = stepData[i-1], curr = stepData[i];
-    if (t1 === null && curr.pv >= target283) {
-      // Interpolate
-      const frac = (target283 - prev.pv) / (curr.pv - prev.pv);
-      t1 = prev.t + frac * (curr.t - prev.t);
-    }
-    if (t2 === null && curr.pv >= target632) {
-      const frac = (target632 - prev.pv) / (curr.pv - prev.pv);
-      t2 = prev.t + frac * (curr.t - prev.t);
-    }
-  }
-
-  if (t1 === null || t2 === null) return null;
-
-  const tau = 1.5 * (t2 - t1);
-  const theta = t2 - tau;
-  const K = deltaPV; // normalized for deltaU=1
-
-  return {
-    K: Math.round(K * 1000) / 1000,
-    tau: Math.round(tau * 100) / 100,
-    theta: Math.round(theta * 100) / 100,
-  };
+  // TODO: implement
+  return null; // placeholder
 }
 
 const solution = { fopdt, identifyFOPDT };
@@ -403,43 +352,30 @@ console.log('Identified:', identifyFOPDT(data));`,
 
 def fopdt(K, tau, theta, delta_u, t):
     """FOPDT step response: K*dU*(1 - e^(-(t-theta)/tau)) for t >= theta."""
-    if t < theta:
-        return 0.0
-    return K * delta_u * (1.0 - math.exp(-(t - theta) / tau))
+    # If t < theta: return 0.0
+    # Else: return K * delta_u * (1.0 - math.exp(-(t - theta) / tau))
+
+    # TODO: implement
+    return 0.0  # placeholder
 
 def identify_fopdt(step_data):
     """Identify FOPDT parameters from step response using 28.3%/63.2% method."""
-    if not step_data or len(step_data) < 3:
-        return None
-    final_pv = step_data[-1]['pv']
-    initial_pv = step_data[0]['pv']
-    delta_pv = final_pv - initial_pv
-    if abs(delta_pv) < 0.001:
-        return None
+    # Step 1: Guard — return None if step_data is falsy or has fewer than 3 points
+    # Step 2: final_pv = step_data[-1]['pv'], initial_pv = step_data[0]['pv']
+    #         delta_pv = final_pv - initial_pv; return None if abs(delta_pv) < 0.001
+    # Step 3: target_283 = initial_pv + 0.283 * delta_pv
+    #         target_632 = initial_pv + 0.632 * delta_pv
+    # Step 4: Scan step_data; for each pair (prev, curr):
+    #         If t1 not found and curr['pv'] >= target_283:
+    #           frac = (target_283 - prev['pv']) / (curr['pv'] - prev['pv'])
+    #           t1 = prev['t'] + frac * (curr['t'] - prev['t'])
+    #         Same for t2 with target_632
+    # Step 5: Return None if t1 or t2 is None
+    # Step 6: tau = 1.5 * (t2 - t1); theta = t2 - tau
+    #         Return {'K': round(delta_pv,3), 'tau': round(tau,2), 'theta': round(theta,2)}
 
-    target_283 = initial_pv + 0.283 * delta_pv
-    target_632 = initial_pv + 0.632 * delta_pv
-    t1, t2 = None, None
-
-    for i in range(1, len(step_data)):
-        prev, curr = step_data[i-1], step_data[i]
-        if t1 is None and curr['pv'] >= target_283:
-            frac = (target_283 - prev['pv']) / (curr['pv'] - prev['pv'])
-            t1 = prev['t'] + frac * (curr['t'] - prev['t'])
-        if t2 is None and curr['pv'] >= target_632:
-            frac = (target_632 - prev['pv']) / (curr['pv'] - prev['pv'])
-            t2 = prev['t'] + frac * (curr['t'] - prev['t'])
-
-    if t1 is None or t2 is None:
-        return None
-
-    tau = 1.5 * (t2 - t1)
-    theta = t2 - tau
-    return {
-        'K': round(delta_pv, 3),
-        'tau': round(tau, 2),
-        'theta': round(theta, 2),
-    }
+    # TODO: implement
+    return None  # placeholder
 
 solution = {'fopdt': fopdt, 'identifyFOPDT': identify_fopdt}
 
@@ -450,35 +386,28 @@ print('Identified:', identify_fopdt(data))`,
 
 def fopdt(K, tau, theta, delta_u, t):
     """FOPDT step response. Jython 2.7."""
-    if t < theta:
-        return 0.0
-    return K * delta_u * (1.0 - math.exp(-(t - theta) / tau))
+    # If t < theta: return 0.0
+    # Else: return K * delta_u * (1.0 - math.exp(-(t - theta) / tau))
+
+    # TODO: implement
+    return 0.0  # placeholder
 
 def identify_fopdt(step_data):
     """Identify FOPDT parameters from step data. Jython 2.7."""
-    if not step_data or len(step_data) < 3:
-        return None
-    final_pv = step_data[-1]['pv']
-    initial_pv = step_data[0]['pv']
-    delta_pv = final_pv - initial_pv
-    if abs(delta_pv) < 0.001:
-        return None
-    target_283 = initial_pv + 0.283 * delta_pv
-    target_632 = initial_pv + 0.632 * delta_pv
-    t1, t2 = None, None
-    for i in range(1, len(step_data)):
-        prev, curr = step_data[i-1], step_data[i]
-        if t1 is None and curr['pv'] >= target_283:
-            frac = (target_283 - prev['pv']) / (curr['pv'] - prev['pv'])
-            t1 = prev['t'] + frac * (curr['t'] - prev['t'])
-        if t2 is None and curr['pv'] >= target_632:
-            frac = (target_632 - prev['pv']) / (curr['pv'] - prev['pv'])
-            t2 = prev['t'] + frac * (curr['t'] - prev['t'])
-    if t1 is None or t2 is None:
-        return None
-    tau = 1.5 * (t2 - t1)
-    theta = t2 - tau
-    return {'K': round(delta_pv, 3), 'tau': round(tau, 2), 'theta': round(theta, 2)}
+    # Step 1: Guard — return None if step_data is falsy or has fewer than 3 points
+    # Step 2: final_pv = step_data[-1]['pv'], initial_pv = step_data[0]['pv']
+    #         delta_pv = final_pv - initial_pv; return None if abs(delta_pv) < 0.001
+    # Step 3: target_283 = initial_pv + 0.283 * delta_pv
+    #         target_632 = initial_pv + 0.632 * delta_pv
+    # Step 4: Scan step_data; for each pair (prev, curr):
+    #         If t1 not set and curr['pv'] >= target_283: interpolate to find t1
+    #         If t2 not set and curr['pv'] >= target_632: interpolate to find t2
+    # Step 5: Return None if t1 or t2 is None
+    # Step 6: tau = 1.5 * (t2 - t1); theta = t2 - tau
+    #         Return {'K': round(delta_pv,3), 'tau': round(tau,2), 'theta': round(theta,2)}
+
+    # TODO: implement
+    return None  # placeholder
 
 solution = {'fopdt': fopdt, 'identifyFOPDT': identify_fopdt}`,
     tests: [
@@ -543,39 +472,23 @@ Algorithm:
 Return: { oscillating: bool, crossings: number, amplitude: number, period: number|null }`,
     hint: 'A zero crossing is where e[i-1] and e[i] have opposite signs (e[i-1]*e[i] < 0). Period = 2 × average time between crossings. Use the last 50 data points for detection.',
     starter: `function detectOscillation(pvHistory, sp, threshold = 0.5, dtSeconds = 1.0) {
-  if (!pvHistory || pvHistory.length < 10) {
-    return { oscillating: false, crossings: 0, amplitude: 0, period: null };
-  }
+  // Step 1: Guard — return default result if pvHistory is falsy or has fewer than 10 points
+  //         Default: { oscillating: false, crossings: 0, amplitude: 0, period: null }
+  // Step 2: Take the last 50 points as the window
+  //         Compute errors[] = window.map(pv => pv - sp)
+  // Step 3: Count zero crossings — loop from i=1; count where errors[i-1]*errors[i] < 0
+  // Step 4: Compute amplitude = Math.max(...window) - Math.min(...window)
+  // Step 5: Compute period — if crossings >= 2:
+  //           period = (window.length * dtSeconds * 2) / crossings
+  //         Round period to 1 decimal place; leave null if crossings < 2
+  // Step 6: oscillating = crossings >= 4 AND amplitude >= threshold
+  // Step 7: Return { oscillating, crossings, amplitude: Math.round(amplitude*100)/100, period }
 
-  // Use last 50 points
-  const window = pvHistory.slice(-50);
-  const errors = window.map(pv => pv - sp);
+  // TODO: Step 1 — guard clause
 
-  // Detect zero crossings
-  let crossings = 0;
-  for (let i = 1; i < errors.length; i++) {
-    if (errors[i-1] * errors[i] < 0) crossings++;
-  }
+  // TODO: Steps 2-7 — implement detection logic
 
-  // Compute amplitude (max - min of PV window)
-  const maxPV = Math.max(...window);
-  const minPV = Math.min(...window);
-  const amplitude = maxPV - minPV;
-
-  // Period estimate
-  let period = null;
-  if (crossings >= 2) {
-    period = (window.length * dtSeconds * 2) / crossings;
-  }
-
-  const oscillating = crossings >= 4 && amplitude >= threshold;
-
-  return {
-    oscillating,
-    crossings,
-    amplitude: Math.round(amplitude * 100) / 100,
-    period: period ? Math.round(period * 10) / 10 : null,
-  };
+  return { oscillating: false, crossings: 0, amplitude: 0, period: null }; // placeholder
 }
 
 const solution = detectOscillation;
@@ -589,30 +502,23 @@ console.log(detectOscillation(pvHistory, sp, 2.0, 1.0));
 
 def detect_oscillation(pv_history, sp, threshold=0.5, dt_seconds=1.0):
     """Detect PID loop oscillation from PV history."""
-    if not pv_history or len(pv_history) < 10:
-        return {'oscillating': False, 'crossings': 0, 'amplitude': 0, 'period': None}
+    # Step 1: Guard — return default if pv_history is falsy or len < 10
+    #         Default: {'oscillating': False, 'crossings': 0, 'amplitude': 0, 'period': None}
+    # Step 2: window = pv_history[-50:]
+    #         errors = [pv - sp for pv in window]
+    # Step 3: Count zero crossings — loop i=1..len(errors):
+    #         if errors[i-1] * errors[i] < 0: crossings += 1
+    # Step 4: amplitude = max(window) - min(window)
+    # Step 5: period = round((len(window) * dt_seconds * 2) / crossings, 1) if crossings >= 2 else None
+    # Step 6: oscillating = crossings >= 4 and amplitude >= threshold
+    # Step 7: Return {'oscillating': oscillating, 'crossings': crossings,
+    #                  'amplitude': round(amplitude, 2), 'period': period}
 
-    window = pv_history[-50:]
-    errors = [pv - sp for pv in window]
+    # TODO: Step 1 — guard clause
 
-    crossings = 0
-    for i in range(1, len(errors)):
-        if errors[i-1] * errors[i] < 0:
-            crossings += 1
+    # TODO: Steps 2-7 — implement detection logic
 
-    amplitude = max(window) - min(window)
-    period = None
-    if crossings >= 2:
-        period = round((len(window) * dt_seconds * 2) / crossings, 1)
-
-    oscillating = crossings >= 4 and amplitude >= threshold
-
-    return {
-        'oscillating': oscillating,
-        'crossings': crossings,
-        'amplitude': round(amplitude, 2),
-        'period': period,
-    }
+    return {'oscillating': False, 'crossings': 0, 'amplitude': 0, 'period': None}  # placeholder
 
 solution = detect_oscillation
 
@@ -623,25 +529,22 @@ print(detect_oscillation(pv_history, sp, 2.0, 1.0))`,
 
 def detect_oscillation(pv_history, sp, threshold=0.5, dt_seconds=1.0):
     """Detect PID loop oscillation. Jython 2.7."""
-    if not pv_history or len(pv_history) < 10:
-        return {'oscillating': False, 'crossings': 0, 'amplitude': 0, 'period': None}
-    window = pv_history[-50:]
-    errors = [pv - sp for pv in window]
-    crossings = 0
-    for i in range(1, len(errors)):
-        if errors[i-1] * errors[i] < 0:
-            crossings += 1
-    amplitude = max(window) - min(window)
-    period = None
-    if crossings >= 2:
-        period = round((len(window) * dt_seconds * 2) / crossings, 1)
-    oscillating = crossings >= 4 and amplitude >= threshold
-    return {
-        'oscillating': oscillating,
-        'crossings': crossings,
-        'amplitude': round(amplitude, 2),
-        'period': period,
-    }
+    # Step 1: Guard — return default if pv_history is falsy or len < 10
+    #         Default: {'oscillating': False, 'crossings': 0, 'amplitude': 0, 'period': None}
+    # Step 2: window = pv_history[-50:]
+    #         errors = [pv - sp for pv in window]
+    # Step 3: Count zero crossings — loop i=1..len(errors):
+    #         if errors[i-1] * errors[i] < 0: crossings += 1
+    # Step 4: amplitude = max(window) - min(window)
+    # Step 5: period = round((len(window) * dt_seconds * 2) / crossings, 1) if crossings >= 2 else None
+    # Step 6: oscillating = crossings >= 4 and amplitude >= threshold
+    # Step 7: Return the result dict
+
+    # TODO: Step 1 — guard clause
+
+    # TODO: Steps 2-7 — implement detection logic
+
+    return {'oscillating': False, 'crossings': 0, 'amplitude': 0, 'period': None}  # placeholder
 
 solution = detect_oscillation`,
     tests: [
@@ -737,17 +640,19 @@ Think about bumpless transfer when switching modes.`,
   }
 
   _pidCompute(gains, sp, pv, dt, integralRef, lastErrorRef) {
-    const error = sp - pv;
-    const P = gains.Kp * error;
-    integralRef.val += gains.Ki * error * dt;
-    integralRef.val = Math.max(this.secOutMin, Math.min(this.secOutMax, integralRef.val));
-    const D = gains.Kd * (error - lastErrorRef.val) / dt;
-    lastErrorRef.val = error;
-    const out = P + integralRef.val + D;
-    return Math.max(this.secOutMin, Math.min(this.secOutMax, out));
+    // Helper: runs one PID step
+    // error = sp - pv
+    // P = gains.Kp * error
+    // integralRef.val += gains.Ki * error * dt; clamp to [secOutMin, secOutMax]
+    // D = gains.Kd * (error - lastErrorRef.val) / dt; update lastErrorRef.val
+    // output = clamp(P + integralRef.val + D, secOutMin, secOutMax)
+    // TODO: implement this helper
+
+    return this.secOutMin; // placeholder
   }
 
   compute(primarySP, primaryPV, secondaryPV, dt) {
+    // In 'manual' mode: return frozen outputs (lastSecondarySP, lastSecondaryOutput)
     if (this.mode === 'manual') {
       return {
         primaryOutput: this.lastSecondarySP,
@@ -756,14 +661,15 @@ Think about bumpless transfer when switching modes.`,
       };
     }
 
-    // Primary PID → secondary setpoint
-    const pI = { val: this.pIntegral };
-    const pLE = { val: this.pLastError };
-    const secondarySP = this._pidCompute(this.pGains, primarySP, primaryPV, dt, pI, pLE);
-    this.pIntegral = pI.val;
-    this.pLastError = pLE.val;
-    this.lastSecondarySP = secondarySP;
+    // Step 1: Run primary PID → secondarySP
+    //   Use pI = {val: this.pIntegral} and pLE = {val: this.pLastError} as ref objects
+    //   Call _pidCompute, then write back pI.val and pLE.val
+    //   Store result in this.lastSecondarySP
 
+    // TODO: Step 1 — primary PID computation
+    const secondarySP = this.lastSecondarySP; // replace with actual computation
+
+    // In 'auto' mode: primary runs, secondary frozen
     if (this.mode === 'auto') {
       return {
         primaryOutput: secondarySP,
@@ -772,10 +678,12 @@ Think about bumpless transfer when switching modes.`,
       };
     }
 
-    // 'cascade': run secondary PID
-    // TODO: compute secondary output using secondarySP and secondaryPV
-    // Store result in this.lastSecondaryOutput
-    // Return { primaryOutput: secondarySP, secondaryOutput, secondarySP }
+    // Step 2: In 'cascade' mode — run secondary PID using secondarySP and secondaryPV
+    //   Same ref-object pattern as step 1; store result in this.lastSecondaryOutput
+    //   Return { primaryOutput: secondarySP, secondaryOutput, secondarySP }
+
+    // TODO: Step 2 — secondary PID computation
+
     return { primaryOutput: secondarySP, secondaryOutput: this.lastSecondaryOutput, secondarySP };
   }
 
@@ -825,24 +733,32 @@ for (let i = 0; i < 5; i++) {
         return max(self.sec_out_min, min(self.sec_out_max, v))
 
     def _pid(self, gains, sp, pv, dt, integral, last_error):
-        error = sp - pv
-        P = gains['Kp'] * error
-        integral = self._clamp(integral + gains['Ki'] * error * dt)
-        D = gains['Kd'] * (error - last_error) / dt if dt > 0 else 0.0
-        last_error = error
-        return self._clamp(P + integral + D), integral, last_error
+        # TODO: implement one PID step
+        # error = sp - pv
+        # P = gains['Kp'] * error
+        # integral = clamp(integral + gains['Ki'] * error * dt)
+        # D = gains['Kd'] * (error - last_error) / dt if dt > 0 else 0.0
+        # last_error = error
+        # return clamp(P + integral + D), integral, last_error
+        return self.sec_out_min, integral, last_error  # placeholder
 
     def compute(self, primary_sp, primary_pv, secondary_pv, dt):
+        # In 'manual' mode: return frozen outputs
         if self.mode == 'manual':
             return {
                 'primaryOutput': self.last_secondary_sp,
                 'secondaryOutput': self.last_secondary_output,
                 'secondarySP': self.last_secondary_sp,
             }
-        secondary_sp, self.p_integral, self.p_last_error = self._pid(
-            self.p_gains, primary_sp, primary_pv, dt, self.p_integral, self.p_last_error)
-        self.last_secondary_sp = secondary_sp
 
+        # Step 1: Run primary PID → secondary_sp
+        #   secondary_sp, self.p_integral, self.p_last_error = self._pid(...)
+        #   Store in self.last_secondary_sp
+
+        # TODO: Step 1 — primary PID
+        secondary_sp = self.last_secondary_sp  # replace with actual computation
+
+        # In 'auto' mode: primary runs, secondary frozen
         if self.mode == 'auto':
             return {
                 'primaryOutput': secondary_sp,
@@ -850,12 +766,15 @@ for (let i = 0; i < 5; i++) {
                 'secondarySP': secondary_sp,
             }
 
-        secondary_out, self.s_integral, self.s_last_error = self._pid(
-            self.s_gains, secondary_sp, secondary_pv, dt, self.s_integral, self.s_last_error)
-        self.last_secondary_output = secondary_out
+        # Step 2: In 'cascade' mode — run secondary PID
+        #   secondary_out, self.s_integral, self.s_last_error = self._pid(...)
+        #   Store in self.last_secondary_output
+        #   Return {'primaryOutput': secondary_sp, 'secondaryOutput': secondary_out, 'secondarySP': secondary_sp}
+
+        # TODO: Step 2 — secondary PID
         return {
             'primaryOutput': secondary_sp,
-            'secondaryOutput': secondary_out,
+            'secondaryOutput': self.last_secondary_output,
             'secondarySP': secondary_sp,
         }
 
@@ -904,23 +823,25 @@ for i in range(5):
         return max(self.sec_out_min, min(self.sec_out_max, v))
 
     def _pid(self, gains, sp, pv, dt, integral, last_error):
-        error = sp - pv
-        P = gains['Kp'] * error
-        integral = self._clamp(integral + gains['Ki'] * error * dt)
-        D = gains['Kd'] * (error - last_error) / dt if dt > 0 else 0.0
-        last_error = error
-        return self._clamp(P + integral + D), integral, last_error
+        # TODO: implement one PID step and return (output, integral, last_error)
+        # error = sp - pv; P = Kp*error; integral = clamp(integral + Ki*error*dt)
+        # D = Kd*(error-last_error)/dt if dt>0 else 0.0; last_error = error
+        # return clamp(P+integral+D), integral, last_error
+        return self.sec_out_min, integral, last_error  # placeholder
 
     def compute(self, primary_sp, primary_pv, secondary_pv, dt):
         if self.mode == 'manual':
             return {'primaryOutput': self.last_secondary_sp, 'secondaryOutput': self.last_secondary_output, 'secondarySP': self.last_secondary_sp}
-        secondary_sp, self.p_integral, self.p_last_error = self._pid(self.p_gains, primary_sp, primary_pv, dt, self.p_integral, self.p_last_error)
-        self.last_secondary_sp = secondary_sp
+
+        # TODO: Step 1 — run primary PID, store result as secondary_sp and update self.last_secondary_sp
+        secondary_sp = self.last_secondary_sp  # replace with actual computation
+
         if self.mode == 'auto':
             return {'primaryOutput': secondary_sp, 'secondaryOutput': self.last_secondary_output, 'secondarySP': secondary_sp}
-        secondary_out, self.s_integral, self.s_last_error = self._pid(self.s_gains, secondary_sp, secondary_pv, dt, self.s_integral, self.s_last_error)
-        self.last_secondary_output = secondary_out
-        return {'primaryOutput': secondary_sp, 'secondaryOutput': secondary_out, 'secondarySP': secondary_sp}
+
+        # TODO: Step 2 — run secondary PID with secondary_sp and secondary_pv
+        #   store result in self.last_secondary_output
+        return {'primaryOutput': secondary_sp, 'secondaryOutput': self.last_secondary_output, 'secondarySP': secondary_sp}
 
     def setMode(self, mode): self.mode = mode
     def getMode(self): return self.mode
@@ -999,25 +920,22 @@ Also implement lambdaRecommend(tau, theta) that returns the minimum recommended 
   λ_min = max(τ/3, θ)  (must be at least as long as dead time)`,
     hint: 'Lambda tuning is deterministic and repeatable unlike Z-N. The key insight: λ is the ONLY tuning knob. If the loop is too aggressive, increase λ. If too slow, decrease λ. Never touch Kp, Ki, Kd directly.',
     starter: `function lambdaTuning(K, tau, theta, lambda) {
-  if (K === 0 || tau === 0) return null;
-  if (lambda <= 0) return null;
+  // Step 1: Guard — return null if K === 0, tau === 0, or lambda <= 0
+  // Step 2: Compute denominator = K * (lambda + theta / 2)
+  // Step 3: Kp = tau / denominator
+  //         Ki = Kp / tau      (equivalently: 1 / denominator)
+  //         Kd = Kp * theta / 2
+  // Step 4: Return { Kp, Ki, Kd, lambda } with each gain rounded to 4 decimal places
+  //         Use: Math.round(value * 10000) / 10000
 
-  const denominator = K * (lambda + theta / 2);
-
-  const Kp = tau / denominator;
-  const Ki = Kp / tau;       // = 1 / denominator
-  const Kd = Kp * theta / 2; // = tau * theta / (2 * denominator)
-
-  return {
-    Kp: Math.round(Kp * 10000) / 10000,
-    Ki: Math.round(Ki * 10000) / 10000,
-    Kd: Math.round(Kd * 10000) / 10000,
-    lambda,
-  };
+  // TODO: implement
+  return null; // placeholder
 }
 
 function lambdaRecommend(tau, theta) {
-  return Math.max(tau / 3, theta);
+  // Return max(tau / 3, theta) — minimum recommended lambda
+  // TODO: implement
+  return 0; // placeholder
 }
 
 const solution = { lambdaTuning, lambdaRecommend };
@@ -1032,24 +950,20 @@ console.log('Lambda tuning:', lambdaTuning(1.2, 15, 3, lam));
 // Lambda gives controlled response with user-defined speed`,
     starterPy: `def lambda_tuning(K, tau, theta, lam):
     """IMC/Lambda PID tuning for a FOPDT process."""
-    if K == 0 or tau == 0:
-        return None
-    if lam <= 0:
-        return None
-    denominator = K * (lam + theta / 2.0)
-    Kp = tau / denominator
-    Ki = Kp / tau
-    Kd = Kp * theta / 2.0
-    return {
-        'Kp': round(Kp, 4),
-        'Ki': round(Ki, 4),
-        'Kd': round(Kd, 4),
-        'lambda': lam,
-    }
+    # Step 1: Guard — return None if K == 0, tau == 0, or lam <= 0
+    # Step 2: denominator = K * (lam + theta / 2.0)
+    # Step 3: Kp = tau / denominator
+    #         Ki = Kp / tau
+    #         Kd = Kp * theta / 2.0
+    # Step 4: Return {'Kp': round(Kp,4), 'Ki': round(Ki,4), 'Kd': round(Kd,4), 'lambda': lam}
+
+    # TODO: implement
+    return None  # placeholder
 
 def lambda_recommend(tau, theta):
     """Minimum recommended lambda: max(tau/3, theta)."""
-    return max(tau / 3.0, theta)
+    # TODO: implement
+    return 0  # placeholder
 
 solution = {'lambdaTuning': lambda_tuning, 'lambdaRecommend': lambda_recommend}
 
@@ -1059,23 +973,20 @@ print('Lambda tuning:', lambda_tuning(1.2, 15, 3, lam))
 print('Invalid K=0:', lambda_tuning(0, 15, 3, 5))`,
     starterJython: `def lambda_tuning(K, tau, theta, lam):
     """IMC/Lambda PID tuning. Jython 2.7."""
-    if K == 0 or tau == 0:
-        return None
-    if lam <= 0:
-        return None
-    denominator = K * (lam + theta / 2.0)
-    Kp = tau / denominator
-    Ki = Kp / tau
-    Kd = Kp * theta / 2.0
-    return {
-        'Kp': round(Kp, 4),
-        'Ki': round(Ki, 4),
-        'Kd': round(Kd, 4),
-        'lambda': lam,
-    }
+    # Step 1: Guard — return None if K == 0, tau == 0, or lam <= 0
+    # Step 2: denominator = K * (lam + theta / 2.0)
+    # Step 3: Kp = tau / denominator
+    #         Ki = Kp / tau
+    #         Kd = Kp * theta / 2.0
+    # Step 4: Return {'Kp': round(Kp,4), 'Ki': round(Ki,4), 'Kd': round(Kd,4), 'lambda': lam}
+
+    # TODO: implement
+    return None  # placeholder
 
 def lambda_recommend(tau, theta):
-    return max(tau / 3.0, theta)
+    """Minimum recommended lambda: max(tau/3, theta)."""
+    # TODO: implement
+    return 0  # placeholder
 
 solution = {'lambdaTuning': lambda_tuning, 'lambdaRecommend': lambda_recommend}
 
