@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import { Menu, X, Zap, BookOpen } from 'lucide-react'
+import { Menu, X, Zap, BookOpen, BarChart2 } from 'lucide-react'
 import { CHAPTERS } from '../data/chapters'
 import { useProgress } from '../hooks/useProgress'
+import QuizReport from './QuizReport'
 
 export default function Sidebar() {
   const [open, setOpen] = useState(false)
+  const [reportOpen, setReportOpen] = useState(false)
   const { getChapterStatus, overallProgress } = useProgress()
   const location = useLocation()
   const prog = overallProgress()
@@ -73,6 +75,18 @@ export default function Sidebar() {
 
       {/* Footer */}
       <div className="p-4 space-y-2" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+        <button
+          onClick={() => { setOpen(false); setReportOpen(true) }}
+          className="flex items-center justify-center gap-2 w-full px-3 py-2.5 rounded-xl text-xs font-bold transition-all hover:scale-105"
+          style={{
+            background: 'rgba(34,211,238,0.08)',
+            border: '1px solid rgba(34,211,238,0.2)',
+            color: '#67e8f9',
+          }}
+        >
+          <BarChart2 size={13} />
+          Quiz Report
+        </button>
         <a
           href={`${import.meta.env.BASE_URL}study_guide.pdf`}
           target="_blank"
@@ -116,6 +130,8 @@ export default function Sidebar() {
       <aside className={`lg:hidden fixed left-0 top-0 h-full w-72 z-50 shadow-2xl glass transform transition-transform duration-300 ${open ? 'translate-x-0' : '-translate-x-full'}`}>
         <SidebarContent />
       </aside>
+
+      {reportOpen && <QuizReport onClose={() => setReportOpen(false)} />}
     </>
   )
 }

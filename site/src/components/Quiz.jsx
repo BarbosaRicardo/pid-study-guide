@@ -5,6 +5,7 @@ import Confetti from 'react-confetti'
 import GifCard from './GifCard'
 import { DEEP_DIVE } from '../data/deepDive'
 import { useProgress } from '../hooks/useProgress'
+import { recordQuizSubmission } from '../hooks/useQuizReport'
 
 function MCQQuestion({ q, onAnswer, answered }) {
   const [selected, setSelected] = useState(null)
@@ -234,6 +235,7 @@ export default function Quiz({ chapterId, questions, level = 1 }) {
     } else {
       const score = Object.values(answers).filter(Boolean).length
       const total = activeQuestions.length
+      recordQuizSubmission({ chapter: chapterId, level, score, total, attempt: attempt + 1 })
       setFinished(true)
       if (score / total >= 0.7) {
         setShowConfetti(true)
