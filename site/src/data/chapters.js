@@ -9,6 +9,7 @@ export const CHAPTERS = [
   { id: 'plc', label: 'Ch 8: PID in PLCs & SCADA', title: 'PID in PLCs & SCADA', path: '/plc', emoji: '🏭', prev: 'digital', next: 'troubleshoot' },
   { id: 'troubleshoot', label: 'Ch 9: Troubleshooting', title: 'Troubleshooting Control Loops', path: '/troubleshoot', emoji: '🔍', prev: 'plc', next: 'lab' },
   { id: 'lab', label: 'Ch 10: Simulation Lab', title: 'Simulation Lab', path: '/lab', emoji: '🧪', prev: 'troubleshoot' },
+  { id: 'flashcards', label: 'Flashcards', emoji: '🃏', path: '/flashcards' },
 ]
 
 export const ANALOGIES = {

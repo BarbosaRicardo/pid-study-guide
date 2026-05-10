@@ -11,6 +11,7 @@ import DigitalPID from './pages/DigitalPID'
 import PLCImplementation from './pages/PLCImplementation'
 import Troubleshoot from './pages/Troubleshoot'
 import Lab from './pages/Lab'
+import Flashcards from './pages/Flashcards'
 
 export default function App() {
   return (
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="/plc"         element={<PLCImplementation />} />
           <Route path="/troubleshoot" element={<Troubleshoot />} />
           <Route path="/lab"         element={<Lab />} />
+          <Route path="/flashcards"  element={<Flashcards />} />
         </Routes>
       </main>
     </div>

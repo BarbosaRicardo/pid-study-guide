@@ -194,6 +194,39 @@ plt.legend(); plt.grid(); plt.show()`}</pre>
 
       <FunFact index={9} />
 
+      <section className="mt-8">
+        <h2 className="text-2xl font-bold text-navy-700 mb-3">ISA Certification Prep</h2>
+        <p className="text-slate-600 mb-4">
+          Two ISA credentials directly validate PID and process control expertise. Both are internationally recognized and required by many industrial employers.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="border border-slate-200 rounded-2xl p-5">
+            <div className="text-xs font-bold text-green-600 bg-green-50 border border-green-200 px-2 py-1 rounded-full inline-block mb-3">ISA CCST — ~$415</div>
+            <h3 className="font-bold text-navy-700 mb-2">Certified Control Systems Technician</h3>
+            <p className="text-sm text-slate-600 mb-2">3 experience levels (5/7/13 years). Recertification every 3 years. Exam domains covered by this guide:</p>
+            <ul className="text-sm text-slate-700 space-y-1">
+              <li><span className="font-semibold">Basic Continuous Control</span> — PID theory, loop tuning, controller modes (Ch. 1–5)</li>
+              <li><span className="font-semibold">Advanced Control</span> — Cascade, feedforward, ratio, override (Ch. 8)</li>
+              <li><span className="font-semibold">Integration & Software</span> — Modbus, HART, SCADA tag integration</li>
+              <li><span className="font-semibold">Deployment & Maintenance</span> — Startup, bump test, troubleshooting (Ch. 9)</li>
+            </ul>
+            <p className="text-xs text-slate-400 mt-2">isa.org/certification/ccst</p>
+          </div>
+          <div className="border border-slate-200 rounded-2xl p-5">
+            <div className="text-xs font-bold text-blue-600 bg-blue-50 border border-blue-200 px-2 py-1 rounded-full inline-block mb-3">ISA CAP — ~$500–750</div>
+            <h3 className="font-bold text-navy-700 mb-2">Certified Automation Professional</h3>
+            <p className="text-sm text-slate-600 mb-2">Engineering-level credential. 175 questions, 4-hour exam. Requires degree + 5 years. Exam domains:</p>
+            <ul className="text-sm text-slate-700 space-y-1">
+              <li><span className="font-semibold">Domain 1</span> — Basic Continuous Control (PID, DCS)</li>
+              <li><span className="font-semibold">Domain 3</span> — Advanced Control (MPC, cascade, feedforward, FOPDT)</li>
+              <li><span className="font-semibold">Domain 2</span> — Discrete Control (PLC/PID integration)</li>
+              <li><span className="font-semibold">Domain 7</span> — Project lifecycle, commissioning documentation</li>
+            </ul>
+            <p className="text-xs text-slate-400 mt-2">isa.org/certification/cap</p>
+          </div>
+        </div>
+      </section>
+
       {QUIZZES.lab && QUIZZES.lab.length > 0 && (
         <Quiz chapterId="lab" questions={QUIZZES.lab} level={1} />
       )}
