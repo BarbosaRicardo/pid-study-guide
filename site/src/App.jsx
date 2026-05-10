@@ -16,7 +16,7 @@ export default function App() {
   return (
     <div className="flex min-h-screen font-sans">
       <Sidebar />
-      <main className="flex-1 min-w-0 overflow-y-auto">
+      <main className="flex-1 min-w-0 overflow-y-auto pt-14 lg:pt-0">
         <Routes>
           <Route path="/"            element={<Intro />} />
           <Route path="/loop"        element={<LoopFundamentals />} />
