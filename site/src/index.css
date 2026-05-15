@@ -190,7 +190,7 @@ code:not(pre code) {
 .animate-fadeIn { animation: fadeIn 0.2s ease-out forwards; }
 @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 .float { animation: float 3s ease-in-out infinite; }
-@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 @keyframes glowPulse {
   0%,100% { box-shadow: 0 0 8px rgba(168,85,247,0.3); }
   50% { box-shadow: 0 0 24px rgba(168,85,247,0.6); }
