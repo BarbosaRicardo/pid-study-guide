@@ -100,11 +100,11 @@ export default function PLCImplementation() {
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+        <div className="rounded-xl p-4" style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.2)' }}>
           <div className="font-bold text-slate-100 mb-2">Auto Mode</div>
           <p className="text-sm text-slate-400">The PID algorithm computes and applies the CO based on the error between SP and PV. The loop is closed. Feedback is active. The controller is doing its job.</p>
         </div>
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+        <div className="rounded-xl p-4" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)' }}>
           <div className="font-bold text-slate-100 mb-2">Manual Mode</div>
           <p className="text-sm text-slate-400">The operator sets the CO directly. The PID algorithm is bypassed. The loop is open. Used for commissioning, troubleshooting, or when the process needs direct operator control.</p>
         </div>
@@ -142,7 +142,7 @@ export default function PLCImplementation() {
             <div className="text-slate-400">Current process variable — read-only, often with trend</div>
           </div>
           <div>
-            <div className="font-semibold text-amber-600">CO bar</div>
+            <div className="font-semibold text-amber-400">CO bar</div>
             <div className="text-slate-400">Controller output — read in auto, editable in manual</div>
           </div>
           <div>
@@ -154,7 +154,7 @@ export default function PLCImplementation() {
             <div className="text-slate-400">Alert when |PV - SP| exceeds configured threshold</div>
           </div>
           <div>
-            <div className="font-semibold text-red-600">Hi/Lo limits</div>
+            <div className="font-semibold text-red-400">Hi/Lo limits</div>
             <div className="text-slate-400">SP limits operators can configure vs. hard process limits</div>
           </div>
         </div>

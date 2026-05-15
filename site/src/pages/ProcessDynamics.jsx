@@ -46,7 +46,7 @@ export default function ProcessDynamics() {
         Process gain describes the sensitivity of the PV to changes in the CO. A high-gain process responds aggressively to small CO changes — easy to overshoot. A low-gain process requires large CO moves to produce small PV changes — sluggish.
       </p>
 
-      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 my-4 font-mono text-sm">
+      <div className="rounded-xl p-4 my-4 font-mono text-sm" style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.2)' }}>
         <span className="text-mblue-600 font-bold">K = ΔPV / ΔCO</span>
         <div className="text-xs text-slate-500 mt-1">Both in percentage of instrument span for dimensionless gain</div>
       </div>
@@ -105,12 +105,12 @@ export default function ProcessDynamics() {
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
-        <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+        <div className="rounded-xl p-4" style={{ background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)' }}>
           <div className="font-bold text-mgreen-500 mb-2">Self-Regulating</div>
           <p className="text-sm text-slate-400">If you fix the CO at a constant value, the PV will eventually find a new steady state and stop moving. The process naturally "self-regulates." Temperature, pressure, and flow loops are typically self-regulating. Example: set a heating valve at 50% open and the temperature will eventually stabilize at some value — not drifting forever.</p>
         </div>
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
-          <div className="font-bold text-amber-600 mb-2">Integrating (Non-Self-Regulating)</div>
+        <div className="rounded-xl p-4" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)' }}>
+          <div className="font-bold text-amber-400 mb-2">Integrating (Non-Self-Regulating)</div>
           <p className="text-sm text-slate-400">If you fix the CO at a constant value, the PV will ramp up or down indefinitely unless the CO exactly matches the load. Tank level is the classic example. If the inlet valve is 40% open and the outlet load requires 50% to hold level constant, the level will fall — forever — until you change the valve position or the tank empties.</p>
         </div>
       </div>

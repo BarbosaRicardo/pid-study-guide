@@ -97,7 +97,7 @@ export default function Tuning() {
             </tr>
           </thead>
           <tbody>
-            <tr className="bg-blue-50">
+            <tr className="bg-blue-500/10">
               <td className="p-3 font-medium">P only</td>
               <td className="p-3 text-center font-mono">0.5·Ku</td>
               <td className="p-3 text-center text-slate-400">—</td>
@@ -109,7 +109,7 @@ export default function Tuning() {
               <td className="p-3 text-center font-mono">Tu / 1.2</td>
               <td className="p-3 text-center text-slate-400">—</td>
             </tr>
-            <tr className="bg-blue-50 rounded-b-xl">
+            <tr className="bg-blue-500/10 rounded-b-xl">
               <td className="p-3 font-medium rounded-bl-xl">PID</td>
               <td className="p-3 text-center font-mono">0.6·Ku</td>
               <td className="p-3 text-center font-mono">Tu / 2</td>
@@ -139,10 +139,10 @@ export default function Tuning() {
         <strong>Requires open-loop step test results:</strong> K (process gain), τ (time constant), θ (dead time).
       </p>
 
-      <div className="bg-green-50 border border-green-200 rounded-xl p-4 my-4 font-mono text-sm space-y-2">
-        <div className="text-xs font-bold text-green-700 uppercase tracking-widest mb-2">Lambda PI Tuning Equations</div>
+      <div className="rounded-xl p-4 my-4 font-mono text-sm space-y-2" style={{ background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)' }}>
+        <div className="text-xs font-bold text-green-300 uppercase tracking-widest mb-2">Lambda PI Tuning Equations</div>
         <div><span className="text-mblue-600">Kp</span> = τ / (K · (λ + θ))</div>
-        <div><span className="text-amber-600">Ti</span> = τ   <span className="text-slate-500 font-sans text-xs ml-2">(integral time = process time constant)</span></div>
+        <div><span className="text-amber-400">Ti</span> = τ   <span className="text-slate-500 font-sans text-xs ml-2">(integral time = process time constant)</span></div>
         <div className="text-xs text-slate-500 mt-2">λ = desired closed-loop time constant (your choice). Rule of thumb: λ ≥ θ. Conservative: λ = 2–4θ.</div>
       </div>
 

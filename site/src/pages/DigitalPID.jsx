@@ -58,7 +58,7 @@ export default function DigitalPID() {
       </p>
 
       <div className="space-y-4 my-6">
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+        <div className="rounded-xl p-4" style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.2)' }}>
           <div className="font-bold text-slate-100 mb-2">Position Algorithm (Absolute Form)</div>
           <div className="bg-white/5 rounded-lg p-3 font-mono text-xs text-mblue-600 mb-2">
             u[k] = Kp·e[k] + Ki·T·∑e[j] + Kd·(e[k] - e[k-1])/T
@@ -68,7 +68,7 @@ export default function DigitalPID() {
           </p>
         </div>
 
-        <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+        <div className="rounded-xl p-4" style={{ background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)' }}>
           <div className="font-bold text-slate-100 mb-2">Velocity (Incremental) Algorithm</div>
           <div className="bg-white/5 rounded-lg p-3 font-mono text-xs text-mgreen-500 mb-2">
             Δu[k] = Kp·(e[k] - e[k-1]) + Ki·T·e[k] + Kd·(e[k] - 2·e[k-1] + e[k-2])/T
@@ -111,9 +111,9 @@ export default function DigitalPID() {
         Raw derivative action amplifies any noise in the PV signal. A measurement that fluctuates ±0.1% at 10 Hz will produce large derivative spikes that drive the control valve crazy. In practice, derivative is almost always filtered:
       </p>
 
-      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 my-4 font-mono text-xs">
-        <div className="text-amber-700 font-bold mb-2">First-Order Filtered Derivative</div>
-        <div className="text-amber-600">D_filtered[k] = α·D_filtered[k-1] + (1-α)·Kd·(PV[k] - PV[k-1])/T</div>
+      <div className="rounded-xl p-4 my-4 font-mono text-xs" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)' }}>
+        <div className="text-amber-300 font-bold mb-2">First-Order Filtered Derivative</div>
+        <div className="text-amber-400">D_filtered[k] = α·D_filtered[k-1] + (1-α)·Kd·(PV[k] - PV[k-1])/T</div>
         <div className="text-xs text-slate-500 mt-1 font-sans">α ≈ 0.5 to 0.9 — filter coefficient (higher = more filtering, more lag)</div>
       </div>
 

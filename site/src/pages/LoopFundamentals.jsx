@@ -27,7 +27,7 @@ export default function LoopFundamentals() {
       <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">The Core Variables</h2>
 
       <div className="space-y-4 my-6">
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+        <div className="rounded-xl p-4" style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.2)' }}>
           <div className="flex items-start gap-3">
             <div className="w-12 h-12 bg-mblue-600 rounded-xl flex items-center justify-center flex-shrink-0">
               <span className="text-white font-black text-sm">SP</span>
@@ -39,7 +39,7 @@ export default function LoopFundamentals() {
           </div>
         </div>
 
-        <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+        <div className="rounded-xl p-4" style={{ background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)' }}>
           <div className="flex items-start gap-3">
             <div className="w-12 h-12 bg-mgreen-500 rounded-xl flex items-center justify-center flex-shrink-0">
               <span className="text-white font-black text-sm">PV</span>
@@ -51,7 +51,7 @@ export default function LoopFundamentals() {
           </div>
         </div>
 
-        <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+        <div className="rounded-xl p-4" style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}>
           <div className="flex items-start gap-3">
             <div className="w-12 h-12 bg-mred-500 rounded-xl flex items-center justify-center flex-shrink-0">
               <span className="text-white font-black text-sm">e</span>
@@ -63,7 +63,7 @@ export default function LoopFundamentals() {
           </div>
         </div>
 
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+        <div className="rounded-xl p-4" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)' }}>
           <div className="flex items-start gap-3">
             <div className="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center flex-shrink-0">
               <span className="text-white font-black text-sm">CO</span>

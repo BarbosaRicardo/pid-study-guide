@@ -44,9 +44,9 @@ export default function Troubleshoot() {
 
       <GifCard gifKey="warning" caption="Oscillation: regular, repeating, and entirely too energetic." side="right" />
 
-      <div className="bg-red-50 border border-red-200 rounded-xl p-4 my-4">
-        <div className="font-bold text-red-700 mb-2">Possible Causes — in order of likelihood</div>
-        <ol className="list-decimal list-inside space-y-2 text-sm text-red-800">
+      <div className="rounded-xl p-4 my-4" style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}>
+        <div className="font-bold text-red-300 mb-2">Possible Causes — in order of likelihood</div>
+        <ol className="list-decimal list-inside space-y-2 text-sm text-red-300">
           <li><strong>Gain (Kp) too high</strong> — reduce Kp by 30–50%, see if oscillation amplitude decreases</li>
           <li><strong>Integral (Ti) too fast / Ki too high</strong> — increase Ti (more integral time = less integral action)</li>
           <li><strong>Derivative too high</strong> — on a noisy signal, D amplifies noise into oscillating output</li>
@@ -65,9 +65,9 @@ export default function Troubleshoot() {
         The loop has settled, the PV is stable, but it's sitting at a value consistently below (or above) the setpoint. The error never reaches zero.
       </p>
 
-      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 my-4">
-        <div className="font-bold text-amber-700 mb-2">Possible Causes</div>
-        <ul className="list-disc list-inside space-y-1 text-sm text-amber-800">
+      <div className="rounded-xl p-4 my-4" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)' }}>
+        <div className="font-bold text-amber-300 mb-2">Possible Causes</div>
+        <ul className="list-disc list-inside space-y-1 text-sm text-amber-300">
           <li><strong>Integral action disabled</strong> — P-only controller always has offset</li>
           <li><strong>Integral time too slow</strong> — integral barely accumulating, offset persists</li>
           <li><strong>Output at a limit</strong> — valve fully open and still can't reach SP (under-capacity)</li>
@@ -82,9 +82,9 @@ export default function Troubleshoot() {
         After a SP change or a disturbance, the PV slowly creeps toward the setpoint. It takes 10× longer than it should to recover.
       </p>
 
-      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 my-4">
-        <div className="font-bold text-blue-700 mb-2">Possible Causes</div>
-        <ul className="list-disc list-inside space-y-1 text-sm text-blue-800">
+      <div className="rounded-xl p-4 my-4" style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.2)' }}>
+        <div className="font-bold text-blue-300 mb-2">Possible Causes</div>
+        <ul className="list-disc list-inside space-y-1 text-sm text-blue-300">
           <li><strong>Kp too low</strong> — small error produces tiny CO changes</li>
           <li><strong>Integral time too long</strong> — integral barely contributing</li>
           <li><strong>Output rate limiting</strong> — configured too conservatively</li>

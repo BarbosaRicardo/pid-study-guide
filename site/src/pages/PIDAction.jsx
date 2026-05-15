@@ -42,7 +42,7 @@ export default function PIDAction() {
         Proportional action is the simplest: the controller output is proportional to the current error. Double the error, double the output. Zero error, zero proportional contribution.
       </p>
 
-      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 my-4 font-mono text-sm">
+      <div className="rounded-xl p-4 my-4 font-mono text-sm" style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.2)' }}>
         <span className="text-mblue-600 font-bold">P output = Kp × e(t)</span>
         <div className="text-xs text-slate-500 mt-1">Where Kp is proportional gain, e(t) is current error</div>
       </div>
@@ -67,8 +67,8 @@ export default function PIDAction() {
         Integral action accumulates error over time. If the PV is sitting slightly below SP — even a tiny amount — the integral term keeps increasing the CO until the error is truly zero. It's the controller's "grudge" against any non-zero error.
       </p>
 
-      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 my-4 font-mono text-sm">
-        <span className="text-amber-600 font-bold">I output = Ki × ∫₀ᵗ e(τ) dτ</span>
+      <div className="rounded-xl p-4 my-4 font-mono text-sm" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)' }}>
+        <span className="text-amber-400 font-bold">I output = Ki × ∫₀ᵗ e(τ) dτ</span>
         <div className="text-xs text-slate-500 mt-1">Integral of error over time — accumulates as long as error exists</div>
       </div>
 
@@ -86,7 +86,7 @@ export default function PIDAction() {
         Derivative action responds to the <em>rate of change</em> of error. If the PV is moving rapidly toward the SP, derivative action starts reducing the CO before the error reaches zero — damping the response and reducing overshoot. Think of it as predictive braking.
       </p>
 
-      <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 my-4 font-mono text-sm">
+      <div className="rounded-xl p-4 my-4 font-mono text-sm" style={{ background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.2)' }}>
         <span className="text-morange-500 font-bold">D output = Kd × de(t)/dt</span>
         <div className="text-xs text-slate-500 mt-1">Rate of change of error — responds to how fast the error is changing</div>
       </div>
@@ -130,7 +130,7 @@ export default function PIDAction() {
         </div>
         <div className="bg-white/4 border border-white/8 rounded-xl p-4">
           <div className="font-bold text-slate-100 mb-1">Series (Classical) Form</div>
-          <div className="font-mono text-sm text-amber-600">u = Kp·[e + (1/Ti)·∫e dt] × [1 + Td·de/dt]</div>
+          <div className="font-mono text-sm text-amber-400">u = Kp·[e + (1/Ti)·∫e dt] × [1 + Td·de/dt]</div>
           <p className="text-sm text-slate-600 mt-1">The P, I, and D terms interact. Changing Kp scales all three. Common in older analog and pneumatic controllers. Tuning rules designed for series form don't translate directly to parallel.</p>
         </div>
       </div>

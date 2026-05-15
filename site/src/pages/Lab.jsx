@@ -201,7 +201,7 @@ plt.legend(); plt.grid(); plt.show()`}</pre>
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="border border-white/8 rounded-2xl p-5">
-            <div className="text-xs font-bold text-green-600 bg-green-50 border border-green-200 px-2 py-1 rounded-full inline-block mb-3">ISA CCST — ~$415</div>
+            <div className="text-xs font-bold text-green-400 px-2 py-1 rounded-full inline-block mb-3" style={{ background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)' }}>ISA CCST — ~$415</div>
             <h3 className="font-bold text-slate-100 mb-2">Certified Control Systems Technician</h3>
             <p className="text-sm text-slate-600 mb-2">3 experience levels (5/7/13 years). Recertification every 3 years. Exam domains covered by this guide:</p>
             <ul className="text-sm text-slate-300 space-y-1">
@@ -213,7 +213,7 @@ plt.legend(); plt.grid(); plt.show()`}</pre>
             <p className="text-xs text-slate-400 mt-2">isa.org/certification/ccst</p>
           </div>
           <div className="border border-white/8 rounded-2xl p-5">
-            <div className="text-xs font-bold text-blue-600 bg-blue-50 border border-blue-200 px-2 py-1 rounded-full inline-block mb-3">ISA CAP — ~$500–750</div>
+            <div className="text-xs font-bold text-blue-400 px-2 py-1 rounded-full inline-block mb-3" style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.2)' }}>ISA CAP — ~$500–750</div>
             <h3 className="font-bold text-slate-100 mb-2">Certified Automation Professional</h3>
             <p className="text-sm text-slate-600 mb-2">Engineering-level credential. 175 questions, 4-hour exam. Requires degree + 5 years. Exam domains:</p>
             <ul className="text-sm text-slate-300 space-y-1">

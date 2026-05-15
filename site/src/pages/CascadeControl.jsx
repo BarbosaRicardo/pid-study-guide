@@ -94,7 +94,7 @@ export default function CascadeControl() {
         If you know that an increase in feed flow rate will increase the heat load in an exchanger, you can measure the feed flow and automatically adjust the steam valve in proportion — before the temperature controller sees any error. This is feedforward: disturbance measured → compensation applied directly.
       </p>
 
-      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 my-4">
+      <div className="rounded-xl p-4 my-4" style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.2)' }}>
         <div className="font-bold text-slate-100 mb-2">Feedforward + Feedback Combined</div>
         <p className="text-sm text-slate-400">
           Pure feedforward requires a perfect model to work — any mismatch between your feedforward model and reality creates permanent offset. In practice, feedforward is always paired with a feedback loop. Feedforward handles the large, known disturbances quickly. Feedback trims out any remaining error from model mismatch.
