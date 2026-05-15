@@ -24,7 +24,7 @@ export default function Troubleshoot() {
         A misbehaving control loop will eventually reveal itself in one of a handful of ways. Once you know the patterns, you can identify the root cause from a trend screen in under five minutes. The hard part isn't the diagnosis — it's resisting the urge to change tuning constants when the problem has nothing to do with tuning.
       </p>
 
-      <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-2xl p-5 my-6">
+      <div className="rounded-2xl p-5 my-6" style={{ background: 'rgba(139,92,246,0.07)', border: '1px solid rgba(139,92,246,0.2)' }}>
         <div className="text-xs font-bold text-purple-600 uppercase tracking-widest mb-2">Quote</div>
         <p className="text-slate-300 italic text-sm">"{analogy.text}"</p>
         <p className="text-xs text-slate-400 mt-2">— {analogy.author}</p>

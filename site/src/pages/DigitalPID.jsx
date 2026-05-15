@@ -24,7 +24,7 @@ export default function DigitalPID() {
         Every PID controller in a PLC or DCS is a digital implementation of a continuous-time algorithm. The math was originally derived in continuous time (differential equations, Laplace transforms). Digital controllers approximate this with discrete samples taken at a fixed scan rate. This approximation works well — when you understand the tradeoffs.
       </p>
 
-      <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-2xl p-5 my-6">
+      <div className="rounded-2xl p-5 my-6" style={{ background: 'rgba(139,92,246,0.07)', border: '1px solid rgba(139,92,246,0.2)' }}>
         <div className="text-xs font-bold text-purple-600 uppercase tracking-widest mb-2">Quote</div>
         <p className="text-slate-300 italic text-sm">"{analogy.text}"</p>
         <p className="text-xs text-slate-400 mt-2">— {analogy.author}</p>
@@ -88,13 +88,13 @@ export default function DigitalPID() {
       </p>
 
       <div className="space-y-3 my-4">
-        <div className="bg-white/4 border border-slate-200 rounded-xl p-4">
+        <div className="bg-white/4 border border-white/8 rounded-xl p-4">
           <div className="font-bold text-slate-100 mb-1">Clamping (Conditional Integration)</div>
           <p className="text-sm text-slate-400">Stop accumulating the integral when the output is saturated AND the error is in the direction that would further saturate it. Simple to implement. Effective.</p>
           <div className="font-mono text-xs text-morange-500 mt-2">if (u[k] &gt; u_max) and (e[k] &gt; 0): skip integral accumulation</div>
         </div>
 
-        <div className="bg-white/4 border border-slate-200 rounded-xl p-4">
+        <div className="bg-white/4 border border-white/8 rounded-xl p-4">
           <div className="font-bold text-slate-100 mb-1">Back-Calculation (Tracking)</div>
           <p className="text-sm text-slate-400">When the output saturates, the integral is backed off by a feedback term proportional to the difference between the desired and actual (saturated) output. Provides smooth, controlled reduction of windup. More complex, but produces better transient behavior when exiting saturation.</p>
           <div className="font-mono text-xs text-mblue-600 mt-2">integral += Ki·e[k]·T + (u_actual - u_desired)·(T/Tt)</div>

@@ -34,7 +34,7 @@ export default function Lab() {
         The fastest way to internalize PID tuning is to do it — repeatedly, on different process types, until the patterns become intuitive. You can simulate real process dynamics on a laptop for free. No plant access required. No risk of upsetting a live process. The only cost is the hour it takes to set it up.
       </p>
 
-      <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-2xl p-5 my-6">
+      <div className="rounded-2xl p-5 my-6" style={{ background: 'rgba(139,92,246,0.07)', border: '1px solid rgba(139,92,246,0.2)' }}>
         <div className="text-xs font-bold text-purple-600 uppercase tracking-widest mb-2">Quote</div>
         <p className="text-slate-300 italic text-sm">"{analogy.text}"</p>
         <p className="text-xs text-slate-400 mt-2">— {analogy.author}</p>
@@ -43,7 +43,7 @@ export default function Lab() {
       <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Free Simulation Tools</h2>
 
       <div className="space-y-4 my-6">
-        <div className="bg-white/5 border border-slate-200 rounded-xl p-5 shadow-sm">
+        <div className="bg-white/5 border border-white/8 rounded-xl p-5 shadow-sm">
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center flex-shrink-0">
               <span className="text-white font-black text-sm">ML</span>
@@ -56,7 +56,7 @@ export default function Lab() {
           </div>
         </div>
 
-        <div className="bg-white/5 border border-slate-200 rounded-xl p-5 shadow-sm">
+        <div className="bg-white/5 border border-white/8 rounded-xl p-5 shadow-sm">
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
               <span className="text-white font-black text-sm">Py</span>
@@ -69,7 +69,7 @@ export default function Lab() {
           </div>
         </div>
 
-        <div className="bg-white/5 border border-slate-200 rounded-xl p-5 shadow-sm">
+        <div className="bg-white/5 border border-white/8 rounded-xl p-5 shadow-sm">
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 bg-mgreen-500 rounded-xl flex items-center justify-center flex-shrink-0">
               <span className="text-white font-black text-xs">CAD</span>
@@ -82,7 +82,7 @@ export default function Lab() {
           </div>
         </div>
 
-        <div className="bg-white/5 border border-slate-200 rounded-xl p-5 shadow-sm">
+        <div className="bg-white/5 border border-white/8 rounded-xl p-5 shadow-sm">
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 bg-emerald-600 rounded-xl flex items-center justify-center flex-shrink-0">
               <span className="text-white font-black text-xs">XL</span>
@@ -200,7 +200,7 @@ plt.legend(); plt.grid(); plt.show()`}</pre>
           Two ISA credentials directly validate PID and process control expertise. Both are internationally recognized and required by many industrial employers.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="border border-slate-200 rounded-2xl p-5">
+          <div className="border border-white/8 rounded-2xl p-5">
             <div className="text-xs font-bold text-green-600 bg-green-50 border border-green-200 px-2 py-1 rounded-full inline-block mb-3">ISA CCST — ~$415</div>
             <h3 className="font-bold text-slate-100 mb-2">Certified Control Systems Technician</h3>
             <p className="text-sm text-slate-600 mb-2">3 experience levels (5/7/13 years). Recertification every 3 years. Exam domains covered by this guide:</p>
@@ -212,7 +212,7 @@ plt.legend(); plt.grid(); plt.show()`}</pre>
             </ul>
             <p className="text-xs text-slate-400 mt-2">isa.org/certification/ccst</p>
           </div>
-          <div className="border border-slate-200 rounded-2xl p-5">
+          <div className="border border-white/8 rounded-2xl p-5">
             <div className="text-xs font-bold text-blue-600 bg-blue-50 border border-blue-200 px-2 py-1 rounded-full inline-block mb-3">ISA CAP — ~$500–750</div>
             <h3 className="font-bold text-slate-100 mb-2">Certified Automation Professional</h3>
             <p className="text-sm text-slate-600 mb-2">Engineering-level credential. 175 questions, 4-hour exam. Requires degree + 5 years. Exam domains:</p>

@@ -75,9 +75,9 @@ export default function LoopFundamentals() {
           </div>
         </div>
 
-        <div className="bg-purple-50 border border-purple-200 rounded-xl p-4">
+        <div className="rounded-xl p-4" style={{ background: 'rgba(139,92,246,0.06)', border: '1px solid rgba(139,92,246,0.2)' }}>
           <div className="flex items-start gap-3">
-            <div className="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 bg-purple-500/100 rounded-xl flex items-center justify-center flex-shrink-0">
               <span className="text-white font-black text-sm">MV</span>
             </div>
             <div>
@@ -178,7 +178,7 @@ SP ──►[Σ]──► PID Controller ──► Valve ──► Process ─�
 
       <FunFact index={1} />
 
-      <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-2xl p-5 my-6">
+      <div className="rounded-2xl p-5 my-6" style={{ background: 'rgba(139,92,246,0.07)', border: '1px solid rgba(139,92,246,0.2)' }}>
         <div className="text-xs font-bold text-purple-600 uppercase tracking-widest mb-2">Quote</div>
         <p className="text-slate-300 italic text-sm">"{analogy.text}"</p>
         <p className="text-xs text-slate-400 mt-2">— {analogy.author}</p>

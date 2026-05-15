@@ -24,7 +24,7 @@ export default function PLCImplementation() {
         Every PLC vendor ships a PID function block. The underlying math is the same; the parameter names, scaling conventions, and configuration options are vendor-specific enough that an engineer moving from one platform to another will spend the first week re-learning what all the parameters mean. This chapter covers the concepts that apply everywhere, and the platform-specific gotchas for the most common systems.
       </p>
 
-      <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-2xl p-5 my-6">
+      <div className="rounded-2xl p-5 my-6" style={{ background: 'rgba(139,92,246,0.07)', border: '1px solid rgba(139,92,246,0.2)' }}>
         <div className="text-xs font-bold text-purple-600 uppercase tracking-widest mb-2">Quote</div>
         <p className="text-slate-300 italic text-sm">"{analogy.text}"</p>
         <p className="text-xs text-slate-400 mt-2">— {analogy.author}</p>
@@ -130,7 +130,7 @@ export default function PLCImplementation() {
         A PID faceplate is the standard HMI interface element that exposes loop parameters to operators. Every DCS and most SCADA systems have a standardized faceplate. Key elements:
       </p>
 
-      <div className="bg-white/4 border border-slate-200 rounded-xl p-5 my-4">
+      <div className="bg-white/4 border border-white/8 rounded-xl p-5 my-4">
         <div className="font-bold text-slate-100 mb-3">Standard PID Faceplate Elements</div>
         <div className="grid grid-cols-2 gap-3 text-sm">
           <div>

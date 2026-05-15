@@ -110,7 +110,7 @@ export default function PIDAction() {
         <li><strong>D (anxiety):</strong> The water temperature is rising fast and is about to overshoot. You start pulling back on the hot water before you actually reach your target temperature. Derivative sees the rapid change and preemptively damps it.</li>
       </ul>
 
-      <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-2xl p-5 my-6">
+      <div className="rounded-2xl p-5 my-6" style={{ background: 'rgba(139,92,246,0.07)', border: '1px solid rgba(139,92,246,0.2)' }}>
         <div className="text-xs font-bold text-purple-600 uppercase tracking-widest mb-2">Quote</div>
         <p className="text-slate-300 italic text-sm">"{analogy.text}"</p>
         <p className="text-xs text-slate-400 mt-2">— {analogy.author}</p>
@@ -123,12 +123,12 @@ export default function PIDAction() {
       </p>
 
       <div className="space-y-3 my-4">
-        <div className="bg-white/4 border border-slate-200 rounded-xl p-4">
+        <div className="bg-white/4 border border-white/8 rounded-xl p-4">
           <div className="font-bold text-slate-100 mb-1">Parallel (ISA) Form</div>
           <div className="font-mono text-sm text-mblue-600">u = Kp·e + Ki·∫e dt + Kd·de/dt</div>
           <p className="text-sm text-slate-600 mt-1">Three independent gains. Changing Kp doesn't affect the I or D terms. Most common in modern controllers. Ki = Kp/Ti, Kd = Kp·Td.</p>
         </div>
-        <div className="bg-white/4 border border-slate-200 rounded-xl p-4">
+        <div className="bg-white/4 border border-white/8 rounded-xl p-4">
           <div className="font-bold text-slate-100 mb-1">Series (Classical) Form</div>
           <div className="font-mono text-sm text-amber-600">u = Kp·[e + (1/Ti)·∫e dt] × [1 + Td·de/dt]</div>
           <p className="text-sm text-slate-600 mt-1">The P, I, and D terms interact. Changing Kp scales all three. Common in older analog and pneumatic controllers. Tuning rules designed for series form don't translate directly to parallel.</p>

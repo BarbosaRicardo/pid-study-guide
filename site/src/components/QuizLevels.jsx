@@ -22,7 +22,7 @@ const LEVEL_META = [
     description: 'Failure modes, calculations, and real-world edge cases. Pass to unlock Level 3.',
     headerBg: 'bg-slate-800',
     accentText: 'text-amber-400',
-    borderColor: 'border-slate-200',
+    borderColor: 'border-white/8',
     activeBorder: 'border-slate-700',
     emoji: '📙',
   },
@@ -32,7 +32,7 @@ const LEVEL_META = [
     description: 'Textbook-depth. Questions cite chapter and page. AI applications included.',
     headerBg: 'bg-[#0d0d14]',
     accentText: 'text-orange-400',
-    borderColor: 'border-slate-200',
+    borderColor: 'border-white/8',
     activeBorder: 'border-slate-900',
     emoji: '📕',
   },
@@ -69,12 +69,12 @@ function ResourceDrawer({ resources, level, onClose }) {
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto bg-white p-4 space-y-3">
+        <div className="flex-1 overflow-y-auto p-4 space-y-3">
           {(!resources || resources.length === 0) && (
             <p className="text-slate-400 text-sm text-center py-8">Resources coming soon.</p>
           )}
           {resources?.map((r, i) => (
-            <div key={i} className="border border-slate-100 rounded-xl overflow-hidden">
+            <div key={i} className="border border-white/6 rounded-xl overflow-hidden">
               {r.type === 'youtube' && (
                 <a
                   href={r.searchUrl}
@@ -130,7 +130,7 @@ function ResourceDrawer({ resources, level, onClose }) {
                 <div>
                   <button
                     onClick={() => setExpandedExcerpt(expandedExcerpt === i ? null : i)}
-                    className="w-full flex items-center gap-3 p-3 hover:bg-purple-50 transition-colors"
+                    className="w-full flex items-center gap-3 p-3 hover:bg-purple-500/100/10 transition-colors"
                   >
                     <div className="w-9 h-9 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
                       <BookOpen size={18} className="text-purple-600" />
@@ -144,7 +144,7 @@ function ResourceDrawer({ resources, level, onClose }) {
                       : <ChevronDown size={14} className="text-slate-400 flex-shrink-0" />}
                   </button>
                   {expandedExcerpt === i && (
-                    <div className="border-t border-purple-100 p-3 bg-purple-50">
+                    <div className="border-t border-purple-500/20 p-3 bg-purple-500/10">
                       {r.excerpt && (
                         <p className="text-xs text-slate-600 leading-relaxed italic mb-2">"{r.excerpt}"</p>
                       )}
@@ -205,7 +205,7 @@ function LevelCard({ meta, questions, chapterId, locked, passed }) {
           onClick={() => !locked && setOpen((o) => !o)}
           className={`w-full text-left px-4 py-3 flex items-center gap-3 transition-colors ${
             locked ? 'opacity-60 cursor-not-allowed bg-white' :
-            open ? `${headerBg}` : 'bg-white hover:bg-slate-50'
+            open ? `${headerBg}` : 'bg-white/3 hover:bg-white/5'
           }`}
         >
           <span className="text-lg leading-none flex-shrink-0">{locked ? '🔒' : passed ? '✅' : emoji}</span>
@@ -222,7 +222,7 @@ function LevelCard({ meta, questions, chapterId, locked, passed }) {
         </button>
 
         {!locked && open && (
-          <div className="border-t border-slate-100">
+          <div className="border-t border-white/6">
             {/* Passed banner */}
             {passed && resources.length > 0 && (
               <div className={`px-4 py-2 flex items-center justify-between ${

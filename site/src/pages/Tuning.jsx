@@ -45,7 +45,7 @@ export default function Tuning() {
         <li>From the trend, identify three key parameters.</li>
       </ol>
 
-      <div className="bg-white/4 border border-slate-200 rounded-xl p-4 my-4">
+      <div className="bg-white/4 border border-white/8 rounded-xl p-4 my-4">
         <div className="font-bold text-slate-100 mb-3">What to Extract from the Step Test</div>
         <div className="space-y-2 text-sm">
           <div className="flex gap-3">
@@ -123,7 +123,7 @@ export default function Tuning() {
         The Z-N closed-loop method is known for producing aggressive (fast, somewhat oscillatory) tuning. Many engineers apply a detuning factor of 0.5–0.7 to the resulting Kp before commissioning. The method was designed for quarter-amplitude decay (25% overshoot), which is too aggressive for most process plants. Use Z-N as a starting point, then detune to taste.
       </Callout>
 
-      <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-2xl p-5 my-6">
+      <div className="rounded-2xl p-5 my-6" style={{ background: 'rgba(139,92,246,0.07)', border: '1px solid rgba(139,92,246,0.2)' }}>
         <div className="text-xs font-bold text-purple-600 uppercase tracking-widest mb-2">Quote</div>
         <p className="text-slate-300 italic text-sm">"{analogy.text}"</p>
         <p className="text-xs text-slate-400 mt-2">— {analogy.author}</p>
@@ -156,7 +156,7 @@ export default function Tuning() {
         Cohen-Coon is another open-loop step test method, designed specifically for processes with significant dead time relative to the time constant (θ/τ &gt; 0.1). It tends to produce more aggressive tuning than Lambda but less aggressive than Ziegler-Nichols.
       </p>
 
-      <div className="bg-white/4 border border-slate-200 rounded-xl p-4 my-4 font-mono text-xs space-y-1">
+      <div className="bg-white/4 border border-white/8 rounded-xl p-4 my-4 font-mono text-xs space-y-1">
         <div className="font-bold text-slate-100 mb-2">Cohen-Coon PI Tuning</div>
         <div>Kp = (1/K) · (τ/θ) · (0.9 + θ/12τ)</div>
         <div>Ti = θ · (30 + 3θ/τ) / (9 + 20θ/τ)</div>
