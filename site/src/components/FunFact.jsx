@@ -1,13 +1,18 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Lightbulb, RefreshCw } from 'lucide-react'
+import { Lightbulb, RefreshCw, Wind, Ruler, Factory, Zap, AlertTriangle, Clock, Target, BookOpen, Activity, Database, ArrowLeftRight } from 'lucide-react'
 import { FUN_FACTS } from '../data/chapters'
+
+const ICON_MAP = {
+  Wind, Ruler, Factory, Zap, AlertTriangle, Clock, Target, BookOpen, Activity, Database, ArrowLeftRight,
+}
 
 export default function FunFact({ index }) {
   const [current, setCurrent] = useState(
     index !== undefined ? index % FUN_FACTS.length : Math.floor(Math.random() * FUN_FACTS.length)
   )
   const fact = FUN_FACTS[current]
+  const FactIcon = ICON_MAP[fact.icon] || Lightbulb
 
   const next = () => setCurrent((c) => (c + 1) % FUN_FACTS.length)
 
@@ -27,7 +32,6 @@ export default function FunFact({ index }) {
         }}
       >
         {/* Decorative background glow */}
-        <div className="absolute top-0 right-0 text-8xl opacity-5 pointer-events-none select-none">💡</div>
         <div className="absolute -bottom-4 -right-4 w-24 h-24 rounded-full pointer-events-none"
           style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.15) 0%, transparent 70%)' }} />
 
@@ -41,7 +45,7 @@ export default function FunFact({ index }) {
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
               <span className="text-xs font-bold uppercase tracking-widest" style={{ color: '#fbbf24' }}>Fun Fact</span>
-              <span className="text-lg">{fact.emoji}</span>
+              <FactIcon size={16} style={{ color: '#fbbf24' }} />
             </div>
             <p className="text-sm leading-relaxed" style={{ color: '#fcd34d' }}>{fact.text}</p>
           </div>

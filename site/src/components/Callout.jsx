@@ -50,7 +50,7 @@ const TYPES = {
     text: '#fca5a5',
     label: '#f87171',
     iconBg: 'linear-gradient(135deg, #ef4444, #dc2626)',
-    title: '⚠️ Field Gotcha',
+    title: 'Field Gotcha',
   },
 }
 

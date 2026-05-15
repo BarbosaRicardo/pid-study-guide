@@ -1,9 +1,13 @@
 import React, { useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import { Menu, X, Zap, BookOpen, BarChart2, Home } from 'lucide-react'
+import { Menu, X, Zap, BookOpen, BarChart2, Home, Settings, Sliders, TrendingUp, Layers, Cpu, Monitor, Wrench, FlaskConical, CreditCard } from 'lucide-react'
 import { CHAPTERS } from '../data/chapters'
 import { useProgress } from '../hooks/useProgress'
 import QuizReport from './QuizReport'
+
+const ICON_MAP = {
+  BookOpen, Settings, BarChart2, Sliders, TrendingUp, Layers, Cpu, Monitor, Wrench, FlaskConical, CreditCard,
+}
 
 export default function Sidebar() {
   const [open, setOpen] = useState(false)
@@ -14,13 +18,14 @@ export default function Sidebar() {
 
   const NavItem = ({ ch }) => {
     const status = getChapterStatus(ch.id)
+    const Icon = ICON_MAP[ch.icon] || BookOpen
     return (
       <NavLink
         to={ch.path}
         onClick={() => setOpen(false)}
         className={({ isActive }) => `chapter-nav-item ${isActive ? 'active' : ''}`}
       >
-        <span className="text-lg leading-none">{ch.emoji}</span>
+        <Icon size={15} className="flex-shrink-0 opacity-70" />
         <span className="flex-1 truncate">{ch.label}</span>
         <div className="flex gap-0.5 flex-shrink-0">
           <div className={`w-1.5 h-1.5 rounded-full transition-all ${status.level1Passed ? 'bg-emerald-400 shadow-glow-green' : status.visited ? 'bg-amber-400' : 'bg-white/10'}`} />
@@ -76,7 +81,7 @@ export default function Sidebar() {
       {/* Footer */}
       <div className="p-4 space-y-2" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
         <a
-          href="https://barbosaricardo.github.io/scada-hub/"
+          href="https://scada-hub.vercel.app"
           className="flex items-center justify-center gap-2 w-full px-3 py-2.5 rounded-xl text-xs font-bold transition-all hover:scale-105"
           style={{
             background: 'rgba(139,92,246,0.1)',
