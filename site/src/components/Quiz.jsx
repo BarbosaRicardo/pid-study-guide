@@ -148,6 +148,14 @@ const LEVEL_THEME = {
     label: 'Level 3 · Graduate',
     badge: 'rgba(239,68,68,0.15)',
   },
+  4: {
+    headerBg: 'linear-gradient(135deg, rgba(6,14,26,0.95), rgba(5,30,15,0.95))',
+    border: 'rgba(34,197,94,0.3)',
+    accent: '#4ade80',
+    glow: 'rgba(34,197,94,0.2)',
+    label: 'Field Scenarios',
+    badge: 'rgba(34,197,94,0.15)',
+  },
 }
 
 const ATTEMPT_KEY = (chapterId, level) => `quiz_attempts_${chapterId}_l${level}`
@@ -178,7 +186,7 @@ function shuffle(arr, rng) {
 }
 
 function shuffleOptions(q, rng) {
-  if (q.type !== 'mcq') return q
+  if (q.type !== 'mcq' && q.type !== 'scenario') return q
   const indices = q.options.map((_, i) => i)
   const shuffled = shuffle(indices, rng)
   return {
@@ -380,7 +388,7 @@ export default function Quiz({ chapterId, questions, level = 1 }) {
               {q.question}
             </p>
 
-            {q.type === 'mcq' && (
+            {(q.type === 'mcq' || q.type === 'scenario') && (
               <MCQQuestion q={q} onAnswer={handleAnswer} answered={answered} />
             )}
             {q.type === 'fill' && (
