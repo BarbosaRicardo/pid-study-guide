@@ -28,7 +28,7 @@ export default function Tuning() {
         A well-tuned loop: reaches setpoint quickly (fast rise time), doesn't overshoot excessively (&lt;5-10% typically), settles without prolonged oscillation (settles within 2–3 cycles), and rejects disturbances by returning to SP quickly. The tradeoff: faster response generally means more aggressive tuning, which means less stability margin. You pick your point on that curve based on what the process can tolerate.
       </Callout>
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">Step 1: The Open-Loop Step Test</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Step 1: The Open-Loop Step Test</h2>
 
       <p>
         Before tuning, you need to know what you're working with. The open-loop step test characterizes the process so you can calculate tuning constants from first principles.
@@ -37,7 +37,7 @@ export default function Tuning() {
       <p>
         <strong>Procedure:</strong>
       </p>
-      <ol className="list-decimal list-inside space-y-2 text-slate-700 ml-4 my-3">
+      <ol className="list-decimal list-inside space-y-2 text-slate-300 ml-4 my-3">
         <li>Put the controller in <strong>manual mode</strong> (open-loop — no feedback correction).</li>
         <li>Let the process reach <strong>steady state</strong> (PV stable, no changes).</li>
         <li>Make a <strong>step change</strong> in the CO (e.g., bump it from 40% to 50%). Record the initial CO value, the step size, and the exact time of the step.</li>
@@ -45,8 +45,8 @@ export default function Tuning() {
         <li>From the trend, identify three key parameters.</li>
       </ol>
 
-      <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 my-4">
-        <div className="font-bold text-navy-700 mb-3">What to Extract from the Step Test</div>
+      <div className="bg-white/4 border border-slate-200 rounded-xl p-4 my-4">
+        <div className="font-bold text-slate-100 mb-3">What to Extract from the Step Test</div>
         <div className="space-y-2 text-sm">
           <div className="flex gap-3">
             <span className="font-bold text-mblue-600 w-6">K</span>
@@ -69,7 +69,7 @@ export default function Tuning() {
 
       <GifCard gifKey="nerd" caption="Extracting K, τ, θ from a step test. The math is worth it." side="right" />
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">Ziegler-Nichols Tuning (Closed-Loop Method)</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Ziegler-Nichols Tuning (Closed-Loop Method)</h2>
 
       <p>
         The Ziegler-Nichols closed-loop (ultimate gain) method was published in 1942 and remains widely referenced today. It requires deliberately oscillating the loop, which makes plant operators nervous — for good reason.
@@ -78,7 +78,7 @@ export default function Tuning() {
       <p>
         <strong>Procedure:</strong>
       </p>
-      <ol className="list-decimal list-inside space-y-2 text-slate-700 ml-4 my-3">
+      <ol className="list-decimal list-inside space-y-2 text-slate-300 ml-4 my-3">
         <li>Set Ki = 0 and Kd = 0 (P-only control).</li>
         <li>Starting with a low Kp, increase it slowly while making small SP changes.</li>
         <li>Continue until the loop oscillates with <strong>sustained, constant-amplitude oscillations</strong> — neither growing nor decaying. This Kp is the <strong>ultimate gain (Ku)</strong>.</li>
@@ -103,7 +103,7 @@ export default function Tuning() {
               <td className="p-3 text-center text-slate-400">—</td>
               <td className="p-3 text-center text-slate-400">—</td>
             </tr>
-            <tr className="bg-white">
+            <tr className="bg-white/5">
               <td className="p-3 font-medium">PI</td>
               <td className="p-3 text-center font-mono">0.45·Ku</td>
               <td className="p-3 text-center font-mono">Tu / 1.2</td>
@@ -125,11 +125,11 @@ export default function Tuning() {
 
       <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-2xl p-5 my-6">
         <div className="text-xs font-bold text-purple-600 uppercase tracking-widest mb-2">Quote</div>
-        <p className="text-slate-700 italic text-sm">"{analogy.text}"</p>
+        <p className="text-slate-300 italic text-sm">"{analogy.text}"</p>
         <p className="text-xs text-slate-400 mt-2">— {analogy.author}</p>
       </div>
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">Lambda Tuning (IMC-Based)</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Lambda Tuning (IMC-Based)</h2>
 
       <p>
         Lambda tuning (also called IMC or Internal Model Control tuning) is the preferred method for most process engineers. The key innovation: you pick the desired closed-loop response time λ (lambda), and the tuning equations calculate the appropriate constants. You're directly specifying "I want this loop to respond in 30 seconds" instead of working backwards from oscillation behavior.
@@ -150,19 +150,19 @@ export default function Tuning() {
         Lambda tuning is robust because it explicitly accounts for dead time. A loop with a lot of dead time gets conservative tuning automatically. Choosing λ = 2θ is a good starting point for most self-regulating processes. Choosing λ = θ gives tighter control with less stability margin — use only when you need fast response and the measurement is clean.
       </p>
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">Cohen-Coon (Open-Loop Method)</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Cohen-Coon (Open-Loop Method)</h2>
 
       <p>
         Cohen-Coon is another open-loop step test method, designed specifically for processes with significant dead time relative to the time constant (θ/τ &gt; 0.1). It tends to produce more aggressive tuning than Lambda but less aggressive than Ziegler-Nichols.
       </p>
 
-      <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 my-4 font-mono text-xs space-y-1">
-        <div className="font-bold text-navy-700 mb-2">Cohen-Coon PI Tuning</div>
+      <div className="bg-white/4 border border-slate-200 rounded-xl p-4 my-4 font-mono text-xs space-y-1">
+        <div className="font-bold text-slate-100 mb-2">Cohen-Coon PI Tuning</div>
         <div>Kp = (1/K) · (τ/θ) · (0.9 + θ/12τ)</div>
         <div>Ti = θ · (30 + 3θ/τ) / (9 + 20θ/τ)</div>
       </div>
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">Rule-of-Thumb Starting Points</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Rule-of-Thumb Starting Points</h2>
 
       <p>
         When you have no time for a step test and the process needs to be running in five minutes:
@@ -179,11 +179,11 @@ export default function Tuning() {
             </tr>
           </thead>
           <tbody>
-            <tr className="bg-slate-50"><td className="p-3">Flow</td><td className="p-3 text-center font-mono">0.3–0.5</td><td className="p-3 text-center font-mono">0.05–0.2</td><td className="p-3 text-xs text-slate-500">Noisy, fast — avoid D</td></tr>
-            <tr className="bg-white"><td className="p-3">Liquid Pressure</td><td className="p-3 text-center font-mono">0.5–2</td><td className="p-3 text-center font-mono">0.05–0.5</td><td className="p-3 text-xs text-slate-500">Fast process, very noisy</td></tr>
-            <tr className="bg-slate-50"><td className="p-3">Liquid Level</td><td className="p-3 text-center font-mono">1–3</td><td className="p-3 text-center font-mono">5–30</td><td className="p-3 text-xs text-slate-500">Often P-only or PI</td></tr>
-            <tr className="bg-white"><td className="p-3">Temperature</td><td className="p-3 text-center font-mono">1–5</td><td className="p-3 text-center font-mono">2–10</td><td className="p-3 text-xs text-slate-500">Slow, D often helpful</td></tr>
-            <tr className="bg-slate-50 rounded-b-xl"><td className="p-3 rounded-bl-xl">Gas Pressure</td><td className="p-3 text-center font-mono">2–5</td><td className="p-3 text-center font-mono">0.5–3</td><td className="p-3 text-xs text-slate-500 rounded-br-xl">Compressible, can be fast</td></tr>
+            <tr className="bg-white/4"><td className="p-3">Flow</td><td className="p-3 text-center font-mono">0.3–0.5</td><td className="p-3 text-center font-mono">0.05–0.2</td><td className="p-3 text-xs text-slate-500">Noisy, fast — avoid D</td></tr>
+            <tr className="bg-white/5"><td className="p-3">Liquid Pressure</td><td className="p-3 text-center font-mono">0.5–2</td><td className="p-3 text-center font-mono">0.05–0.5</td><td className="p-3 text-xs text-slate-500">Fast process, very noisy</td></tr>
+            <tr className="bg-white/4"><td className="p-3">Liquid Level</td><td className="p-3 text-center font-mono">1–3</td><td className="p-3 text-center font-mono">5–30</td><td className="p-3 text-xs text-slate-500">Often P-only or PI</td></tr>
+            <tr className="bg-white/5"><td className="p-3">Temperature</td><td className="p-3 text-center font-mono">1–5</td><td className="p-3 text-center font-mono">2–10</td><td className="p-3 text-xs text-slate-500">Slow, D often helpful</td></tr>
+            <tr className="bg-white/4 rounded-b-xl"><td className="p-3 rounded-bl-xl">Gas Pressure</td><td className="p-3 text-center font-mono">2–5</td><td className="p-3 text-center font-mono">0.5–3</td><td className="p-3 text-xs text-slate-500 rounded-br-xl">Compressible, can be fast</td></tr>
           </tbody>
         </table>
       </div>

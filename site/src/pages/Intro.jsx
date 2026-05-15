@@ -31,7 +31,7 @@ export default function Intro() {
         Closed-loop control measures the <strong>actual output</strong> of the process, compares it to the <strong>desired output</strong>, and uses the <strong>difference</strong> to continuously adjust the manipulated variable. This is feedback. Without it, you're guessing.
       </Callout>
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">Open-Loop vs Closed-Loop</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Open-Loop vs Closed-Loop</h2>
 
       <p>
         An <strong>open-loop system</strong> applies a control action based purely on a predetermined input — no measurement of what actually happened. A toaster is open-loop. You set the timer and pull the lever. Whether the bread is frozen or stale, it gets the same heat for the same duration. If the toast burns, the toaster doesn't know and doesn't care.
@@ -41,12 +41,12 @@ export default function Intro() {
         A <strong>closed-loop system</strong> measures the result and adjusts accordingly. Your car's cruise control is closed-loop. When you go uphill, the speed drops, the controller detects the error, and increases throttle. When you crest the hill and start going downhill, it detects overspeed and reduces throttle. The controller is continuously working to keep error near zero.
       </p>
 
-      <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 my-6">
+      <div className="rounded-2xl p-5 my-6" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
         <div className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Comparison</div>
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
             <div className="font-bold text-morange-500 mb-2">Open-Loop</div>
-            <ul className="space-y-1 text-slate-600">
+            <ul className="space-y-1 text-slate-400">
               <li>• No feedback path</li>
               <li>• Output not measured</li>
               <li>• Can't correct disturbances</li>
@@ -56,7 +56,7 @@ export default function Intro() {
           </div>
           <div>
             <div className="font-bold text-mgreen-500 mb-2">Closed-Loop</div>
-            <ul className="space-y-1 text-slate-600">
+            <ul className="space-y-1 text-slate-400">
               <li>• Feedback continuously measured</li>
               <li>• Automatically corrects error</li>
               <li>• Rejects disturbances</li>
@@ -69,7 +69,7 @@ export default function Intro() {
 
       <GifCard gifKey="thinking" caption="Feedback: the process telling the controller how wrong it is." side="right" />
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">Real Industrial Examples</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Real Industrial Examples</h2>
 
       <p>
         <strong>Thermostat (temperature control):</strong> The room temperature is measured by a sensor (PV). You set 72°F (SP). The controller computes the error (SP − PV) and turns the furnace on or off. When the room reaches 72°F, error = 0 and the furnace shuts off. When it drifts below, error becomes positive and the furnace fires again.
@@ -87,7 +87,7 @@ export default function Intro() {
         Open-loop control is only appropriate when: (1) the process is extremely stable and predictable, (2) disturbances are negligible, and (3) the cost of a sensor + controller exceeds the cost of occasional off-spec output. In a real plant, this is rare. If someone is proposing open-loop for a critical process variable, ask them what happens when a disturbance hits.
       </Callout>
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">The Feedback Loop Structure</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">The Feedback Loop Structure</h2>
 
       <p>
         Every closed-loop control system has the same basic structure, regardless of what's being controlled:
@@ -99,7 +99,7 @@ export default function Intro() {
        └────────────────── Feedback (measurement) ─────────────────┘`}</pre>
       </div>
 
-      <ul className="space-y-2 text-slate-700 ml-4">
+      <ul className="space-y-2 text-slate-300 ml-4">
         <li><strong>SP (Setpoint):</strong> The target value — what you want the process variable to be.</li>
         <li><strong>[Σ] (Summer/Comparator):</strong> Subtracts PV from SP to compute error: e = SP − PV.</li>
         <li><strong>Controller:</strong> Processes the error and computes a controller output (CO) — typically a PID algorithm.</li>
@@ -116,11 +116,11 @@ export default function Intro() {
 
       <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-2xl p-5 my-6">
         <div className="text-xs font-bold text-purple-600 uppercase tracking-widest mb-2">Quote</div>
-        <p className="text-slate-700 italic text-sm">"{analogy.text}"</p>
+        <p className="text-slate-300 italic text-sm">"{analogy.text}"</p>
         <p className="text-xs text-slate-400 mt-2">— {analogy.author}</p>
       </div>
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">Why Feedback Changes Everything</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Why Feedback Changes Everything</h2>
 
       <p>
         Without feedback, you must model the process perfectly — every disturbance, every nonlinearity, every environmental factor — to calculate the right output. That model is never perfect. Feedback doesn't require a perfect model. It measures reality and continuously corrects for whatever the model got wrong.

@@ -36,7 +36,7 @@ export default function PIDAction() {
         </div>
       </div>
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">P — Proportional Action</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">P — Proportional Action</h2>
 
       <p>
         Proportional action is the simplest: the controller output is proportional to the current error. Double the error, double the output. Zero error, zero proportional contribution.
@@ -61,7 +61,7 @@ export default function PIDAction() {
 
       <GifCard gifKey="math" caption="Proportional: direct, immediate, and brutally honest about error." side="right" />
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">I — Integral Action</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">I — Integral Action</h2>
 
       <p>
         Integral action accumulates error over time. If the PV is sitting slightly below SP — even a tiny amount — the integral term keeps increasing the CO until the error is truly zero. It's the controller's "grudge" against any non-zero error.
@@ -80,7 +80,7 @@ export default function PIDAction() {
         When the controller output is saturated (stuck at 0% or 100%) and the error persists — because the valve is fully open but the PV still hasn't reached SP — the integral term keeps accumulating. It "winds up" to an enormous value. When the process finally responds and the error starts shrinking, the integrator is so loaded that it keeps driving the CO far past what's needed. The result: massive overshoot, long recovery time, and sometimes a process trip. Anti-windup mechanisms (clamping or back-calculation) prevent this.
       </Callout>
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">D — Derivative Action</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">D — Derivative Action</h2>
 
       <p>
         Derivative action responds to the <em>rate of change</em> of error. If the PV is moving rapidly toward the SP, derivative action starts reducing the CO before the error reaches zero — damping the response and reducing overshoot. Think of it as predictive braking.
@@ -99,12 +99,12 @@ export default function PIDAction() {
         If derivative is applied to <em>error</em> (not PV), then every time an operator changes the setpoint, the derivative sees a step change in error — which produces an instantaneous infinite rate of change, resulting in a huge spike in the CO. This is called "derivative kick." It can slam a valve from 40% to 100% in one scan cycle. Most modern PID blocks apply derivative to PV (not error) to eliminate this: when SP steps, PV hasn't changed yet so D = 0. Always verify which mode your block uses.
       </Callout>
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">How the Three Terms Work Together</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">How the Three Terms Work Together</h2>
 
       <p>
         Think of tuning a shower:
       </p>
-      <ul className="list-disc list-inside space-y-2 text-slate-700 ml-4 my-3">
+      <ul className="list-disc list-inside space-y-2 text-slate-300 ml-4 my-3">
         <li><strong>P (reflexes):</strong> The water is freezing cold. You immediately crank the hot water knob hard. Proportional to how wrong things are.</li>
         <li><strong>I (grudges):</strong> The water is still slightly cooler than you want, even though you've made a dozen adjustments. You keep making tiny incremental corrections until it's exactly right. Integral won't stop until the error is truly zero.</li>
         <li><strong>D (anxiety):</strong> The water temperature is rising fast and is about to overshoot. You start pulling back on the hot water before you actually reach your target temperature. Derivative sees the rapid change and preemptively damps it.</li>
@@ -112,24 +112,24 @@ export default function PIDAction() {
 
       <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-2xl p-5 my-6">
         <div className="text-xs font-bold text-purple-600 uppercase tracking-widest mb-2">Quote</div>
-        <p className="text-slate-700 italic text-sm">"{analogy.text}"</p>
+        <p className="text-slate-300 italic text-sm">"{analogy.text}"</p>
         <p className="text-xs text-slate-400 mt-2">— {analogy.author}</p>
       </div>
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">Parallel vs Series (Ideal vs Standard) Form</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Parallel vs Series (Ideal vs Standard) Form</h2>
 
       <p>
         PID controllers can be implemented in different forms, and the tuning constants mean different things in each:
       </p>
 
       <div className="space-y-3 my-4">
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
-          <div className="font-bold text-navy-700 mb-1">Parallel (ISA) Form</div>
+        <div className="bg-white/4 border border-slate-200 rounded-xl p-4">
+          <div className="font-bold text-slate-100 mb-1">Parallel (ISA) Form</div>
           <div className="font-mono text-sm text-mblue-600">u = Kp·e + Ki·∫e dt + Kd·de/dt</div>
           <p className="text-sm text-slate-600 mt-1">Three independent gains. Changing Kp doesn't affect the I or D terms. Most common in modern controllers. Ki = Kp/Ti, Kd = Kp·Td.</p>
         </div>
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
-          <div className="font-bold text-navy-700 mb-1">Series (Classical) Form</div>
+        <div className="bg-white/4 border border-slate-200 rounded-xl p-4">
+          <div className="font-bold text-slate-100 mb-1">Series (Classical) Form</div>
           <div className="font-mono text-sm text-amber-600">u = Kp·[e + (1/Ti)·∫e dt] × [1 + Td·de/dt]</div>
           <p className="text-sm text-slate-600 mt-1">The P, I, and D terms interact. Changing Kp scales all three. Common in older analog and pneumatic controllers. Tuning rules designed for series form don't translate directly to parallel.</p>
         </div>

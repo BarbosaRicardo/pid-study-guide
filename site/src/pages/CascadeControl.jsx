@@ -24,7 +24,7 @@ export default function CascadeControl() {
         A single PID loop is the workhorse of process control. But some processes have disturbances that arrive faster than the primary loop can see and correct them. Some have multiple interacting variables. Some have dynamics that a single loop simply can't handle well. This is where cascade control and other advanced single-loop strategies come in.
       </p>
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">Cascade Control — Two Loops in Series</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Cascade Control — Two Loops in Series</h2>
 
       <p>
         Cascade control uses two controllers — one inside the other. The <strong>primary (outer) loop</strong> measures the main process variable you care about (e.g., reactor temperature) and its output becomes the <strong>setpoint for the secondary (inner) loop</strong>. The secondary loop controls a faster, intermediate variable (e.g., jacket flow or jacket temperature).
@@ -32,7 +32,7 @@ export default function CascadeControl() {
 
       <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-2xl p-5 my-6">
         <div className="text-xs font-bold text-purple-600 uppercase tracking-widest mb-2">Quote</div>
-        <p className="text-slate-700 italic text-sm">"{analogy.text}"</p>
+        <p className="text-slate-300 italic text-sm">"{analogy.text}"</p>
         <p className="text-xs text-slate-400 mt-2">— {analogy.author}</p>
       </div>
 
@@ -48,7 +48,7 @@ export default function CascadeControl() {
         The inner (secondary) loop must be 3 to 5 times faster than the outer (primary) loop. If they operate at similar speeds, cascade makes things worse, not better — the loops interact and fight each other. Tune the inner loop first (with the outer loop in manual), then tune the outer loop with the inner loop in auto.
       </Callout>
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">Classic Cascade Example: Heat Exchanger</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Classic Cascade Example: Heat Exchanger</h2>
 
       <p>
         A shell-and-tube heat exchanger heats process fluid using steam. You want the process fluid outlet temperature at 180°F (primary PV). Steam pressure in the shell is the intermediate variable (secondary PV). The steam control valve is the manipulated variable.
@@ -64,12 +64,12 @@ export default function CascadeControl() {
 
       <GifCard gifKey="hot" caption="Cascade: the inner loop handles fast disturbances before they reach the primary." side="right" />
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">When to Use Cascade</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">When to Use Cascade</h2>
 
       <p>
         Cascade is worth implementing when:
       </p>
-      <ul className="list-disc list-inside space-y-2 text-slate-700 ml-4 my-3">
+      <ul className="list-disc list-inside space-y-2 text-slate-300 ml-4 my-3">
         <li>The primary loop has significant dead time or lag</li>
         <li>There are frequent disturbances in an intermediate variable that can be measured</li>
         <li>That intermediate variable responds much faster than the primary variable</li>
@@ -84,7 +84,7 @@ export default function CascadeControl() {
         When the primary loop requests an inner-loop setpoint outside the inner loop's achievable range — say, the temperature loop demands a flow setpoint of 120% — the inner loop is saturated. The outer loop doesn't know this and keeps winding up its integral. When the saturation condition clears, the outer loop has accumulated a massive integral error and will overshoot severely. Anti-windup on the outer loop must be configured to track the inner loop's actual setpoint, not its requested setpoint.
       </Callout>
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">Feedforward Control</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Feedforward Control</h2>
 
       <p>
         Feedforward is a fundamentally different approach: instead of waiting for an error to appear and then reacting, feedforward <em>anticipates</em> disturbances and applies a corrective action in advance.
@@ -95,13 +95,13 @@ export default function CascadeControl() {
       </p>
 
       <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 my-4">
-        <div className="font-bold text-navy-700 mb-2">Feedforward + Feedback Combined</div>
-        <p className="text-sm text-slate-600">
+        <div className="font-bold text-slate-100 mb-2">Feedforward + Feedback Combined</div>
+        <p className="text-sm text-slate-400">
           Pure feedforward requires a perfect model to work — any mismatch between your feedforward model and reality creates permanent offset. In practice, feedforward is always paired with a feedback loop. Feedforward handles the large, known disturbances quickly. Feedback trims out any remaining error from model mismatch.
         </p>
       </div>
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">Ratio Control</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Ratio Control</h2>
 
       <p>
         Ratio control maintains a fixed ratio between two process streams. Classic applications: fuel-to-air ratio in a burner (combustion control), reactant ratio in a chemical reactor, blend ratio in a mixing station.
@@ -115,7 +115,7 @@ export default function CascadeControl() {
         In burner management, the fuel-to-air ratio is safety-critical. Too much fuel (rich mixture) → unburned fuel accumulation → explosion risk. Too little air (lean mixture) → incomplete combustion → CO generation. Ratio control must be configured with limits that prevent unsafe ratios, and the ratio controller must account for density changes (temperature, pressure corrections) if the fuel composition varies.
       </Callout>
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">Split-Range Control</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Split-Range Control</h2>
 
       <p>
         Split-range control uses one controller to drive two (or more) final control elements at different parts of the output range. Example: a temperature controller with CO 0–50% driving a cooling valve (0% CO = fully open, 50% CO = closed) and CO 50–100% driving a heating valve (50% CO = closed, 100% CO = fully open). The controller doesn't need to know about the split — it just sees one output signal.

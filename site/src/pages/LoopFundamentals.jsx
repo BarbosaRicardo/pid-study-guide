@@ -24,7 +24,7 @@ export default function LoopFundamentals() {
         Before you tune a single loop, you need to speak the language. SP, PV, CO, MV, error, disturbance — these aren't just acronyms. Each one represents a specific physical quantity in the control loop, and confusing them in a conversation with a controls engineer will get you corrected in front of your peers.
       </p>
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">The Core Variables</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">The Core Variables</h2>
 
       <div className="space-y-4 my-6">
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
@@ -33,7 +33,7 @@ export default function LoopFundamentals() {
               <span className="text-white font-black text-sm">SP</span>
             </div>
             <div>
-              <div className="font-bold text-navy-700">Setpoint (SP)</div>
+              <div className="font-bold text-slate-100">Setpoint (SP)</div>
               <p className="text-sm text-slate-600 mt-1">The target value you want the process variable to reach and maintain. Set by the operator, recipe, or an outer control loop. Examples: 150°F, 45 PSI, 60% level. The SP is what you want. Everything else is about getting there.</p>
             </div>
           </div>
@@ -45,7 +45,7 @@ export default function LoopFundamentals() {
               <span className="text-white font-black text-sm">PV</span>
             </div>
             <div>
-              <div className="font-bold text-navy-700">Process Variable (PV)</div>
+              <div className="font-bold text-slate-100">Process Variable (PV)</div>
               <p className="text-sm text-slate-600 mt-1">The measured value of what the process is actually doing right now. Comes from a transmitter — temperature, pressure, flow, level sensor. This is reality. The controller is continuously comparing PV to SP and computing how wrong things are.</p>
             </div>
           </div>
@@ -57,7 +57,7 @@ export default function LoopFundamentals() {
               <span className="text-white font-black text-sm">e</span>
             </div>
             <div>
-              <div className="font-bold text-navy-700">Error (e = SP − PV)</div>
+              <div className="font-bold text-slate-100">Error (e = SP − PV)</div>
               <p className="text-sm text-slate-600 mt-1">The difference between setpoint and process variable. Positive error means PV is below SP (need to increase output). Negative error means PV is above SP (need to decrease output). The entire PID algorithm exists to drive error to zero.</p>
             </div>
           </div>
@@ -69,7 +69,7 @@ export default function LoopFundamentals() {
               <span className="text-white font-black text-sm">CO</span>
             </div>
             <div>
-              <div className="font-bold text-navy-700">Controller Output (CO)</div>
+              <div className="font-bold text-slate-100">Controller Output (CO)</div>
               <p className="text-sm text-slate-600 mt-1">The signal the PID algorithm sends to the final control element. Typically 0–100% or 4–20 mA. This is the computed answer to: "Given this error, what should I tell the valve to do?" The CO drives the MV.</p>
             </div>
           </div>
@@ -81,7 +81,7 @@ export default function LoopFundamentals() {
               <span className="text-white font-black text-sm">MV</span>
             </div>
             <div>
-              <div className="font-bold text-navy-700">Manipulated Variable (MV)</div>
+              <div className="font-bold text-slate-100">Manipulated Variable (MV)</div>
               <p className="text-sm text-slate-600 mt-1">The physical quantity being adjusted to control the PV. Often the same as CO in practice, but technically the MV is the actual physical position/flow/power — what the valve, VFD, or heater is actually doing in response to the CO signal.</p>
             </div>
           </div>
@@ -90,7 +90,7 @@ export default function LoopFundamentals() {
 
       <GifCard gifKey="robot" caption="The controller, working tirelessly to eliminate error." side="right" />
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">Disturbances: The Reason Feedback Exists</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Disturbances: The Reason Feedback Exists</h2>
 
       <p>
         A <strong>disturbance</strong> is any external influence on the process that changes the PV without the controller doing anything. Disturbances are why open-loop control fails and why closed-loop control was invented.
@@ -99,7 +99,7 @@ export default function LoopFundamentals() {
       <p>
         Examples of disturbances:
       </p>
-      <ul className="list-disc list-inside space-y-1 text-slate-700 ml-4 my-3">
+      <ul className="list-disc list-inside space-y-1 text-slate-300 ml-4 my-3">
         <li>Ambient temperature changes affecting a heat exchanger</li>
         <li>Feed composition changes in a reactor</li>
         <li>Upstream pressure changes affecting downstream flow</li>
@@ -116,13 +116,13 @@ export default function LoopFundamentals() {
         Measure PV → Compute error (SP − PV) → Calculate CO → Apply CO to final control element → Process responds → New PV measured → Repeat. This cycle runs continuously — in PLCs, typically every scan cycle (10–100 ms). Each iteration, the controller is asking: "How wrong am I right now?" and adjusting accordingly.
       </Callout>
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">The Block Diagram in Words</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">The Block Diagram in Words</h2>
 
       <p>
         A feedback control loop block diagram looks complex on paper but represents a simple idea. Starting from the left:
       </p>
 
-      <ol className="list-decimal list-inside space-y-2 text-slate-700 ml-4 my-3">
+      <ol className="list-decimal list-inside space-y-2 text-slate-300 ml-4 my-3">
         <li><strong>SP enters the comparator</strong> (the summing junction, often drawn as a circle with a + and −)</li>
         <li><strong>PV feeds back into the comparator</strong> with a negative sign (this is why it's called negative feedback)</li>
         <li><strong>The comparator outputs error</strong> = SP − PV</li>
@@ -144,7 +144,7 @@ SP ──►[Σ]──► PID Controller ──► Valve ──► Process ─�
                            (measures PV)`}</pre>
       </div>
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">Direct vs Reverse Acting</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Direct vs Reverse Acting</h2>
 
       <p>
         Controller <strong>action</strong> (direct vs reverse) is one of the most commonly misconfigured settings on a PID controller, and getting it wrong will make the loop do the exact opposite of what you want.
@@ -162,7 +162,7 @@ SP ──►[Σ]──► PID Controller ──► Valve ──► Process ─�
         If the controller action is set backwards, the loop will have <em>positive</em> feedback instead of negative. PV rises → error increases → CO increases → PV rises faster → error increases more → CO increases more... The loop will slam to one limit or the other in seconds. This is called "running away" and it looks exactly like severely aggressive tuning. Check the action setting before touching the tuning constants.
       </Callout>
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">Steady State, Transient Response, and Offset</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Steady State, Transient Response, and Offset</h2>
 
       <p>
         <strong>Steady state</strong> is when the PV has stabilized at a constant value and the error is no longer changing. A properly tuned loop with integral action reaches steady state at exactly SP (zero offset). A P-only loop reaches steady state with a non-zero offset — the error required to produce enough CO to hold the process in balance.
@@ -180,7 +180,7 @@ SP ──►[Σ]──► PID Controller ──► Valve ──► Process ─�
 
       <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-2xl p-5 my-6">
         <div className="text-xs font-bold text-purple-600 uppercase tracking-widest mb-2">Quote</div>
-        <p className="text-slate-700 italic text-sm">"{analogy.text}"</p>
+        <p className="text-slate-300 italic text-sm">"{analogy.text}"</p>
         <p className="text-xs text-slate-400 mt-2">— {analogy.author}</p>
       </div>
 

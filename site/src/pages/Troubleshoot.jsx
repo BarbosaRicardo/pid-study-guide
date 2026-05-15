@@ -26,17 +26,17 @@ export default function Troubleshoot() {
 
       <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-2xl p-5 my-6">
         <div className="text-xs font-bold text-purple-600 uppercase tracking-widest mb-2">Quote</div>
-        <p className="text-slate-700 italic text-sm">"{analogy.text}"</p>
+        <p className="text-slate-300 italic text-sm">"{analogy.text}"</p>
         <p className="text-xs text-slate-400 mt-2">— {analogy.author}</p>
       </div>
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">The Diagnostic Checklist (Before Touching Tuning)</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">The Diagnostic Checklist (Before Touching Tuning)</h2>
 
       <Callout type="key" title="80% of Loop Problems Are NOT Tuning Problems">
         Before you change a single tuning constant, verify: (1) Is the PV transmitter calibrated and responding correctly? (2) Is the control valve stroking freely and linearly? (3) Is the loop in auto mode? (4) Are there mechanical issues (stiction, backlash) in the actuator? (5) Has the process changed (fouling, composition change, load change)? Adjusting Kp to compensate for a stuck valve is treating the symptom. The valve will stick again. Find the root cause.
       </Callout>
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">Symptom: Oscillation</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Symptom: Oscillation</h2>
 
       <p>
         The PV continuously cycles above and below the setpoint with a regular, repeating period. The CO is also oscillating in sync.
@@ -59,7 +59,7 @@ export default function Troubleshoot() {
         A fast way to diagnose: put the loop in manual and observe the PV. If the PV oscillation stops immediately, the oscillation is controller-induced (too aggressive tuning). If the PV keeps oscillating in manual, the oscillation is coming from the process or an upstream loop.
       </p>
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">Symptom: Offset (Steady-State Error)</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Symptom: Offset (Steady-State Error)</h2>
 
       <p>
         The loop has settled, the PV is stable, but it's sitting at a value consistently below (or above) the setpoint. The error never reaches zero.
@@ -76,7 +76,7 @@ export default function Troubleshoot() {
         </ul>
       </div>
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">Symptom: Sluggish Response</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Symptom: Sluggish Response</h2>
 
       <p>
         After a SP change or a disturbance, the PV slowly creeps toward the setpoint. It takes 10× longer than it should to recover.
@@ -93,7 +93,7 @@ export default function Troubleshoot() {
         </ul>
       </div>
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">Symptom: Limit Cycling (Valve Stiction)</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Symptom: Limit Cycling (Valve Stiction)</h2>
 
       <p>
         The PV oscillates with a sawtooth or asymmetric wave pattern. The CO moves steadily in one direction, then jumps suddenly. This is the classic signature of valve stiction (static friction).
@@ -107,7 +107,7 @@ export default function Troubleshoot() {
         You cannot tune out valve stiction. Reducing integral action makes the cycle slower, but it doesn't fix the valve. The fix is mechanical: service the valve, replace packing, upgrade the positioner. In the meantime, a workaround is reducing Kp and Ti to minimize the CO force driving the valve — but this degrades control performance. Document the issue and get the valve fixed.
       </Callout>
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">Symptom: Integral Windup After Startup</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Symptom: Integral Windup After Startup</h2>
 
       <p>
         After the loop is switched from manual to auto at startup, the PV massively overshoots the setpoint. The overshoot is large (sometimes 50–100% above SP) and takes a long time to recover.
@@ -121,13 +121,13 @@ export default function Troubleshoot() {
         Fix: (1) Ensure anti-windup is enabled and configured correctly. (2) Use bumpless transfer — initialize the integral accumulator to zero on mode switch. (3) Configure a startup SP ramp that begins at the actual PV value, not the target SP.
       </p>
 
-      <h2 className="text-2xl font-bold text-navy-700 mt-8 mb-3">Reading a Trend to Diagnose a Loop</h2>
+      <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Reading a Trend to Diagnose a Loop</h2>
 
       <p>
         When called to troubleshoot a misbehaving loop, the first thing to pull up is a trend showing SP, PV, and CO over the last 24 hours (or longer). Look for:
       </p>
 
-      <ul className="list-disc list-inside space-y-2 text-slate-700 ml-4 my-3">
+      <ul className="list-disc list-inside space-y-2 text-slate-300 ml-4 my-3">
         <li><strong>Correlated oscillations in PV and CO</strong> — tuning or upstream disturbance</li>
         <li><strong>CO moving, PV not following</strong> — mechanical problem (valve, actuator)</li>
         <li><strong>PV moving, CO not responding</strong> — loop in manual or controller failure</li>
