@@ -11,7 +11,7 @@ const ICON_MAP = {
 }
 
 export default function Sidebar() {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(true)
   const [reportOpen, setReportOpen] = useState(false)
   const [session, setSession] = useState(null)
   const [sessionLoading, setSessionLoading] = useState(true)
