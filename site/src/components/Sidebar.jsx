@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import { Menu, X, Zap, BookOpen, BarChart2, Home, Settings, Sliders, TrendingUp, Layers, Cpu, Monitor, Wrench, FlaskConical, CreditCard, LayoutGrid, LogIn, LogOut } from 'lucide-react'
+import { Menu, X, Zap, BookOpen, BarChart2, Home, Settings, Sliders, TrendingUp, Layers, Cpu, Monitor, Wrench, FlaskConical, CreditCard, LayoutGrid, LogIn, LogOut , FileText } from 'lucide-react'
 import { CHAPTERS } from '../data/chapters'
 import { useProgress } from '../hooks/useProgress'
 import { supabase } from '../lib/supabase'
@@ -120,6 +120,16 @@ export default function Sidebar() {
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
           Download PDF Study Guide
+        </a>
+        <a
+          href={`${import.meta.env.BASE_URL}syllabus.pdf`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-xl text-xs font-semibold transition-all"
+          style={{ background: 'rgba(168,85,247,0.07)', border: '1px solid rgba(168,85,247,0.18)', color: 'rgba(168,85,247,0.7)' }}
+        >
+          <FileText size={12} />
+          Course Syllabus
         </a>
         <a
           href="https://scada-hub.vercel.app"
