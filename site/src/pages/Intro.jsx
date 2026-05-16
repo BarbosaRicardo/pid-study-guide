@@ -5,6 +5,7 @@ import FunFact from '../components/FunFact'
 import GifCard from '../components/GifCard'
 import QuizLevels from '../components/QuizLevels'
 import ChapterExercise from '../components/ChapterExercise'
+import TrainingPanel from '../components/TrainingPanel'
 import { QUIZZES } from '../data/quizzes'
 import { ANALOGIES } from '../data/chapters'
 import { PID_CHAPTER_EXERCISES } from '../data/chapterExercises'
@@ -138,6 +139,7 @@ export default function Intro() {
         <QuizLevels chapterId="intro" />
       )}
       <ChapterExercise exercise={PID_CHAPTER_EXERCISES.intro} />
+      <TrainingPanel course="pid" />
     </ChapterLayout>
   )
 }
