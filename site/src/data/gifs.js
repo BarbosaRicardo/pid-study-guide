@@ -10,6 +10,6 @@ export const GIFS = {
   robot:     'tenor:1533927585147792147', // ai robotics automation — process under automatic control
   thinking:  'tenor:16814794',          // thinking process deep — FOPDT model identification
   tryAgain:  'tenor:6996012332740994750', // try again try again later — manual mode, here we go
-  courseHero: 'tenor:17061583',           // mind maths equation — PID discrete formula
+  courseHero: 'MCZ39lz83o5lC',            // mind blown math — PID tuning moment of clarity
   warning:   'tenor:17652793',          // three stooges facepalm — integral windup discovered
 }
