@@ -1,5 +1,6 @@
 export const CHAPTERS = [
-  { id: 'intro', label: 'Ch 1: Closed-Loop Control', title: 'What Is Closed-Loop Control?', path: '/', icon: 'BookOpen', next: 'loop' },
+  { id: 'home',  label: 'Home',                        icon: 'Home',     path: '/' },
+  { id: 'intro', label: 'Ch 1: Closed-Loop Control', title: 'What Is Closed-Loop Control?', path: '/intro', icon: 'BookOpen', next: 'loop' },
   { id: 'loop', label: 'Ch 2: Loop Fundamentals', title: 'Control Loop Fundamentals', path: '/loop', icon: 'Settings', prev: 'intro', next: 'pid' },
   { id: 'pid', label: 'Ch 3: P, I, and D Action', title: 'P, I, and D — What Each Does', path: '/pid', icon: 'BarChart2', prev: 'loop', next: 'tuning' },
   { id: 'tuning', label: 'Ch 4: Tuning Methods', title: 'Tuning Methods', path: '/tuning', icon: 'Sliders', prev: 'pid', next: 'process' },
