@@ -65,7 +65,7 @@ export default function LoopFundamentals() {
 
         <div className="rounded-xl p-4" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)' }}>
           <div className="flex items-start gap-3">
-            <div className="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 bg-amber-500/100 rounded-xl flex items-center justify-center flex-shrink-0">
               <span className="text-white font-black text-sm">CO</span>
             </div>
             <div>
@@ -77,7 +77,7 @@ export default function LoopFundamentals() {
 
         <div className="rounded-xl p-4" style={{ background: 'rgba(139,92,246,0.06)', border: '1px solid rgba(139,92,246,0.2)' }}>
           <div className="flex items-start gap-3">
-            <div className="w-12 h-12 bg-purple-500/100 rounded-xl flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 bg-purple-500/100/100 rounded-xl flex items-center justify-center flex-shrink-0">
               <span className="text-white font-black text-sm">MV</span>
             </div>
             <div>
@@ -88,7 +88,9 @@ export default function LoopFundamentals() {
         </div>
       </div>
 
-      <GifCard gifKey="robot" caption="The controller, working tirelessly to eliminate error." side="right" />
+      <GifCard gifKey="robot" caption="The controller, working tirelessly to eliminate error." side="right"
+        body="A closed-loop controller runs continuously: sample PV, compute error, compute controller output, send output to actuator, repeat. On a PLC, this happens every scan cycle — typically 10 to 100 milliseconds. The controller never stops; even when process conditions are stable, it's continuously re-computing and re-issuing the output. The 'I' term keeps accumulating until the error is truly zero."
+      />
 
       <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Disturbances: The Reason Feedback Exists</h2>
 
@@ -179,7 +181,7 @@ SP ──►[Σ]──► PID Controller ──► Valve ──► Process ─�
       <FunFact index={1} />
 
       <div className="rounded-2xl p-5 my-6" style={{ background: 'rgba(139,92,246,0.07)', border: '1px solid rgba(139,92,246,0.2)' }}>
-        <div className="text-xs font-bold text-purple-600 uppercase tracking-widest mb-2">Quote</div>
+        <div className="text-xs font-bold text-purple-400 uppercase tracking-widest mb-2">Quote</div>
         <p className="text-slate-300 italic text-sm">"{analogy.text}"</p>
         <p className="text-xs text-slate-400 mt-2">— {analogy.author}</p>
       </div>

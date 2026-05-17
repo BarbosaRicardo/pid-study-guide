@@ -80,14 +80,14 @@ function ResourceDrawer({ resources, level, onClose }) {
                   href={r.searchUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-3 hover:bg-red-50 transition-colors group"
+                  className="flex items-center gap-3 p-3 hover:bg-red-500/100/10 transition-colors group"
                 >
                   <div className="w-9 h-9 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Youtube size={18} className="text-red-600" />
+                    <Youtube size={18} className="text-red-400" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-xs font-bold text-red-600 uppercase tracking-wide">YouTube</div>
-                    <div className="text-sm text-slate-700 font-medium leading-tight truncate group-hover:text-red-700">{r.title}</div>
+                    <div className="text-xs font-bold text-red-400 uppercase tracking-wide">YouTube</div>
+                    <div className="text-sm text-slate-700 font-medium leading-tight truncate group-hover:text-red-400">{r.title}</div>
                   </div>
                   <ExternalLink size={14} className="text-slate-300 flex-shrink-0" />
                 </a>
@@ -97,13 +97,13 @@ function ResourceDrawer({ resources, level, onClose }) {
                   href={r.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-3 hover:bg-blue-50 transition-colors group"
+                  className="flex items-center gap-3 p-3 hover:bg-blue-500/100/10 transition-colors group"
                 >
                   <div className="w-9 h-9 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <ExternalLink size={18} className="text-blue-600" />
+                    <ExternalLink size={18} className="text-blue-400" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-xs font-bold text-blue-600 uppercase tracking-wide">Documentation</div>
+                    <div className="text-xs font-bold text-blue-400 uppercase tracking-wide">Documentation</div>
                     <div className="text-sm text-slate-700 font-medium leading-tight">{r.title}</div>
                   </div>
                   <ExternalLink size={14} className="text-slate-300 flex-shrink-0" />
@@ -113,10 +113,10 @@ function ResourceDrawer({ resources, level, onClose }) {
                 <div className="p-3">
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <BookOpen size={18} className="text-orange-600" />
+                      <BookOpen size={18} className="text-orange-400" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-xs font-bold text-orange-600 uppercase tracking-wide">Textbook</div>
+                      <div className="text-xs font-bold text-orange-400 uppercase tracking-wide">Textbook</div>
                       <div className="text-sm text-slate-700 font-semibold leading-tight">{r.title}</div>
                     </div>
                   </div>
@@ -130,13 +130,13 @@ function ResourceDrawer({ resources, level, onClose }) {
                 <div>
                   <button
                     onClick={() => setExpandedExcerpt(expandedExcerpt === i ? null : i)}
-                    className="w-full flex items-center gap-3 p-3 hover:bg-purple-500/100/10 transition-colors"
+                    className="w-full flex items-center gap-3 p-3 hover:bg-purple-500/100/100/100/10 transition-colors"
                   >
                     <div className="w-9 h-9 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <BookOpen size={18} className="text-purple-600" />
+                      <BookOpen size={18} className="text-purple-400" />
                     </div>
                     <div className="flex-1 min-w-0 text-left">
-                      <div className="text-xs font-bold text-purple-600 uppercase tracking-wide">White Paper / Journal</div>
+                      <div className="text-xs font-bold text-purple-400 uppercase tracking-wide">White Paper / Journal</div>
                       <div className="text-sm text-slate-700 font-medium leading-tight">{r.title}</div>
                     </div>
                     {expandedExcerpt === i
@@ -144,19 +144,19 @@ function ResourceDrawer({ resources, level, onClose }) {
                       : <ChevronDown size={14} className="text-slate-400 flex-shrink-0" />}
                   </button>
                   {expandedExcerpt === i && (
-                    <div className="border-t border-purple-500/20 p-3 bg-purple-500/10">
+                    <div className="border-t border-purple-500/20 p-3 bg-purple-500/100/10">
                       {r.excerpt && (
                         <p className="text-xs text-slate-600 leading-relaxed italic mb-2">"{r.excerpt}"</p>
                       )}
                       {r.citation && (
-                        <p className="text-xs text-purple-600 font-medium">{r.citation}</p>
+                        <p className="text-xs text-purple-400 font-medium">{r.citation}</p>
                       )}
                       {r.url && (
                         <a
                           href={r.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-xs text-blue-600 hover:underline mt-1"
+                          className="inline-flex items-center gap-1 text-xs text-blue-400 hover:underline mt-1"
                         >
                           Read full paper <ExternalLink size={10} />
                         </a>
@@ -170,13 +170,13 @@ function ResourceDrawer({ resources, level, onClose }) {
                   href={r.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-3 hover:bg-green-50 transition-colors group"
+                  className="flex items-center gap-3 p-3 hover:bg-green-500/100/10 transition-colors group"
                 >
                   <div className="w-9 h-9 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Cpu size={18} className="text-green-600" />
+                    <Cpu size={18} className="text-green-400" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-xs font-bold text-green-600 uppercase tracking-wide">Dataset / AI Resource</div>
+                    <div className="text-xs font-bold text-green-400 uppercase tracking-wide">Dataset / AI Resource</div>
                     <div className="text-sm text-slate-700 font-medium leading-tight">{r.title}</div>
                     {r.description && <div className="text-xs text-slate-400 mt-0.5 leading-tight">{r.description}</div>}
                   </div>
@@ -204,7 +204,7 @@ function LevelCard({ meta, questions, chapterId, locked, passed }) {
         <button
           onClick={() => !locked && setOpen((o) => !o)}
           className={`w-full text-left px-4 py-3 flex items-center gap-3 transition-colors ${
-            locked ? 'opacity-60 cursor-not-allowed bg-white' :
+            locked ? 'opacity-60 cursor-not-allowed bg-white/5' :
             open ? `${headerBg}` : 'bg-white/3 hover:bg-white/5'
           }`}
         >
@@ -226,7 +226,7 @@ function LevelCard({ meta, questions, chapterId, locked, passed }) {
             {/* Passed banner */}
             {passed && resources.length > 0 && (
               <div className={`px-4 py-2 flex items-center justify-between ${
-                level === 3 ? 'bg-orange-50' : level === 2 ? 'bg-amber-50' : 'bg-green-50'
+                level === 3 ? 'bg-orange-500/10' : level === 2 ? 'bg-amber-500/10' : 'bg-green-500/10'
               }`}>
                 <span className="text-xs text-slate-600 font-medium">
                   ✅ Level {level} passed

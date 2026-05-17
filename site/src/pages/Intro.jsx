@@ -116,7 +116,7 @@ export default function Intro() {
       <FunFact index={0} />
 
       <div className="rounded-2xl p-5 my-6" style={{ background: 'rgba(139,92,246,0.07)', border: '1px solid rgba(139,92,246,0.2)' }}>
-        <div className="text-xs font-bold text-purple-600 uppercase tracking-widest mb-2">Quote</div>
+        <div className="text-xs font-bold text-purple-400 uppercase tracking-widest mb-2">Quote</div>
         <p className="text-slate-300 italic text-sm">"{analogy.text}"</p>
         <p className="text-xs text-slate-400 mt-2">— {analogy.author}</p>
       </div>

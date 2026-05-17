@@ -25,7 +25,7 @@ export default function DigitalPID() {
       </p>
 
       <div className="rounded-2xl p-5 my-6" style={{ background: 'rgba(139,92,246,0.07)', border: '1px solid rgba(139,92,246,0.2)' }}>
-        <div className="text-xs font-bold text-purple-600 uppercase tracking-widest mb-2">Quote</div>
+        <div className="text-xs font-bold text-purple-400 uppercase tracking-widest mb-2">Quote</div>
         <p className="text-slate-300 italic text-sm">"{analogy.text}"</p>
         <p className="text-xs text-slate-400 mt-2">— {analogy.author}</p>
       </div>
@@ -79,7 +79,9 @@ export default function DigitalPID() {
         </div>
       </div>
 
-      <GifCard gifKey="nerd" caption="Position vs velocity — choosing your implementation defines your integration behavior." side="right" />
+      <GifCard gifKey="nerd" caption="Position vs velocity — choosing your implementation defines your integration behavior." side="right"
+        body="Two discrete PID forms exist. The position algorithm computes the absolute control output each scan: u(k) = Kp·e + Ki·∑e·T + Kd·Δe/T. The velocity algorithm computes the change in output: Δu(k) = Kp·Δe + Ki·e·T + Kd·(e - 2e₋₁ + e₋₂)/T. Position algorithms require anti-windup protection; velocity algorithms integrate the output register implicitly. The choice determines how the controller behaves on initialization and mode transfer."
+      />
 
       <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Anti-Windup</h2>
 

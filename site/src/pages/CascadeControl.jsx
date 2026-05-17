@@ -31,7 +31,7 @@ export default function CascadeControl() {
       </p>
 
       <div className="rounded-2xl p-5 my-6" style={{ background: 'rgba(139,92,246,0.07)', border: '1px solid rgba(139,92,246,0.2)' }}>
-        <div className="text-xs font-bold text-purple-600 uppercase tracking-widest mb-2">Quote</div>
+        <div className="text-xs font-bold text-purple-400 uppercase tracking-widest mb-2">Quote</div>
         <p className="text-slate-300 italic text-sm">"{analogy.text}"</p>
         <p className="text-xs text-slate-400 mt-2">— {analogy.author}</p>
       </div>
@@ -62,7 +62,9 @@ export default function CascadeControl() {
         <strong>With cascade:</strong> Temperature loop → steam pressure setpoint → steam pressure loop → steam valve. A fluctuation in steam supply pressure is immediately detected by the fast pressure loop, which corrects the valve position before the temperature even has time to respond. The temperature loop only needs to trim the steam pressure setpoint slightly.
       </p>
 
-      <GifCard gifKey="hot" caption="Cascade: the inner loop handles fast disturbances before they reach the primary." side="right" />
+      <GifCard gifKey="hot" caption="Cascade: the inner loop handles fast disturbances before they reach the primary." side="right"
+        body="Cascade control places one PID loop inside another. The outer loop controls the slow primary variable (temperature, level, pressure) and sets the setpoint for an inner loop that controls a faster intermediate variable (flow, valve position). Disturbances that would take the outer loop many seconds to correct are rejected by the inner loop in a fraction of that time — before they can propagate to the primary variable."
+      />
 
       <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">When to Use Cascade</h2>
 

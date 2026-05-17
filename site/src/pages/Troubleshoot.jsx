@@ -25,7 +25,7 @@ export default function Troubleshoot() {
       </p>
 
       <div className="rounded-2xl p-5 my-6" style={{ background: 'rgba(139,92,246,0.07)', border: '1px solid rgba(139,92,246,0.2)' }}>
-        <div className="text-xs font-bold text-purple-600 uppercase tracking-widest mb-2">Quote</div>
+        <div className="text-xs font-bold text-purple-400 uppercase tracking-widest mb-2">Quote</div>
         <p className="text-slate-300 italic text-sm">"{analogy.text}"</p>
         <p className="text-xs text-slate-400 mt-2">— {analogy.author}</p>
       </div>
@@ -42,7 +42,9 @@ export default function Troubleshoot() {
         The PV continuously cycles above and below the setpoint with a regular, repeating period. The CO is also oscillating in sync.
       </p>
 
-      <GifCard gifKey="warning" caption="Oscillation: regular, repeating, and entirely too energetic." side="right" />
+      <GifCard gifKey="warning" caption="Oscillation: regular, repeating, and entirely too energetic." side="right"
+        body="Regular sinusoidal oscillation in a control loop is the signature of a gain that's too high. The loop drives the process past setpoint, then corrects back past it in the other direction, repeatedly. The period of oscillation correlates with the process lag — faster processes oscillate at higher frequencies. Halving the proportional gain is the first step; if oscillation persists, reduce integral next."
+      />
 
       <div className="rounded-xl p-4 my-4" style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}>
         <div className="font-bold text-red-300 mb-2">Possible Causes — in order of likelihood</div>
@@ -136,7 +138,9 @@ export default function Troubleshoot() {
         <li><strong>CO sawtooth, PV irregular wave</strong> — valve stiction</li>
       </ul>
 
-      <GifCard gifKey="coffee" caption="Reading trends: the most underrated skill in process control." side="right" />
+      <GifCard gifKey="coffee" caption="Reading trends: the most underrated skill in process control." side="right"
+        body="Trend analysis is the primary diagnostic tool for control loop problems. Oscillation with a period proportional to the lag time points to excessive proportional gain. Slow, non-oscillatory hunting points to excessive integral action. Derivative spiking on setpoint changes indicates D-on-error rather than D-on-PV. The trend pattern usually identifies the specific parameter to adjust — before touching any tuning constants."
+      />
 
       <Callout type="pro" title="The Bump Test for Mechanical Verification">
         When you suspect a valve or actuator problem, put the loop in manual and bump the CO by 5% up and then 5% down. Watch the PV. If the PV responds cleanly and proportionally, the valve is probably fine. If the CO changes but PV barely moves (or moves with a delay larger than expected dead time), the valve is binding or the actuator is failing. If CO changes but PV instantly slams to a limit, the valve is failing open or closed. This two-minute test will save you hours of hunting for tuning solutions to mechanical problems.

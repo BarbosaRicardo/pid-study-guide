@@ -59,7 +59,9 @@ export default function PIDAction() {
         A proportional-only controller will <em>always</em> have steady-state offset. Why? Because when the PV reaches SP, error = 0, and the P term = 0. But the process needs a non-zero CO to hold PV at SP (e.g., the valve needs to be 40% open to maintain the flow). Without integral, the only way to produce that 40% CO is to have a non-zero error — so the loop settles with a permanent offset. Adding integral action eliminates this.
       </Callout>
 
-      <GifCard gifKey="math" caption="Proportional: direct, immediate, and brutally honest about error." side="right" />
+      <GifCard gifKey="math" caption="Proportional: direct, immediate, and brutally honest about error." side="right"
+        body="Proportional action produces an output directly proportional to the current error: P-output = Kp × (SP − PV). Double the gain, double the response. At zero error, proportional action produces zero output change — which is why P-only control has a steady-state offset. The gain is the most powerful tuning parameter: too low and the loop is sluggish, too high and it oscillates."
+      />
 
       <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">I — Integral Action</h2>
 
@@ -111,7 +113,7 @@ export default function PIDAction() {
       </ul>
 
       <div className="rounded-2xl p-5 my-6" style={{ background: 'rgba(139,92,246,0.07)', border: '1px solid rgba(139,92,246,0.2)' }}>
-        <div className="text-xs font-bold text-purple-600 uppercase tracking-widest mb-2">Quote</div>
+        <div className="text-xs font-bold text-purple-400 uppercase tracking-widest mb-2">Quote</div>
         <p className="text-slate-300 italic text-sm">"{analogy.text}"</p>
         <p className="text-xs text-slate-400 mt-2">— {analogy.author}</p>
       </div>

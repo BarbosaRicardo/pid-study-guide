@@ -67,7 +67,9 @@ export default function Tuning() {
         This gives you the FOPDT model: <code>G(s) = K·e^(−θs) / (τs + 1)</code>. Every classical tuning method uses K, τ, and θ.
       </p>
 
-      <GifCard gifKey="nerd" caption="Extracting K, τ, θ from a step test. The math is worth it." side="right" />
+      <GifCard gifKey="nerd" caption="Extracting K, τ, θ from a step test. The math is worth it." side="right"
+        body="A step test applies a known, sustained change to the controller output (typically 5–10%) and records the PV response. From the response curve you extract three FOPDT parameters: process gain K (steady-state PV change ÷ output step), lag τ (63.2% of full response time), and dead time θ (time before the PV first moves). These three numbers feed directly into Cohen-Coon, IMC, or Lambda tuning formulas."
+      />
 
       <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Ziegler-Nichols Tuning (Closed-Loop Method)</h2>
 
@@ -97,7 +99,7 @@ export default function Tuning() {
             </tr>
           </thead>
           <tbody>
-            <tr className="bg-blue-500/10">
+            <tr className="bg-blue-500/100/10">
               <td className="p-3 font-medium">P only</td>
               <td className="p-3 text-center font-mono">0.5·Ku</td>
               <td className="p-3 text-center text-slate-400">—</td>
@@ -109,7 +111,7 @@ export default function Tuning() {
               <td className="p-3 text-center font-mono">Tu / 1.2</td>
               <td className="p-3 text-center text-slate-400">—</td>
             </tr>
-            <tr className="bg-blue-500/10 rounded-b-xl">
+            <tr className="bg-blue-500/100/10 rounded-b-xl">
               <td className="p-3 font-medium rounded-bl-xl">PID</td>
               <td className="p-3 text-center font-mono">0.6·Ku</td>
               <td className="p-3 text-center font-mono">Tu / 2</td>
@@ -124,7 +126,7 @@ export default function Tuning() {
       </Callout>
 
       <div className="rounded-2xl p-5 my-6" style={{ background: 'rgba(139,92,246,0.07)', border: '1px solid rgba(139,92,246,0.2)' }}>
-        <div className="text-xs font-bold text-purple-600 uppercase tracking-widest mb-2">Quote</div>
+        <div className="text-xs font-bold text-purple-400 uppercase tracking-widest mb-2">Quote</div>
         <p className="text-slate-300 italic text-sm">"{analogy.text}"</p>
         <p className="text-xs text-slate-400 mt-2">— {analogy.author}</p>
       </div>

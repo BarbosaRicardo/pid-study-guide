@@ -25,7 +25,7 @@ export default function PLCImplementation() {
       </p>
 
       <div className="rounded-2xl p-5 my-6" style={{ background: 'rgba(139,92,246,0.07)', border: '1px solid rgba(139,92,246,0.2)' }}>
-        <div className="text-xs font-bold text-purple-600 uppercase tracking-widest mb-2">Quote</div>
+        <div className="text-xs font-bold text-purple-400 uppercase tracking-widest mb-2">Quote</div>
         <p className="text-slate-300 italic text-sm">"{analogy.text}"</p>
         <p className="text-xs text-slate-400 mt-2">— {analogy.author}</p>
       </div>
@@ -122,7 +122,9 @@ export default function PLCImplementation() {
         <li>When switching to manual: immediately set the manual CO to the last auto CO value</li>
       </ul>
 
-      <GifCard gifKey="checkmark" caption="Smooth mode transfer: the process never knew the operator switched." side="right" />
+      <GifCard gifKey="checkmark" caption="Smooth mode transfer: the process never knew the operator switched." side="right"
+        body="Bumpless transfer prevents a control output spike when switching between manual and automatic mode. In manual, the PID algorithm tracks the operator's output — keeping its internal integral state equal to what the operator set. When switched to automatic, the controller output starts from the current manual position rather than jumping to the computed value. Without bumpless transfer, every mode switch is a process upset."
+      />
 
       <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">PID Faceplate Design in SCADA/HMI</h2>
 

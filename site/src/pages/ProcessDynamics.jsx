@@ -55,7 +55,9 @@ export default function ProcessDynamics() {
         Example: if you step the CO from 40% to 50% (ΔCO = 10%) and the PV moves from 60% to 68% (ΔPV = 8%), then K = 8/10 = 0.8. This is a normal, well-behaved process gain. K &gt; 2 is high gain; K &lt; 0.3 is low gain.
       </p>
 
-      <GifCard gifKey="hot" caption="High process gain: even a small change creates a large effect." side="right" />
+      <GifCard gifKey="hot" caption="High process gain: even a small change creates a large effect." side="right"
+        body="Process gain describes how much the process variable changes per unit change in controller output. A high-gain process amplifies every controller action — small output changes produce large PV swings. Low-gain processes require large output changes to move the PV at all. Process gain, combined with lag and dead time, defines the FOPDT model that determines the correct PID tuning values. Misidentifying process gain is the most common tuning mistake."
+      />
 
       <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Time Constant (τ)</h2>
 
@@ -74,7 +76,7 @@ export default function ProcessDynamics() {
       <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Dead Time (θ) — The Enemy of Control</h2>
 
       <div className="rounded-2xl p-5 my-6" style={{ background: 'rgba(139,92,246,0.07)', border: '1px solid rgba(139,92,246,0.2)' }}>
-        <div className="text-xs font-bold text-purple-600 uppercase tracking-widest mb-2">Quote</div>
+        <div className="text-xs font-bold text-purple-400 uppercase tracking-widest mb-2">Quote</div>
         <p className="text-slate-300 italic text-sm">"{analogy.text}"</p>
         <p className="text-xs text-slate-400 mt-2">— {analogy.author}</p>
       </div>
