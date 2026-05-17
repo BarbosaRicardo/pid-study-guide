@@ -68,7 +68,7 @@ export default function Intro() {
         </div>
       </div>
 
-      <GifCard gifKey="thinking" caption="Feedback: the process telling the controller how wrong it is." side="right" />
+      <GifCard gifKey="courseHero" caption="Close. Almost. Just a little more integral. No — too much." side="right" tooltip="PID stands for Proportional-Integral-Derivative. P reacts to the error. I remembers every mistake. D panics about where things are heading. Together they try to hit a setpoint without oscillating forever. Like parallel parking, but in a reactor." />
 
       <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Real Industrial Examples</h2>
 
