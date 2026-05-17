@@ -43,7 +43,6 @@ export default function Troubleshoot() {
       </p>
 
       <GifCard gifKey="warning" caption="Oscillation: regular, repeating, and entirely too energetic." side="right"
-        body="Regular sinusoidal oscillation in a control loop is the signature of a gain that's too high. The loop drives the process past setpoint, then corrects back past it in the other direction, repeatedly. The period of oscillation correlates with the process lag — faster processes oscillate at higher frequencies. Halving the proportional gain is the first step; if oscillation persists, reduce integral next."
       />
 
       <div className="rounded-xl p-4 my-4" style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}>
@@ -139,7 +138,6 @@ export default function Troubleshoot() {
       </ul>
 
       <GifCard gifKey="coffee" caption="Reading trends: the most underrated skill in process control." side="right"
-        body="Trend analysis is the primary diagnostic tool for control loop problems. Oscillation with a period proportional to the lag time points to excessive proportional gain. Slow, non-oscillatory hunting points to excessive integral action. Derivative spiking on setpoint changes indicates D-on-error rather than D-on-PV. The trend pattern usually identifies the specific parameter to adjust — before touching any tuning constants."
       />
 
       <Callout type="pro" title="The Bump Test for Mechanical Verification">

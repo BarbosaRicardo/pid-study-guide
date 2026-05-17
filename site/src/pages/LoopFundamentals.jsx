@@ -89,7 +89,6 @@ export default function LoopFundamentals() {
       </div>
 
       <GifCard gifKey="robot" caption="The controller, working tirelessly to eliminate error." side="right"
-        body="A closed-loop controller runs continuously: sample PV, compute error, compute controller output, send output to actuator, repeat. On a PLC, this happens every scan cycle — typically 10 to 100 milliseconds. The controller never stops; even when process conditions are stable, it's continuously re-computing and re-issuing the output. The 'I' term keeps accumulating until the error is truly zero."
       />
 
       <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Disturbances: The Reason Feedback Exists</h2>

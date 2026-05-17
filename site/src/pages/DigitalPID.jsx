@@ -80,7 +80,6 @@ export default function DigitalPID() {
       </div>
 
       <GifCard gifKey="nerd" caption="Position vs velocity — choosing your implementation defines your integration behavior." side="right"
-        body="Two discrete PID forms exist. The position algorithm computes the absolute control output each scan: u(k) = Kp·e + Ki·∑e·T + Kd·Δe/T. The velocity algorithm computes the change in output: Δu(k) = Kp·Δe + Ki·e·T + Kd·(e - 2e₋₁ + e₋₂)/T. Position algorithms require anti-windup protection; velocity algorithms integrate the output register implicitly. The choice determines how the controller behaves on initialization and mode transfer."
       />
 
       <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Anti-Windup</h2>

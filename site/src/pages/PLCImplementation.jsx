@@ -123,7 +123,6 @@ export default function PLCImplementation() {
       </ul>
 
       <GifCard gifKey="checkmark" caption="Smooth mode transfer: the process never knew the operator switched." side="right"
-        body="Bumpless transfer prevents a control output spike when switching between manual and automatic mode. In manual, the PID algorithm tracks the operator's output — keeping its internal integral state equal to what the operator set. When switched to automatic, the controller output starts from the current manual position rather than jumping to the computed value. Without bumpless transfer, every mode switch is a process upset."
       />
 
       <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">PID Faceplate Design in SCADA/HMI</h2>

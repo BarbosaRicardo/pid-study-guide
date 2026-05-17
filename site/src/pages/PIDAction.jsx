@@ -60,7 +60,6 @@ export default function PIDAction() {
       </Callout>
 
       <GifCard gifKey="math" caption="Proportional: direct, immediate, and brutally honest about error." side="right"
-        body="Proportional action produces an output directly proportional to the current error: P-output = Kp × (SP − PV). Double the gain, double the response. At zero error, proportional action produces zero output change — which is why P-only control has a steady-state offset. The gain is the most powerful tuning parameter: too low and the loop is sluggish, too high and it oscillates."
       />
 
       <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">I — Integral Action</h2>

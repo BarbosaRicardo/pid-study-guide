@@ -56,7 +56,6 @@ export default function ProcessDynamics() {
       </p>
 
       <GifCard gifKey="hot" caption="High process gain: even a small change creates a large effect." side="right"
-        body="Process gain describes how much the process variable changes per unit change in controller output. A high-gain process amplifies every controller action — small output changes produce large PV swings. Low-gain processes require large output changes to move the PV at all. Process gain, combined with lag and dead time, defines the FOPDT model that determines the correct PID tuning values. Misidentifying process gain is the most common tuning mistake."
       />
 
       <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Time Constant (τ)</h2>

@@ -63,7 +63,6 @@ export default function CascadeControl() {
       </p>
 
       <GifCard gifKey="hot" caption="Cascade: the inner loop handles fast disturbances before they reach the primary." side="right"
-        body="Cascade control places one PID loop inside another. The outer loop controls the slow primary variable (temperature, level, pressure) and sets the setpoint for an inner loop that controls a faster intermediate variable (flow, valve position). Disturbances that would take the outer loop many seconds to correct are rejected by the inner loop in a fraction of that time — before they can propagate to the primary variable."
       />
 
       <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">When to Use Cascade</h2>

@@ -68,7 +68,6 @@ export default function Tuning() {
       </p>
 
       <GifCard gifKey="nerd" caption="Extracting K, τ, θ from a step test. The math is worth it." side="right"
-        body="A step test applies a known, sustained change to the controller output (typically 5–10%) and records the PV response. From the response curve you extract three FOPDT parameters: process gain K (steady-state PV change ÷ output step), lag τ (63.2% of full response time), and dead time θ (time before the PV first moves). These three numbers feed directly into Cohen-Coon, IMC, or Lambda tuning formulas."
       />
 
       <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Ziegler-Nichols Tuning (Closed-Loop Method)</h2>
