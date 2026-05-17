@@ -88,8 +88,10 @@ export default function LoopFundamentals() {
         </div>
       </div>
 
-      <GifCard gifKey="robot" caption="The controller, working tirelessly to eliminate error." side="right"
-      />
+      <div className="flex items-start gap-6 my-6">
+        <p className="flex-1 text-sm text-slate-400 leading-relaxed">The feedback loop runs continuously: measure the process variable, compare it to the setpoint, compute the error, calculate the control action, drive the actuator, and repeat. The controller never stops — it's always computing. The loop timing (scan rate) determines how often the controller can correct. A loop that runs every 100ms can react to disturbances 10 times per second. A loop that runs every 10 seconds is effectively open-loop for fast processes. Match your scan rate to the process dynamics.</p>
+        <GifCard gifKey="robot" caption="The controller, working tirelessly to eliminate error." />
+      </div>
 
       <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Disturbances: The Reason Feedback Exists</h2>
 

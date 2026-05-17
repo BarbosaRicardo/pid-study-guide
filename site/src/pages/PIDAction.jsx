@@ -59,8 +59,10 @@ export default function PIDAction() {
         A proportional-only controller will <em>always</em> have steady-state offset. Why? Because when the PV reaches SP, error = 0, and the P term = 0. But the process needs a non-zero CO to hold PV at SP (e.g., the valve needs to be 40% open to maintain the flow). Without integral, the only way to produce that 40% CO is to have a non-zero error — so the loop settles with a permanent offset. Adding integral action eliminates this.
       </Callout>
 
-      <GifCard gifKey="math" caption="Proportional: direct, immediate, and brutally honest about error." side="right"
-      />
+      <div className="flex items-start gap-6 my-6">
+        <p className="flex-1 text-sm text-slate-400 leading-relaxed">Proportional action is the only PID term that reacts to the current error in real time. Double the error, double the output. The gain constant (Kp) sets how aggressively it responds. Too low and the process is sluggish. Too high and you get oscillation. P-only control always leaves a residual offset between the setpoint and the process variable — the integral term exists specifically to eliminate that offset over time. Understanding this tradeoff is the foundation of every tuning decision you'll make.</p>
+        <GifCard gifKey="math" caption="Proportional: direct, immediate, and brutally honest about error." />
+      </div>
 
       <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">I — Integral Action</h2>
 

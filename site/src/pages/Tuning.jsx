@@ -67,8 +67,10 @@ export default function Tuning() {
         This gives you the FOPDT model: <code>G(s) = K·e^(−θs) / (τs + 1)</code>. Every classical tuning method uses K, τ, and θ.
       </p>
 
-      <GifCard gifKey="nerd" caption="Extracting K, τ, θ from a step test. The math is worth it." side="right"
-      />
+      <div className="flex items-start gap-6 my-6">
+        <p className="flex-1 text-sm text-slate-400 leading-relaxed">A step test moves the controller output by a known amount in manual mode and records the process response. From the response curve, you measure three values: process gain K (how much PV moved per % output), time constant τ (how long the process takes to reach 63% of its final value), and dead time θ (how long before the PV started moving at all). These three numbers feed directly into IMC, ZN, or Lambda tuning formulas. They're also the inputs to any PID autotuner worth using.</p>
+        <GifCard gifKey="nerd" caption="Extracting K, τ, θ from a step test. The math is worth it." />
+      </div>
 
       <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Ziegler-Nichols Tuning (Closed-Loop Method)</h2>
 

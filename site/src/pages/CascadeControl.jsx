@@ -62,8 +62,10 @@ export default function CascadeControl() {
         <strong>With cascade:</strong> Temperature loop → steam pressure setpoint → steam pressure loop → steam valve. A fluctuation in steam supply pressure is immediately detected by the fast pressure loop, which corrects the valve position before the temperature even has time to respond. The temperature loop only needs to trim the steam pressure setpoint slightly.
       </p>
 
-      <GifCard gifKey="hot" caption="Cascade: the inner loop handles fast disturbances before they reach the primary." side="right"
-      />
+      <div className="flex items-start gap-6 my-6">
+        <p className="flex-1 text-sm text-slate-400 leading-relaxed">In a cascade loop, the primary controller's output is the setpoint for the secondary controller — not a valve position directly. The primary (outer) loop controls the variable that matters to production. The secondary (inner) loop controls an intermediate variable that responds faster. The inner loop must be tuned first and must respond at least 5–10× faster than the outer loop. If the inner loop is slow, cascade offers no advantage over a single loop — the primary will just saturate waiting for the inner loop to respond.</p>
+        <GifCard gifKey="hot" caption="Cascade: the inner loop handles fast disturbances before they reach the primary." />
+      </div>
 
       <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">When to Use Cascade</h2>
 

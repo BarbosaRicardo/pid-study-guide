@@ -55,8 +55,10 @@ export default function ProcessDynamics() {
         Example: if you step the CO from 40% to 50% (ΔCO = 10%) and the PV moves from 60% to 68% (ΔPV = 8%), then K = 8/10 = 0.8. This is a normal, well-behaved process gain. K &gt; 2 is high gain; K &lt; 0.3 is low gain.
       </p>
 
-      <GifCard gifKey="hot" caption="High process gain: even a small change creates a large effect." side="right"
-      />
+      <div className="flex items-start gap-6 my-6">
+        <p className="flex-1 text-sm text-slate-400 leading-relaxed">Process gain (Kp) measures how much the process variable changes for a given change in controller output. High process gain means the process is sensitive — small output changes create large PV swings. Low process gain means the process is sluggish — large output changes are needed to move the PV. Process gain is the first thing to identify in a step test. It directly determines how aggressive your P-term can be before the loop goes unstable.</p>
+        <GifCard gifKey="hot" caption="High process gain: even a small change creates a large effect." />
+      </div>
 
       <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Time Constant (τ)</h2>
 

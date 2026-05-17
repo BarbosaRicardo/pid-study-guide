@@ -122,8 +122,10 @@ export default function PLCImplementation() {
         <li>When switching to manual: immediately set the manual CO to the last auto CO value</li>
       </ul>
 
-      <GifCard gifKey="checkmark" caption="Smooth mode transfer: the process never knew the operator switched." side="right"
-      />
+      <div className="flex items-start gap-6 my-6">
+        <p className="flex-1 text-sm text-slate-400 leading-relaxed">Bumpless transfer means switching between Manual and Auto mode without a step change in controller output. Before switching to Auto, the controller output is pre-loaded with the current manual output value. The I-term is initialized so the computed output matches the pre-loaded value. Without bumpless transfer, switching from manual to auto can send a large output step to the actuator — the process sees it as a disturbance. Most PLC PID blocks implement bumpless transfer, but you must configure it correctly for it to work.</p>
+        <GifCard gifKey="checkmark" caption="Smooth mode transfer: the process never knew the operator switched." />
+      </div>
 
       <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">PID Faceplate Design in SCADA/HMI</h2>
 

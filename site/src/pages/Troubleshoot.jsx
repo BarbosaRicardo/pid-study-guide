@@ -42,8 +42,10 @@ export default function Troubleshoot() {
         The PV continuously cycles above and below the setpoint with a regular, repeating period. The CO is also oscillating in sync.
       </p>
 
-      <GifCard gifKey="warning" caption="Oscillation: regular, repeating, and entirely too energetic." side="right"
-      />
+      <div className="flex items-start gap-6 my-6">
+        <p className="flex-1 text-sm text-slate-400 leading-relaxed">Regular oscillation at a consistent frequency and amplitude is the signature of excessive proportional gain. The loop is fighting itself — it overshoots, corrects, overshoots in the other direction, and repeats. The fix is to reduce Kp until oscillation stops, then re-add integral carefully. Irregular oscillation or oscillation that changes amplitude over time is usually caused by a nonlinear process element — valve stiction, deadband, or variable process gain — not a tuning problem.</p>
+        <GifCard gifKey="warning" caption="Oscillation: regular, repeating, and entirely too energetic." />
+      </div>
 
       <div className="rounded-xl p-4 my-4" style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}>
         <div className="font-bold text-red-300 mb-2">Possible Causes — in order of likelihood</div>
@@ -137,8 +139,10 @@ export default function Troubleshoot() {
         <li><strong>CO sawtooth, PV irregular wave</strong> — valve stiction</li>
       </ul>
 
-      <GifCard gifKey="coffee" caption="Reading trends: the most underrated skill in process control." side="right"
-      />
+      <div className="flex items-start gap-6 my-6">
+        <p className="flex-1 text-sm text-slate-400 leading-relaxed">Trend analysis is how you distinguish a tuning problem from a mechanical problem from a process change. Look at SP, PV, and Output on the same trend. If Output is moving and PV isn't following, the problem is likely mechanical — valve not responding, actuator issue, broken feedback. If PV is following Output but not reaching SP, check whether the process dynamics changed (different throughput, different feed composition). If both are moving but the loop is unstable, that's a tuning problem.</p>
+        <GifCard gifKey="coffee" caption="Reading trends: the most underrated skill in process control." />
+      </div>
 
       <Callout type="pro" title="The Bump Test for Mechanical Verification">
         When you suspect a valve or actuator problem, put the loop in manual and bump the CO by 5% up and then 5% down. Watch the PV. If the PV responds cleanly and proportionally, the valve is probably fine. If the CO changes but PV barely moves (or moves with a delay larger than expected dead time), the valve is binding or the actuator is failing. If CO changes but PV instantly slams to a limit, the valve is failing open or closed. This two-minute test will save you hours of hunting for tuning solutions to mechanical problems.

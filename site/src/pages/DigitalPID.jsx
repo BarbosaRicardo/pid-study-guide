@@ -79,8 +79,10 @@ export default function DigitalPID() {
         </div>
       </div>
 
-      <GifCard gifKey="nerd" caption="Position vs velocity — choosing your implementation defines your integration behavior." side="right"
-      />
+      <div className="flex items-start gap-6 my-6">
+        <p className="flex-1 text-sm text-slate-400 leading-relaxed">Position form computes the full output from scratch each scan — the absolute value of the controller output. Velocity form computes only the change in output each scan — the delta. Position form is simpler to understand but suffers from integrator windup on startup. Velocity form handles bumpless transfer naturally since mode changes don't jump the output. Most PLC PID implementations use velocity form internally, even if the interface looks like position form. Check your vendor documentation before assuming which form is running.</p>
+        <GifCard gifKey="nerd" caption="Position vs velocity — choosing your implementation defines your integration behavior." />
+      </div>
 
       <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Anti-Windup</h2>
 
