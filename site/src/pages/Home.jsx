@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { BookOpen, Zap, Award, Clock, ArrowRight, Sliders, TrendingUp, Settings, Activity } from 'lucide-react'
@@ -14,8 +14,16 @@ const STATS = [
   { icon: Award,      label: 'Cert Ready',  sub: 'ISA CCST & CAP' },
 ]
 
+const HERO_OPTIONS = [
+  { id: 'MCZ39lz83o5lC',        caption: `When the control loop finally stops oscillating.`,               tooltip: `PID tuning is part science, part engineering judgment, part field experience. Ziegler-Nichols gives you starting values. Then you adjust in the plant while explaining to the operator why the tank is oscillating. Then it works. Then someone changes the process.` },
+  { id: 'lHfxDepSGlzom6f65K',   caption: `Integral windup: accumulating error until everything breaks.`,   tooltip: `Integral windup occurs when the output is saturated but the integrator keeps accumulating error. When saturation clears, all that accumulated integral dumps as a large step output. Anti-windup clamping isn't optional — it's the difference between a controller and a slow-motion disaster.` },
+  { id: 'xT0xeJpnrWC4XWblEk',   caption: `Derivative kick: why D should never act on the setpoint.`,      tooltip: `If derivative acts on the error (setpoint minus PV), a sudden setpoint step produces a theoretically infinite derivative spike. Solution: apply D to the process variable only, never to the error. Most modern controllers do this by default. Old ones don't — and you'll know immediately.` },
+  { id: '3oEjHFOscgNwdSRRDy',   caption: `Cascade control: the inner loop must always be faster.`,         tooltip: `Cascade control nests one PID inside another. Outer loop controls the slow variable — temperature, level, pressure. Inner loop controls the fast actuator. The inner loop must be at least 3 to 5 times faster than the outer or the instability looks like bad tuning but is actually bad architecture.` },
+  { id: 'feqkVgjJpYtjy',        caption: `Dead time: the PID's nemesis that gain tuning cannot fix.`,      tooltip: `Process dead time is the delay between a controller output change and any measurable response. PID degrades rapidly as the dead time to lag ratio increases. When dead time exceeds lag, PID alone can't win — you need a Smith Predictor or model-based control.` },
+]
 export default function Home() {
   const { overallProgress, reset } = useProgress()
+  const [heroIdx] = useState(() => Math.floor(Math.random() * HERO_OPTIONS.length))
   const prog = overallProgress()
 
   const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.08 } } }
@@ -44,7 +52,7 @@ export default function Home() {
             </div>
           </div>
           <div className="flex-shrink-0">
-            <GifCard gifKey="courseHero" caption="Close. Almost. Just a little more integral. No — too much." side="right" tooltip="PID stands for Proportional-Integral-Derivative. P reacts to the error. I remembers every mistake. D panics about where things are heading. Together they try to hit a setpoint without oscillating forever. Like parallel parking, but in a reactor." />
+            <GifCard gifId={HERO_OPTIONS[heroIdx].id} caption={HERO_OPTIONS[heroIdx].caption} tooltip={HERO_OPTIONS[heroIdx].tooltip} side="right" />
           </div>
         </div>
       </motion.div>
