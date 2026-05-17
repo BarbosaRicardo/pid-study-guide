@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import { Menu, X, Zap, BookOpen, BarChart2, Home, Settings, Sliders, TrendingUp, Layers, Cpu, Monitor, Wrench, FlaskConical, CreditCard, LayoutGrid, LogIn, LogOut , FileText, ChevronDown, Network, Globe, Code2, Server, LayoutDashboard, ScanSearch, GraduationCap} from 'lucide-react'
+import { Menu, X, Zap, BookOpen, BarChart2, Home, Settings, Sliders, TrendingUp, Layers, Cpu, Monitor, Wrench, FlaskConical, CreditCard, LayoutGrid, LogIn, LogOut , FileText, ChevronDown, Network, Globe, Code2, Server, LayoutDashboard, ScanSearch, GraduationCap, CheckCircle2 } from 'lucide-react'
 import { CHAPTERS } from '../data/chapters'
 import { useProgress } from '../hooks/useProgress'
 import { supabase } from '../lib/supabase'
@@ -62,10 +62,16 @@ export default function Sidebar() {
       >
         <Icon size={15} className="flex-shrink-0 opacity-70" />
         <span className="flex-1 truncate">{ch.label}</span>
-        <div className="flex gap-0.5 flex-shrink-0">
-          <div className={`w-1.5 h-1.5 rounded-full transition-all ${status.level1Passed ? 'bg-emerald-400 shadow-glow-green' : status.visited ? 'bg-amber-400' : 'bg-white/10'}`} />
-          <div className={`w-1.5 h-1.5 rounded-full transition-all ${status.level2Passed ? 'bg-amber-400' : 'bg-white/10'}`} />
-          <div className={`w-1.5 h-1.5 rounded-full transition-all ${status.level3Passed ? 'bg-rose-400' : 'bg-white/10'}`} />
+        <div className="flex gap-0.5 flex-shrink-0 items-center">
+          {status.completed ? (
+            <CheckCircle2 size={13} className="text-emerald-400" />
+          ) : (
+            <>
+              <div className={`w-1.5 h-1.5 rounded-full transition-all ${status.level1Passed ? 'bg-emerald-400 shadow-glow-green' : status.visited ? 'bg-amber-400' : 'bg-white/10'}`} />
+              <div className={`w-1.5 h-1.5 rounded-full transition-all ${status.level2Passed ? 'bg-amber-400' : 'bg-white/10'}`} />
+              <div className={`w-1.5 h-1.5 rounded-full transition-all ${status.level3Passed ? 'bg-rose-400' : 'bg-white/10'}`} />
+            </>
+          )}
         </div>
       </NavLink>
     )
@@ -140,10 +146,12 @@ export default function Sidebar() {
       {/* Logo */}
       <div className="p-5" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+          <button
+            onClick={() => setOpen(false)}
+            className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 lg:cursor-default"
             style={{ background: 'linear-gradient(135deg, #7c3aed, #a855f7)', boxShadow: '0 0 20px rgba(168,85,247,0.45)' }}>
             <Zap size={18} className="text-white" />
-          </div>
+          </button>
           <div>
             <div className="font-black text-white text-sm tracking-wide leading-tight">PID</div>
             <div className="text-xs font-medium" style={{ color: '#a855f7' }}>Study Guide</div>
