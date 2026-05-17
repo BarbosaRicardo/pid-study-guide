@@ -227,7 +227,7 @@ plt.legend(); plt.grid(); plt.show()`}</pre>
         </div>
       </section>
 
-      {QUIZZES.lab && QUIZZES.lab.length > 0 && (
+      {QUIZZES.lab && (
         <QuizLevels chapterId="lab" />
       )}
     </ChapterLayout>

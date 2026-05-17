@@ -150,7 +150,7 @@ export default function DigitalPID() {
 
       <FunFact index={10} />
 
-      {QUIZZES.digital && QUIZZES.digital.length > 0 && (
+      {QUIZZES.digital && (
         <QuizLevels chapterId="digital" />
       )}
       <ChapterExercise exercise={PID_CHAPTER_EXERCISES.digital} />

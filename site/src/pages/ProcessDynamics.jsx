@@ -144,7 +144,7 @@ export default function ProcessDynamics() {
         Run an open-loop step test before touching any tuning constants. Watch the PV response. Does it settle to a new steady state (self-regulating) or does it keep ramping (integrating)? Does it overshoot even in open loop (underdamped second-order)? The shape of the open-loop step response tells you everything about the tuning approach. An engineer who tunes without doing a step test first is guessing — and will still be guessing on the third loop re-tune.
       </Callout>
 
-      {QUIZZES.process && QUIZZES.process.length > 0 && (
+      {QUIZZES.process && (
         <QuizLevels chapterId="process" />
       )}
       <ChapterExercise exercise={PID_CHAPTER_EXERCISES.process} />

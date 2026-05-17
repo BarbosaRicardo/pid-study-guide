@@ -197,7 +197,7 @@ export default function Tuning() {
 
       <FunFact index={1} />
 
-      {QUIZZES.tuning && QUIZZES.tuning.length > 0 && (
+      {QUIZZES.tuning && (
         <QuizLevels chapterId="tuning" />
       )}
       <ChapterExercise exercise={PID_CHAPTER_EXERCISES.tuning} />

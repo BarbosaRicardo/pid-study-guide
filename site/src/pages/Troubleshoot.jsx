@@ -150,7 +150,7 @@ export default function Troubleshoot() {
 
       <FunFact index={6} />
 
-      {QUIZZES.troubleshoot && QUIZZES.troubleshoot.length > 0 && (
+      {QUIZZES.troubleshoot && (
         <QuizLevels chapterId="troubleshoot" />
       )}
       <ChapterExercise exercise={PID_CHAPTER_EXERCISES.troubleshoot} />

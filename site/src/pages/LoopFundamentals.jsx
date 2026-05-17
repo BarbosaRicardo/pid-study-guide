@@ -191,7 +191,7 @@ SP ──►[Σ]──► PID Controller ──► Valve ──► Process ─�
         In a conversation with another engineer, never say "the loop output" when you mean "the controller output" or "the valve position." Always use SP, PV, CO, and MV explicitly. Ambiguity in naming causes real errors — an operator who says "the output is at 85%" could mean the CO is 85% or the valve is 85% open, and those are different things if the valve is not linear.
       </Callout>
 
-      {QUIZZES.loop && QUIZZES.loop.length > 0 && (
+      {QUIZZES.loop && (
         <QuizLevels chapterId="loop" />
       )}
       <ChapterExercise exercise={PID_CHAPTER_EXERCISES.loop} />

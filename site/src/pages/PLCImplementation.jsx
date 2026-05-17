@@ -180,7 +180,7 @@ export default function PLCImplementation() {
 
       <FunFact index={7} />
 
-      {QUIZZES.plc && QUIZZES.plc.length > 0 && (
+      {QUIZZES.plc && (
         <QuizLevels chapterId="plc" />
       )}
       <ChapterExercise exercise={PID_CHAPTER_EXERCISES.plc} />

@@ -130,7 +130,7 @@ export default function CascadeControl() {
         In processes with multiple inputs and outputs (multi-variable processes), loops can interact — a change in one loop's MV affects another loop's PV. Choosing the wrong pairing (which CO controls which PV) leads to loops fighting each other. A simple test: the Relative Gain Array (RGA) quantifies how much each output affects each input and helps identify the right pairing. Incorrect pairing is a common cause of "mysteriously oscillating" multi-loop systems.
       </Callout>
 
-      {QUIZZES.cascade && QUIZZES.cascade.length > 0 && (
+      {QUIZZES.cascade && (
         <QuizLevels chapterId="cascade" />
       )}
       <ChapterExercise exercise={PID_CHAPTER_EXERCISES.cascade} />
