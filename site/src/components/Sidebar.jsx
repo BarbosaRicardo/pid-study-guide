@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import { Menu, X, Zap, BookOpen, BarChart2, Home, Settings, Sliders, TrendingUp, Layers, Cpu, Monitor, Wrench, FlaskConical, CreditCard, LayoutGrid, LogIn, LogOut , FileText, ChevronDown, Network, Globe, Code2, Server, LayoutDashboard, ScanSearch} from 'lucide-react'
+import { Menu, X, Zap, BookOpen, BarChart2, Home, Settings, Sliders, TrendingUp, Layers, Cpu, Monitor, Wrench, FlaskConical, CreditCard, LayoutGrid, LogIn, LogOut , FileText, ChevronDown, Network, Globe, Code2, Server, LayoutDashboard, ScanSearch, GraduationCap} from 'lucide-react'
 import { CHAPTERS } from '../data/chapters'
 import { useProgress } from '../hooks/useProgress'
 import { supabase } from '../lib/supabase'
 import QuizReport from './QuizReport'
+import TrainingModal from './TrainingModal'
 
 const ICON_MAP = {
   BookOpen, Settings, BarChart2, Sliders, TrendingUp, Layers, Cpu, Monitor, Wrench, FlaskConical, CreditCard,
 }
 
 export default function Sidebar() {
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false)
   const [reportOpen, setReportOpen] = useState(false)
   const [session, setSession] = useState(null)
   const [sessionLoading, setSessionLoading] = useState(true)
@@ -21,6 +22,7 @@ export default function Sidebar() {
   const [loginError, setLoginError] = useState('')
   const [loginLoading, setLoginLoading] = useState(false)
   const [showGuides, setShowGuides] = useState(false)
+  const [showTraining, setShowTraining] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => { setSession(data.session); setSessionLoading(false) })
@@ -244,6 +246,7 @@ export default function Sidebar() {
       </aside>
 
       {reportOpen && <QuizReport onClose={() => setReportOpen(false)} />}
+      {showTraining && <TrainingModal course="pid" onClose={() => setShowTraining(false)} />}
     </>
   )
 }
