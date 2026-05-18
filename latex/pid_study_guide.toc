@@ -42,3 +42,6 @@
 \contentsline {chapter}{Quick Reference}{21}{appendix*.2}%
 \contentsline {section}{Tuning Rule Summary}{21}{section*.3}%
 \contentsline {section}{Rule-of-Thumb Starting Points}{21}{section*.4}%
+\contentsline {section}{Professional Certification Prep}{21}{section*.5}%
+\contentsline {subsection}{ISA CCST --- Certified Control Systems Technician}{21}{section*.6}%
+\contentsline {subsection}{ISA CAP --- Certified Automation Professional}{22}{section*.7}%
