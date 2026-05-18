@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Editor from '@monaco-editor/react'
-import { Play, RotateCcw, ChevronDown, ChevronUp, CheckCircle2, XCircle, AlertCircle, Copy, Loader2 } from 'lucide-react'
+import { Play, RotateCcw, ChevronDown, ChevronUp, CheckCircle2, XCircle, AlertCircle, Copy, Loader2, Lightbulb } from 'lucide-react'
 
 // ─── JavaScript sandbox ──────────────────────────────────────────────────────
 function runSandbox(userCode, testRunner) {
@@ -127,9 +127,11 @@ function TestResult({ test, result }) {
 
 // ─── ChapterExercise ──────────────────────────────────────────────────────────
 export default function ChapterExercise({ exercise: ex }) {
-  const [open, setOpen]       = useState(false)
-  const [lang, setLang]       = useState('js')
-  const [codeByLang, setCode] = useState({
+  const [open, setOpen]             = useState(false)
+  const [prediction, setPrediction] = useState('')
+  const [predicted, setPredicted]   = useState(false)
+  const [lang, setLang]             = useState('js')
+  const [codeByLang, setCode]       = useState({
     js:     ex.starter   || '// TODO: implement solution',
     python: ex.starterPy || '# TODO: implement solution\n\nsolution = None',
     jython: JYTHON_HEADER + (ex.starterJython || ex.starterPy || '# TODO: implement solution\n\nsolution = None'),
@@ -206,6 +208,62 @@ export default function ChapterExercise({ exercise: ex }) {
               </div>
             )}
           </div>
+
+          {/* Generation Effect — prediction step before editor */}
+          {!predicted && (
+            <div className="mx-5 mb-4 rounded-xl p-4" style={{ background: 'rgba(139,92,246,0.07)', border: '1px solid rgba(139,92,246,0.2)' }}>
+              <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#a78bfa' }}>
+                Before you code — what's your approach?
+              </p>
+              <p className="text-xs text-slate-500 mb-3">
+                Write one sentence: what's the key piece of logic you'll implement? (This improves retention by ~40% — it's not busywork.)
+              </p>
+              <textarea
+                value={prediction}
+                onChange={e => setPrediction(e.target.value)}
+                placeholder="e.g. I'll parse the frame bytes, compute CRC over all but the last 2 bytes, then compare..."
+                rows={2}
+                className="w-full rounded-lg px-3 py-2 text-sm resize-none outline-none font-mono"
+                style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(139,92,246,0.25)', color: '#c4b5fd' }}
+              />
+              <div className="flex gap-3 mt-3 items-center">
+                <button
+                  onClick={() => setPredicted(true)}
+                  disabled={!prediction.trim()}
+                  className="px-4 py-1.5 rounded-lg text-xs font-bold text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                  style={{ background: 'rgba(139,92,246,0.6)' }}
+                >
+                  Lock it in — show me the editor
+                </button>
+                <button
+                  onClick={() => { setPrediction(''); setPredicted(true) }}
+                  className="text-xs text-slate-600 hover:text-slate-400 transition-colors"
+                >
+                  Skip
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Prediction reminder — shown after submitting */}
+          {predicted && prediction.trim() && !allPassed && (
+            <div className="mx-5 mb-3 px-3 py-2 rounded-lg flex gap-2 items-start"
+              style={{ background: 'rgba(139,92,246,0.06)', border: '1px solid rgba(139,92,246,0.15)' }}>
+              <span className="text-xs flex-shrink-0 mt-0.5" style={{ color: '#7c3aed' }}>Your prediction:</span>
+              <span className="text-xs italic" style={{ color: '#a78bfa' }}>"{prediction}"</span>
+            </div>
+          )}
+          {predicted && prediction.trim() && allPassed && (
+            <div className="mx-5 mb-3 px-3 py-2 rounded-lg flex gap-2 items-start"
+              style={{ background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.2)' }}>
+              <CheckCircle2 size={13} className="flex-shrink-0 mt-0.5" style={{ color: '#34d399' }} />
+              <div>
+                <span className="text-xs" style={{ color: '#34d399' }}>You predicted: </span>
+                <span className="text-xs italic" style={{ color: '#6ee7b7' }}>"{prediction}"</span>
+                <span className="text-xs ml-1" style={{ color: '#34d399' }}>— compare to what you built.</span>
+              </div>
+            </div>
+          )}
 
           {/* Editor */}
           <div className="mx-5 rounded-xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.08)' }}>

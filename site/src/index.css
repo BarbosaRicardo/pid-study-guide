@@ -110,11 +110,13 @@
     color: #c084fc;
     background: rgba(168,85,247,0.14);
     border: 1px solid rgba(168,85,247,0.14);
+    border-left: 3px solid #c084fc;
     box-shadow:
       0 0 0 1px rgba(168,85,247,0.08),
       0 0 16px 0 rgba(168,85,247,0.12),
       inset 0 1px 0 rgba(255,255,255,0.04);
   }
+  .chapter-nav-item:hover { background: rgba(168,85,247,0.09); transition: background 120ms ease; }
 
   .answer-correct {
     border-color: rgba(16,185,129,0.6) !important;
