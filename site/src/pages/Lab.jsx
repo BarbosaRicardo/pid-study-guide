@@ -180,7 +180,7 @@ plt.legend(); plt.grid(); plt.show()`}</pre>
         Start with Lambda tuning (λ = 2θ = 10s). Record your response. Then try Ziegler-Nichols open-loop. Then try manual tuning by intuition. Compare the results. The exercise reveals why no single tuning method is universally best.
       </p>
 
-      <GifCard gifKey="celebrate" caption="First time all four criteria pass simultaneously." side="right" />
+      <GifCard gifKey="celebrate" caption="First time all four criteria pass simultaneously." side="right" body="All four criteria passing simultaneously is the target: fast enough rise time, acceptable overshoot, quick settling, zero steady-state offset. Getting there requires understanding why each parameter broke, not just turning knobs until the trend looks good. Engineers who can hit all four consistently in simulation transfer that skill directly to the field." />
 
       <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Exercise 4: Valve Stiction Simulation</h2>
 

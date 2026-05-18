@@ -68,7 +68,7 @@ export default function Intro() {
         </div>
       </div>
 
-      <GifCard gifKey="courseHero" caption="Close. Almost. Just a little more integral. No — too much." side="right" tooltip="PID stands for Proportional-Integral-Derivative. P reacts to the error. I remembers every mistake. D panics about where things are heading. Together they try to hit a setpoint without oscillating forever. Like parallel parking, but in a reactor." />
+      <GifCard gifKey="courseHero" caption="Close. Almost. Just a little more integral. No — too much." side="right" tooltip="PID stands for Proportional-Integral-Derivative. P reacts to the error. I remembers every mistake. D panics about where things are heading. Together they try to hit a setpoint without oscillating forever. Like parallel parking, but in a reactor." body="Every PID loop is tuned by someone who started with theory and ended with field experience. The math gives you starting values. The plant gives you humility. PID works because it doesn't need a process model — it just needs feedback and someone willing to make small, deliberate adjustments until it stops fighting itself." />
 
       <h2 className="text-2xl font-bold text-slate-100 mt-8 mb-3">Real Industrial Examples</h2>
 
