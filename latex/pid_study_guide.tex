@@ -171,10 +171,12 @@
   \renewcommand{\afterchapternum}{\par\vspace{4pt}}
   \renewcommand{\afterchaptertitle}{%
     \par\vspace{4pt}
+\resizebox{\textwidth}{!}{%
     \begin{tikzpicture}
       \draw[pidblue, line width=2.5pt] (0,0) -- (\textwidth,0);
       \draw[pidorange, line width=1.2pt] (0,-3pt) -- (3cm,-3pt);
     \end{tikzpicture}
+}
     \par\vspace{16pt}
   }
 }
@@ -247,6 +249,7 @@ Open-loop control is like driving with your eyes closed---technically possible, 
 Every closed-loop control system---regardless of what variable is being controlled or what technology implements it---has the same fundamental structure:
 
 \begin{center}
+\resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
   node distance=1.8cm and 2.2cm,
   block/.style={draw=pidblue, fill=pidblue!10, rounded corners=4pt,
@@ -277,6 +280,7 @@ Every closed-loop control system---regardless of what variable is being controll
   \node[font=\small\bfseries, pidred] at ([xshift=2pt,yshift=-8pt]sum.south) {$-$};
   \node[font=\small\bfseries, pidblue] at ([xshift=-8pt,yshift=2pt]sum.west) {$+$};
 \end{tikzpicture}
+}
 \end{center}
 
 \begin{description}[leftmargin=2em, labelwidth=2em]
