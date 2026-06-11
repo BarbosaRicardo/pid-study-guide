@@ -150,6 +150,12 @@ export default function DigitalPID() {
 
       <FunFact index={10} />
 
+      {/* DISCRETE-INTEGRAL — survey/orphan audit 2026-06-11 */}
+      <div className="card mb-6">
+        <h3 className="text-lg font-bold text-white mb-2">What Happens to the Integral in Discrete Time</h3>
+        <p className="text-sm text-slate-300 leading-relaxed mb-2">A digital controller cannot integrate continuously — it samples. The integral term becomes a <b>running summation</b> of error × sample time, using a rectangular or trapezoidal approximation. Same idea for the derivative: a finite difference between samples. Faster sampling makes the approximation closer to the continuous ideal — and makes derivative noise worse.</p>
+      </div>
+
       {QUIZZES.digital && (
         <QuizLevels chapterId="digital" />
       )}
