@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { Menu, X, Zap, BookOpen, BarChart2, Home, Settings, Sliders, TrendingUp, Layers, Cpu, Monitor, Wrench, FlaskConical, CreditCard, LayoutGrid, LogIn, LogOut, FileText, ChevronDown, Network, Globe, Code2, Server, LayoutDashboard, ScanSearch, GraduationCap, CheckCircle2 } from 'lucide-react'
 import { CHAPTERS } from '../data/chapters'
+import { isOnMatrix } from '../data/matrixMap'
 import { useProgress } from '../hooks/useProgress'
 import { supabase } from '../lib/supabase'
 import QuizReport from './QuizReport'
@@ -108,6 +109,13 @@ export default function Sidebar() {
           <span className="flex-1 truncate">
             {prefix && <span className="opacity-40 font-normal mr-1 text-xs">{prefix}</span>}
             <span className="font-semibold">{topic}</span>
+            {isOnMatrix(ch.id) && (
+              <span
+                className="ml-1.5 align-middle inline-block w-1.5 h-1.5 rounded-full"
+                style={{ background: '#ffb454', boxShadow: '0 0 4px #ffb454' }}
+                title="On the company skills matrix"
+              />
+            )}
           </span>
           <div className="flex gap-0.5 flex-shrink-0 items-center">
             {status.completed ? (
